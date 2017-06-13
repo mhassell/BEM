@@ -11,23 +11,20 @@
 
 #include <vector>
 
-class geometry {
+class geometry{
     
 public:
-    // methods
-    geometry(std::vector<double>& coordx,
-             std::vector<double>& coordy, std::vector<int>& elts);
     
+    // methods
+    geometry(std::vector<std::vector<double> >& coords, std::vector<std::vector<int> >& elts);
     void enhance();
     void refine();
     
     // attributes
     bool enhanced;
-    std::vector<int>& elements;
-    std::vector<double>& xcoords;
-    std::vector<double>& ycoords;
-    std::vector<double> normalx;
-    std::vector<double> normaly;
+    std::vector<std::vector<int> >& elements;
+    std::vector<std::vector<double> >& coordinates;
+    std::vector<std::vector<double> > normals;
     std::vector<double> lengths;
     std::vector<int> prev;
     std::vector<int> next;

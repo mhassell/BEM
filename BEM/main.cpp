@@ -16,13 +16,11 @@ int main(){
      // first, test the basic constructor
      int N = 10;
      
-     std::vector<double> *xp = new std::vector<double>(N);
-     std::vector<double>& xr = *xp;
-     std::vector<double> *yp = new std::vector<double>(N);
-     std::vector<double>& yr = *yp;
-     std::vector<int> *elts = new std::vector<int>(N);
-     std::vector<int>& er = *elts;
-     geometry g(xr, yr, er);
+     std::vector<std::vector<double> > *coords = new std::vector<std::vector<double> >(N);
+     std::vector<std::vector<double> >& coordsref = *coords;
+     std::vector<std::vector<int> >*elts = new std::vector<std::vector<int> >(N);
+     std::vector<std::vector<int> >& eref = *elts;
+     geometry g(coordsref,eref);
      
      
      std::cout << "Enhanced state: ";

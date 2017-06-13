@@ -6,41 +6,41 @@
 //  Copyright © 2017 Matthew Hassell. All rights reserved.
 //
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/io.hpp>
+#include <vector>
 
 class geometry{
     
 public:
     
     // methods
-    geometry(boost::numeric::ublas::matrix<double>& coord, boost::numeric::ublas::matrix<int>& elts);
+    geometry(std::vector<std::vector<double> >& coords, std::vector<std::vector<int> >& elts);
     void enhance();
     void refine();
     
     // attributes
     bool enhanced;
-    boost::numeric::ublas::matrix<int>& elements;
-    boost::numeric::ublas::matrix<double>& coordinates;
-    boost::numeric::ublas::matrix<double> normals;
-    boost::numeric::ublas::vector<double> lengths;
-    boost::numeric::ublas::vector<int> prev;
-    boost::numeric::ublas::vector<int> next;
+    std::vector<std::vector<int> >& elements;
+    std::vector<std::vector<double> >& coordinates;
+    std::vector<std::vector<double> > normals;
+    std::vector<double> lengths;
+    std::vector<int> prev;
+    std::vector<int> next;
     size_t nElts;
     
 };
 
-geometry::geometry(boost::numeric::ublas::matrix<double>& coord, boost::numeric::ublas::matrix<int>& elts)
-: xcoords(coordx), ycoords(coordy), elements(elts)
+geometry::geometry(std::vector<std::vector<double> >& coords, std::vector<std::vector<int> >& elts)
+: coordinates(coords), elements(elts)
 {
     // use the constructor list above to make the needed basic arrays
     enhanced = false;
     nElts = elts.size();
     
     // zero all the other fields before enhancing
-    normalx.assign(nElts, 0);
-    normaly.assign(nElts, 0);
+    for(size_t i = 0; i < nElts; i++){
+        normals[i].assign(2, 0);
+    }
+    
     lengths.assign(nElts, 0);
     prev.assign(nElts, 0);
     next.assign(nElts, 0);
