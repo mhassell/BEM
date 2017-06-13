@@ -13,69 +13,49 @@
 
 int main(){
      
-     // first, test the basic constructor
-     int N = 10;
-     
-     std::vector<std::vector<double> > *coords = new std::vector<std::vector<double> >(N);
-     std::vector<std::vector<double> >& coordsref = *coords;
-     std::vector<std::vector<int> >*elts = new std::vector<std::vector<int> >(N);
-     std::vector<std::vector<int> >& eref = *elts;
-     geometry g(coordsref,eref);
-     
-     
-     std::cout << "Enhanced state: ";
-     std::cout << g.enhanced << std::endl;
-     
-     std::cout << "reference size: " << xr.size() << std::endl;
-     
-     for(int i = 0; i<N; i++){
-     std::cout << g.xcoords[i] << ' ';
-     }
-     std::cout << std::endl;
-     
-     // is this by reference or by value?
-     xr[1] = 10;
-     
-     std::cout << "After changing the referenced vector: \n";
-     for(int i = 0; i<N; i++){
-     std::cout << g.xcoords[i] << ' ';
-     }
-     std::cout << std::endl;
-     
-     std::cout << "Testing the normalx vector \n";
-     for(size_t i = 0; i<g.normalx.size(); i++ ){
-     std::cout << g.normalx[i] << ' ';
-     }
-     std::cout << std::endl;
-     
-     std::cout << "Testing the normaly vector \n";
-     for(size_t i = 0; i<g.normaly.size(); i++ ){
-     std::cout << g.normaly[i] << ' ';
-     }
-     std::cout << std::endl;
-     
-     std::cout << "Testing the lengths vector \n";
-     for(size_t i = 0; i<g.lengths.size(); i++ ){
-     std::cout << g.lengths[i] << ' ';
-     }
-     std::cout << std::endl;
-     
-     std::cout << "Testing the prev vector \n";
-     for(size_t i = 0; i<g.prev.size(); i++ ){
-     std::cout << g.prev[i] << ' ';
-     }
-     std::cout << std::endl;
-     
-     std::cout << "Testing the next vector \n";
-     for(size_t i = 0; i<g.next.size(); i++ ){
-     std::cout << g.next[i] << ' ';
-     }
-     std::cout << std::endl;
-     
-     // delete shit
-     delete xp;
-     delete yp;
-     delete elts;
+    // first, test the basic constructor
+    int N = 4;
+    
+    std::vector<std::vector<double> > *coords = new std::vector<std::vector<double> >(N);
+    std::vector<std::vector<double> >& coordsref = *coords;
+    std::vector<std::vector<int> >*elts = new std::vector<std::vector<int> >(N);
+    std::vector<std::vector<int> >& eref = *elts;
+    
+    coordsref = {{0,0},{1,0},{0.8,0.8},{0.2,1}};
+    eref = {{1,2},{3,4},{2,3},{4,1}};
+    
+    geometry g(coordsref,eref);
+    
+    std::cout << "Testing the normal vector \n";
+    for(size_t i = 0; i<g.normals.size(); i++ ){
+        for(int j = 0; j<2; j++){
+            std::cout << g.normals[i][j] << ' ';
+        }
+        std::cout << std::endl;
+    }
+    
+    
+    std::cout << "Testing the lengths vector \n";
+    for(size_t i = 0; i<g.lengths.size(); i++ ){
+        std::cout << g.lengths[i] << ' ';
+    }
+    std::cout << std::endl;
+    
+    std::cout << "Testing the prev vector \n";
+    for(size_t i = 0; i<g.prev.size(); i++ ){
+        std::cout << g.prev[i] << ' ';
+    }
+    std::cout << std::endl;
+    
+    std::cout << "Testing the next vector \n";
+    for(size_t i = 0; i<g.next.size(); i++ ){
+        std::cout << g.next[i] << ' ';
+    }
+    std::cout << std::endl;
+    
+    // delete the new'd stuff
+    delete coords;
+    delete elts;
     
     return 0;
     

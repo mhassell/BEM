@@ -7,6 +7,7 @@
 //
 
 #include <vector>
+#include <math.h>
 
 class geometry{
     
@@ -36,15 +37,16 @@ geometry::geometry(std::vector<std::vector<double> >& coords, std::vector<std::v
     enhanced = false;
     nElts = elts.size();
     
+    normals.assign(nElts,std::vector<double>(2));
+    
     // zero all the other fields before enhancing
     for(size_t i = 0; i < nElts; i++){
         normals[i].assign(2, 0);
     }
-    
     lengths.assign(nElts, 0);
     prev.assign(nElts, 0);
     next.assign(nElts, 0);
-    
+
     geometry::enhance();
     
 }
@@ -52,6 +54,31 @@ geometry::geometry(std::vector<std::vector<double> >& coords, std::vector<std::v
 
 void geometry::enhance(){
     
+    std::vector<double> x1(nElts);
+    std::vector<double> x2(nElts);
+    std::vector<double> y1(nElts);
+    std::vector<double> y2(nElts);
+    
+    double norm;
+    
+    // fill in all the fields
+    for(size_t i = 0; i<nElts; i++){
+        x1[i] = coordinates[elements[i][0]][0];
+        x2[i] = coordinates[elements[i][1]][0];
+        y1[i] = coordinates[elements[i][0]][1];
+        y2[i] = coordinates[elements[i][1]][1];
+        
+        lengths[i] = sqrt(pow(x2[i]-x1[i],2)+pow(y2[i]-y1[i],2));
+        
+        normals[i][0] = y2[i]-y1[i];
+        normals[i][1] = x1[i]-x2[i];
+        norm = sqrt(pow(normals[i][0],2)+pow(normals[i][1],2));
+        normals[i][0]/= norm;
+        normals[i][1]/= norm;
+        
+        
+        
+    }
     
     enhanced = true;
     
