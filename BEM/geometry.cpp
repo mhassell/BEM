@@ -73,10 +73,12 @@ void geometry::enhance(){
         normals[i][0] = y2[i]-y1[i];
         normals[i][1] = x1[i]-x2[i];
         norm = sqrt(pow(normals[i][0],2)+pow(normals[i][1],2));
-        normals[i][0]/= norm;
-        normals[i][1]/= norm;
+        normals[i][0] /= norm;
+        normals[i][1] /= norm;
         
-        
+        next[elements[i][0]] = (int) i;
+        next[i] = next[elements[i][1]];
+        prev[next[i]] = (int) i;
         
     }
     

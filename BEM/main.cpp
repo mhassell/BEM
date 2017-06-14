@@ -22,7 +22,7 @@ int main(){
     std::vector<std::vector<int> >& eref = *elts;
     
     coordsref = {{0,0},{1,0},{0.8,0.8},{0.2,1}};
-    eref = {{1,2},{3,4},{2,3},{4,1}};
+    eref = {{0,1},{2,3},{1,2},{3,0}};
     
     geometry g(coordsref,eref);
     
