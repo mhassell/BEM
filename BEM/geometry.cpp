@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <math.h>
+#include <iostream>
 
 class geometry{
     
@@ -17,6 +18,7 @@ public:
     geometry(std::vector<std::vector<double> >& coords, std::vector<std::vector<int> >& elts);
     void enhance();
     void refine();
+    void refine(std::vector<int> tags);
     
     // attributes
     bool enhanced;
@@ -59,6 +61,8 @@ void geometry::enhance(){
     std::vector<double> y1(nElts);
     std::vector<double> y2(nElts);
     
+    std::vector<int> tmp(nElts);
+    
     double norm;
     
     // fill in all the fields
@@ -76,17 +80,32 @@ void geometry::enhance(){
         normals[i][0] /= norm;
         normals[i][1] /= norm;
         
-        next[elements[i][0]] = (int) i;
-        next[i] = next[elements[i][1]];
-        prev[next[i]] = (int) i;
+        tmp[elements[i][0]] = (int) i;
         
+    }
+    
+    // it would be great to be able to do this in one felswoop
+    for(size_t i = 0; i<nElts; i++){
+        next[i] = tmp[elements[i][1]];
+        prev[next[i]] = (int) i;
     }
     
     enhanced = true;
     
 }
 
+// uniform refinement of all elements
 void geometry::refine(){
+    
+    
+    
+    geometry::enhance();
+    
+}
+
+// bisect only the tagged elements
+void geometry::refine(std::vector<int> tag){
+    
     
     
     geometry::enhance();

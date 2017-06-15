@@ -19,6 +19,7 @@ public:
     geometry(std::vector<std::vector<double> >& coords, std::vector<std::vector<int> >& elts);
     void enhance();
     void refine();
+    void refine(std::vector<int> tag);
     
     // attributes
     bool enhanced;
