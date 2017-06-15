@@ -37,24 +37,19 @@ geometry::geometry(std::vector<std::vector<double> >& coords, std::vector<std::v
 {
     // use the constructor list above to make the needed basic arrays
     enhanced = false;
-    nElts = elts.size();
-    
-    normals.assign(nElts,std::vector<double>(2));
-    
-    // zero all the other fields before enhancing
-    for(size_t i = 0; i < nElts; i++){
-        normals[i].assign(2, 0);
-    }
-    lengths.assign(nElts, 0);
-    prev.assign(nElts, 0);
-    next.assign(nElts, 0);
-
     geometry::enhance();
     
 }
 
 
 void geometry::enhance(){
+    
+    nElts = elements.size();
+    
+    normals.assign(nElts,std::vector<double>(2));
+    lengths.assign(nElts, 0);
+    prev.assign(nElts, 0);
+    next.assign(nElts, 0);
     
     std::vector<double> x1(nElts);
     std::vector<double> x2(nElts);
@@ -97,7 +92,35 @@ void geometry::enhance(){
 // uniform refinement of all elements
 void geometry::refine(){
     
+    std::vector<std::vector<double> > allCoord(2*nElts);
+    allCoord.assign(2*nElts,std::vector<double>(2));
+    std::vector<std::vector<int> > allElts(2*nElts);
+    allElts.assign(2*nElts, std::vector<int>(2));
     
+    for(size_t i = 0; i < nElts; i++){
+        // put the new coordinates at the beginning of the vector
+        allCoord[i][0] = coordinates[i][0];
+        allCoord[i][1] = coordinates[i][1];
+        
+        // and put the new coordinates at the end of the vector
+        allCoord[nElts+i][0] =
+            0.5*(coordinates[elements[i][0]][0] + coordinates[elements[i][1]][0]);
+        allCoord[nElts+i][1] =
+            0.5*(coordinates[elements[i][0]][1] + coordinates[elements[i][1]][1]);
+        
+        // now build the elements
+        allElts[i][0] = elements[i][0];
+        allElts[i][1] = elements[i][1];
+        
+        allElts[i+nElts][0] = (int) (nElts+i);
+        allElts[i+nElts][1] = (int) (nElts+i-1);
+
+    }
+    
+    
+    coordinates = allCoord;
+    elements = allElts;
+    nElts = 2*nElts;
     
     geometry::enhance();
     
@@ -106,7 +129,8 @@ void geometry::refine(){
 // bisect only the tagged elements
 void geometry::refine(std::vector<int> tag){
     
-    
+    // new elements
+    std::vector<std::vector<double> > newElts(tag.size());
     
     geometry::enhance();
     

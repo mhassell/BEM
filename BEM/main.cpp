@@ -53,6 +53,16 @@ int main(){
     }
     std::cout << std::endl;
     
+    std::cout << "Testing refinement \n";
+    g.refine();
+    for(size_t i = 0; i < g.nElts; i++){
+        for(size_t j = 0; j < 2; j++){
+            std::cout << g.coordinates[i][j] << ' ';
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    
     // delete the new'd stuff
     delete coords;
     delete elts;
