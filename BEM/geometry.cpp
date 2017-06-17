@@ -117,10 +117,10 @@ void geometry::refine(){
 
     }
     
-    
     coordinates = allCoord;
     elements = allElts;
-    nElts = 2*nElts;
+    
+    std::cout << elements.size() << std::endl;
     
     geometry::enhance();
     

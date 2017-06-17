@@ -34,6 +34,9 @@ int main(){
         std::cout << std::endl;
     }
     
+    std::cout << "Testing number of elements \n";
+    std::cout << g.nElts << std::endl;
+    
     
     std::cout << "Testing the lengths vector \n";
     for(size_t i = 0; i<g.lengths.size(); i++ ){
@@ -53,7 +56,7 @@ int main(){
     }
     std::cout << std::endl;
     
-    std::cout << "Testing refinement \n";
+    std::cout << "Testing refinement: new coordinates \n";
     g.refine();
     for(size_t i = 0; i < g.nElts; i++){
         for(size_t j = 0; j < 2; j++){
@@ -62,6 +65,19 @@ int main(){
         std::cout << std::endl;
     }
     std::cout << std::endl;
+    
+    std::cout << "Testing refinement: new elements \n";
+    for(size_t i = 0; i < g.nElts; i++){
+        for(size_t j = 0; j < 2; j++){
+            std::cout << g.elements[i][j] << ' ';
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    
+    std::cout << "Number of new elements: \n";
+    std::cout << g.nElts << std::endl;
+    
     
     // delete the new'd stuff
     delete coords;
