@@ -108,19 +108,16 @@ void geometry::refine(){
         allCoord[nElts+i][1] =
             0.5*(coordinates[elements[i][0]][1] + coordinates[elements[i][1]][1]);
         
-        // now build the elements
-        allElts[i][0] = elements[i][0];
-        allElts[i][1] = elements[i][1];
+        allElts[2*i+1][0] = (int) (nElts+i);
+        allElts[2*i][0] = (int) elements[i][0];
         
-        allElts[i+nElts][0] = (int) (nElts+i);
-        allElts[i+nElts][1] = (int) (nElts+i-1);
+        allElts[2*i][1] = (int) (nElts+i);
+        allElts[2*i+1][1] = (int) elements[i][1];
 
     }
     
     coordinates = allCoord;
     elements = allElts;
-    
-    std::cout << elements.size() << std::endl;
     
     geometry::enhance();
     
