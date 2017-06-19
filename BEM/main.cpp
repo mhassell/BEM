@@ -12,7 +12,7 @@
 #include "geometry.hpp"
 
 int main(){
-     
+    
     // first, test the basic constructor
     int N = 4;
     
