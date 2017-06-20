@@ -32,7 +32,7 @@ void legendreBasis(int n, std::vector<double> &x, boost::numeric::ublas::matrix<
     size_t nPoints = y.size1();
     size_t nDegs = y.size2();
     
-    // normalized legendre functions
+    // non-normalized legendre functions
     if(type == 0){
         for(size_t i = 0; i < nPoints; i++){
             for(size_t j = 0; j < nDegs; j++){
