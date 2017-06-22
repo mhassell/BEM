@@ -16,34 +16,38 @@
 
 int main(){
 
-     size_t nPts = 5;
-     int deg = 2;
-     int type = 2;
-     
-     
-     std::vector<double> *xp = new std::vector<double>(nPts);
-     std::vector<double>& x = *xp;
-     if(nPts == 5)
-         x = {-1, -0.5, 0, 0.5, 1};
-     else if (nPts == 6)
-         x = {-1, -.6, -.2, .2, .6, 1};
-    
-     
-     boost::numeric::ublas::matrix<double>* yp = new boost::numeric::ublas::matrix<double>(nPts,deg+1);
-     boost::numeric::ublas::matrix<double>& y = *yp;
-     
-     legendreBasis(deg, x, y, type);
-     
-     for(int i = 0; i < nPts; i++){
-     for(int j = 0; j < deg+1; j++){
-     std::cout << y(i,j) << "      ";
-     }
-     std::cout << std::endl;
-     }
-
     return 0;
     
 }
+
+/*
+ 
+ size_t nPts = 5;
+ int deg = 2;
+ int type = 2;
+ 
+ 
+ std::vector<double> *xp = new std::vector<double>(nPts);
+ std::vector<double>& x = *xp;
+ if(nPts == 5)
+ x = {-1, -0.5, 0, 0.5, 1};
+ else if (nPts == 6)
+ x = {-1, -.6, -.2, .2, .6, 1};
+ 
+ 
+ boost::numeric::ublas::matrix<double>* yp = new boost::numeric::ublas::matrix<double>(nPts,deg+1);
+ boost::numeric::ublas::matrix<double>& y = *yp;
+ 
+ legendreBasis(deg, x, type, y);
+ 
+ for(int i = 0; i < nPts; i++){
+ for(int j = 0; j < deg+1; j++){
+ std::cout << y(i,j) << "      ";
+ }
+ std::cout << std::endl;
+ }
+ 
+ */
 
 /*
 
