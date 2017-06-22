@@ -16,7 +16,7 @@
 
 int main(){
 
-     size_t nPts = 6;
+     size_t nPts = 5;
      int deg = 2;
      int type = 2;
      

@@ -59,7 +59,7 @@ void legendreBasis(int n, std::vector<double> &x, boost::numeric::ublas::matrix<
             for(int j = 2; j < nDegs; j++){
                 double val = 2*(2* (double) j - 1);
                 for(int i = 0; i < nPoints; i++){
-                    y(i,j) = (boost::math::legendre_p(j+1,x[i]) - boost::math::legendre_p(j-1,x[i]))/sqrt(val);
+                    y(i,j) = (boost::math::legendre_p(j,x[i]) - boost::math::legendre_p(j-2,x[i]))/sqrt(val);
                 }
             }
         }
