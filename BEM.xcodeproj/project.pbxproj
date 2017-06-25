@@ -34,6 +34,10 @@
 		A2E75EAA1EFC73DF00A7A9AB /* testsAndProjections.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testsAndProjections.cpp; sourceTree = "<group>"; };
 		A2E75EAB1EFC73DF00A7A9AB /* testsAndProjections.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = testsAndProjections.hpp; sourceTree = "<group>"; };
 		A2E75EAD1EFC895500A7A9AB /* quadTables.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quadTables.cpp; sourceTree = "<group>"; };
+		A2E75EAF1EFE8D2400A7A9AB /* quadTables.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = quadTables.hpp; sourceTree = "<group>"; };
+		A2E75EB41EFF401800A7A9AB /* exportQuadrature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = exportQuadrature.m; sourceTree = "<group>"; };
+		A2E75EB51EFF401800A7A9AB /* gaussianQuad.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = gaussianQuad.txt; sourceTree = "<group>"; };
+		A2E75EB61EFF401800A7A9AB /* LogGaussianQuad.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LogGaussianQuad.txt; sourceTree = "<group>"; };
 		A2EED2AD1EF7409A00FF9D28 /* legendrebasis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = legendrebasis.cpp; sourceTree = "<group>"; };
 		A2EED2AE1EF7409A00FF9D28 /* legendrebasis.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = legendrebasis.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,8 +77,12 @@
 				A2EED2AD1EF7409A00FF9D28 /* legendrebasis.cpp */,
 				A2EED2AE1EF7409A00FF9D28 /* legendrebasis.hpp */,
 				A27B3AC81EE770DA00380B5F /* main.cpp */,
+				A2E75EB41EFF401800A7A9AB /* exportQuadrature.m */,
+				A2E75EB51EFF401800A7A9AB /* gaussianQuad.txt */,
+				A2E75EB61EFF401800A7A9AB /* LogGaussianQuad.txt */,
 				A2E75EAA1EFC73DF00A7A9AB /* testsAndProjections.cpp */,
 				A2E75EAD1EFC895500A7A9AB /* quadTables.cpp */,
+				A2E75EAF1EFE8D2400A7A9AB /* quadTables.hpp */,
 				A2E75EAB1EFC73DF00A7A9AB /* testsAndProjections.hpp */,
 			);
 			path = BEM;

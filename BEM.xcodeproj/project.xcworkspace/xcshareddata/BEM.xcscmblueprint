@@ -5,12 +5,14 @@
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "579FE28DDB7DCA66FEBA9CE6D3AD10E5764FED08" : 9223372036854775807,
-    "A9B16AD9234357E3F0EBFFB1E443FC3995E6148D" : 9223372036854775807
+    "A9B16AD9234357E3F0EBFFB1E443FC3995E6148D" : 9223372036854775807,
+    "E19B8B75C2D7DC108D661A5FB1ED44A8059D6BD6" : 9223372036854775807
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "93F43D26-7DF4-40B1-93BB-8D68017A80F1",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "579FE28DDB7DCA66FEBA9CE6D3AD10E5764FED08" : "BEM\/",
-    "A9B16AD9234357E3F0EBFFB1E443FC3995E6148D" : ""
+    "A9B16AD9234357E3F0EBFFB1E443FC3995E6148D" : "",
+    "E19B8B75C2D7DC108D661A5FB1ED44A8059D6BD6" : "..\/Documents\/MATLAB\/Research"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "BEM",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -25,6 +27,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mhassell\/mPy3.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A9B16AD9234357E3F0EBFFB1E443FC3995E6148D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mhassell\/matlab",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E19B8B75C2D7DC108D661A5FB1ED44A8059D6BD6"
     }
   ]
 }
