@@ -14,23 +14,29 @@
 #include "legendrebasis.hpp"
 #include <math.h>
 
-double square(double x){
-    return pow(x,2);
-}
-
-
 int main(){
     
-    double (*square_ptr) (double);
-    square_ptr = square;
-    
-    double z = square_ptr(2);
-    
-    std::cout << z << std::endl;
+
 
     return 0;
     
 }
+
+/*
+ 
+ double (*square_ptr) (double);
+ square_ptr = square;
+ 
+ double z = square_ptr(2);
+ 
+ std::cout << z << std::endl;
+ 
+ double square(double x){
+ return pow(x,2);
+ }
+ 
+ 
+ */
 
 /*
  

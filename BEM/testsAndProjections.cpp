@@ -13,5 +13,13 @@
 #include <vector>
 #include "legendrebasis.hpp"
 
-void testXh(geometry& g, double *f(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh);
+void testXh(geometry& g, double *f(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh){
+
+    std::vector<std::vector<double> > P1t, P2t;
+    
+    
+    
+}
+
+
 void testYh(geometry& g, double *f(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh);
