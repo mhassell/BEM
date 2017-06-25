@@ -30,15 +30,13 @@ fileID = fopen(file,'w');
 
 for j = cases
     rule = tableLogGauss(j);
+    fprintf(fileID, "case %d:\n", j);
     fprintf(fileID, 'qd = {');
     for k = 1:size(rule,1)-1
-        try
-            fprintf(fileID, '{ %d, %d},\n', rule(k,1), rule(k,2));
-        catch
-            keyboard
-        end
+        fprintf(fileID, '{ %d, %d},\n', rule(k,1), rule(k,2));
     end
     fprintf(fileID,'{ %d, %d}};\n\n', rule(end,1), rule(end,2));
+    fprintf(fileID, 'break;\n\n');
 end
 
 fclose(fileID);
