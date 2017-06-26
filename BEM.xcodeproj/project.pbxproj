@@ -75,9 +75,9 @@
 				A2EED2AE1EF7409A00FF9D28 /* legendrebasis.hpp */,
 				A27B3AC81EE770DA00380B5F /* main.cpp */,
 				A2E75EAA1EFC73DF00A7A9AB /* testsAndProjections.cpp */,
+				A2E75EAB1EFC73DF00A7A9AB /* testsAndProjections.hpp */,
 				A2E75EAD1EFC895500A7A9AB /* quadTables.cpp */,
 				A2E75EAF1EFE8D2400A7A9AB /* quadTables.hpp */,
-				A2E75EAB1EFC73DF00A7A9AB /* testsAndProjections.hpp */,
 			);
 			path = BEM;
 			sourceTree = "<group>";

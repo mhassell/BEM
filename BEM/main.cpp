@@ -10,13 +10,40 @@
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <math.h>
 #include "geometry.hpp"
 #include "legendrebasis.hpp"
-#include <math.h>
+#include "testsAndProjections.hpp"
+#include "quadTables.hpp"
+
+double ff(double x, double y){
+    
+    return pow(x,2) + pow(y,2);
+    
+};
 
 int main(){
     
-
+    // geometry mess
+    std::vector<std::vector<double> > coords;
+    std::vector<std::vector<int> > elts;
+    coords = {{0,0},{1,0},{0.8,0.8},{0.2,1}};
+    elts = {{0,1},{2,3},{1,2},{3,0}};
+    geometry g(coords,elts);
+    
+    // function stuff
+    double (*f) (double,double);
+    f = ff;
+    
+    // quadrature
+    int k = 3;
+    std::vector<std::vector<double> > q1d;
+    q1d = tableGauss(11);
+    
+    // solution array
+    boost::numeric::ublas::matrix<double> fh;
+    
+    testXh(g, f, k, q1d, fh);
 
     return 0;
     
