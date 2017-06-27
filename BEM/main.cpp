@@ -43,7 +43,8 @@ int main(){
     // solution array
     boost::numeric::ublas::matrix<double> fh(k+1, g.nElts);
     
-    testXh(g, f, k, q1d, fh);
+    //testXh(g, f, k, q1d, fh);
+    testYh(g, f, k, q1d, fh);
     
     for(int i = 0; i < k+1; i++){
         for(int j = 0; j < g.nElts; j++){

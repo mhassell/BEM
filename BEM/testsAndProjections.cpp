@@ -64,7 +64,7 @@ void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
 }
 
 // test against yh for scalar valued functions
-void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
+void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     
     size_t Nqd = q1d.size();
@@ -96,9 +96,21 @@ void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
         x[i] = q1d[i][0];
     }
     
-    boost::numeric::ublas::matrix<double> P(Nqd, Nelts);
+    boost::numeric::ublas::matrix<double> P(Nqd, k+2);
     legendreBasis(k+1, x, 2, P);
     
+    // std::cout << Nqd << std::endl;
+    // std::cout << x.size() << std::endl;
+    
+    // tests
+    for(size_t i = 0; i < Nqd-1; i++){
+        for(size_t j = 0; j < k+2; j++){
+            std::cout << P(i,j) << "      ";
+        }
+        std::cout << '\n';
+    }
+    
+    // attach to quad weights
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
             P(i,j) = P(i,j)*q1d[i][1];
@@ -106,24 +118,45 @@ void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
     }
     
     P = boost::numeric::ublas::trans(P);
-    fh = boost::numeric::ublas::prod(P, F);
+    boost::numeric::ublas::matrix<double> V = boost::numeric::ublas::prod(P, F);
     
+    // scale by element lengths
     for(size_t i = 0; i < k+1; i++){
         for(size_t j = 0; j < Nelts; j++){
-            fh(i,j) *= 0.5*g.lengths[j];
+            V(i,j) *= 0.5*g.lengths[j];
         }
     }
     
+//    // tests
+//    for(size_t i = 0; i < k+2; i++){
+//        for(size_t j = 0; j < Nelts; j++){
+//            std::cout << V(i,j) << "     ";
+//        }
+//        std::cout << std::endl;
+//    }
+    
     // assemble the nodal DoFs
+    for(size_t j = 0; j < Nelts; j++){
+        fh(0,g.elements[j][0]) = V(0,j);
+    }
     
+    for(size_t j = 0; j < Nelts; j++){
+        fh(0,g.elements[j][1]) += V(1,j);
+    }
     
+    // dump what's left in V into fh
+    for(size_t j = 0; j < Nelts; j++){
+        for(size_t i = 1; i < k+1; i++){
+            fh(i,j) = V(i+1,j);
+        }
+    }
     
 }
 
 // test vector valued functions (dotted with n) against Yh
 void testYh(geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
 {
-    
+
     
     
 }

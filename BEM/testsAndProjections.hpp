@@ -17,9 +17,11 @@
 // test against the BEM spaces
 void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
 void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
+//void testYh(geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh);
 
 // project into the BEM spaces
 void projectionXh();
 void projectionYh();
+
 
 #endif /* testsAndProjections_hpp */

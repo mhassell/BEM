@@ -30,8 +30,8 @@ type : integer for the type of polynomial we compute
 void legendreBasis(int n, std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y){
     
     // number of evaluation points
-    size_t nPoints = y.size1();
-    size_t nDegs = y.size2();
+    size_t nPoints = x.size();
+    size_t nDegs = n;
     
     // type = 0 for orthonormal, type = 1 for orthogonal
     if(type == 0 || type == 1){
