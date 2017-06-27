@@ -32,7 +32,7 @@ int main(){
     geometry g(coords,elts);
     
     // function stuff
-    double (*f) (double,double);
+    double (*f)(double,double);
     f = ff;
     
     // quadrature
@@ -41,9 +41,16 @@ int main(){
     q1d = tableGauss(11);
     
     // solution array
-    boost::numeric::ublas::matrix<double> fh;
+    boost::numeric::ublas::matrix<double> fh(k+1, g.nElts);
     
     testXh(g, f, k, q1d, fh);
+    
+    for(int i = 0; i < k+1; i++){
+        for(int j = 0; j < g.nElts; j++){
+            std::cout << fh(i,j) << "     ";
+        }
+        std::cout << '\n' << std::endl;
+    }
 
     return 0;
     
