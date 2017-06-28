@@ -36,8 +36,8 @@ int main(){
     double (*f)(double,double);
     f = ff;
     
-    // quadrature
-    int k = 1;
+    // quadrature & polynomial stuff
+    int k = 3;
     std::vector<std::vector<double> > q1d;
     q1d = tableGauss(9);
     
