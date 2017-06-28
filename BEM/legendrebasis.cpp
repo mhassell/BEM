@@ -16,7 +16,7 @@
 
 /*
  
- void legendreBasis(int n, std::vector<double> &x, boost::numeric::ublas::vector<double> &y, int type)
+ void legendreBasis(int n, std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y)
  
  Input: 
  
@@ -31,7 +31,7 @@ void legendreBasis(int n, std::vector<double> &x, int type, boost::numeric::ubla
     
     // number of evaluation points
     size_t nPoints = x.size();
-    size_t nDegs = n;
+    size_t nDegs = n+1;
     
     // type = 0 for orthonormal, type = 1 for orthogonal
     if(type == 0 || type == 1){

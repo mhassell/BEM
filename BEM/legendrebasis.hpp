@@ -9,6 +9,9 @@
 #ifndef legendrebasis_hpp
 #define legendrebasis_hpp
 
+#include <boost/numeric/ublas/matrix.hpp>
+#include <vector>
+
 void legendreBasis(int n, std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y);
 
 #endif /* legendrebasis_hpp */

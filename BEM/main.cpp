@@ -15,6 +15,7 @@
 #include "legendrebasis.hpp"
 #include "testsAndProjections.hpp"
 #include "quadTables.hpp"
+#include "testLegendre.hpp"
 
 double ff(double x, double y){
     
@@ -36,9 +37,9 @@ int main(){
     f = ff;
     
     // quadrature
-    int k = 3;
+    int k = 1;
     std::vector<std::vector<double> > q1d;
-    q1d = tableGauss(11);
+    q1d = tableGauss(9);
     
     // solution array
     boost::numeric::ublas::matrix<double> fh(k+1, g.nElts);
@@ -52,10 +53,65 @@ int main(){
         }
         std::cout << '\n' << std::endl;
     }
-
+ 
     return 0;
     
 }
+
+/*
+ 
+ int degree = 2;
+ int type = 2;
+ std::vector<std::vector<double> > q1d = tableGauss(9);
+ std::vector<double> pts(q1d.size());
+ 
+ // check the points we're evaluating
+ std::cout << "quadrature nodes: " << std::endl;
+ for(size_t i = 0; i < q1d.size(); i++){
+ pts[i] = q1d[i][0];
+ std::cout << pts[i] << std::endl;
+ }
+ std::cout << "\n\n";
+ 
+ // now spit out the polynomial values
+ std::cout << "polynomial values: " << std::endl;
+ testLegendre(degree, pts, type);
+ 
+*/
+
+/*
+ 
+ // geometry mess
+ std::vector<std::vector<double> > coords;
+ std::vector<std::vector<int> > elts;
+ coords = {{0,0},{1,0},{0.8,0.8},{0.2,1}};
+ elts = {{0,1},{2,3},{1,2},{3,0}};
+ geometry g(coords,elts);
+ 
+ // function stuff
+ double (*f)(double,double);
+ f = ff;
+ 
+ // quadrature
+ int k = 3;
+ std::vector<std::vector<double> > q1d;
+ q1d = tableGauss(11);
+ 
+ // solution array
+ boost::numeric::ublas::matrix<double> fh(k+1, g.nElts);
+ 
+ //testXh(g, f, k, q1d, fh);
+ testYh(g, f, k, q1d, fh);
+ 
+ for(int i = 0; i < k+1; i++){
+ for(int j = 0; j < g.nElts; j++){
+ std::cout << fh(i,j) << "     ";
+ }
+ std::cout << '\n' << std::endl;
+ }
+ 
+ */
+
 
 /*
  

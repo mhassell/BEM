@@ -99,20 +99,19 @@ void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
     boost::numeric::ublas::matrix<double> P(Nqd, k+2);
     legendreBasis(k+1, x, 2, P);
     
-    // std::cout << Nqd << std::endl;
-    // std::cout << x.size() << std::endl;
-    
     // tests
-    for(size_t i = 0; i < Nqd-1; i++){
-        for(size_t j = 0; j < k+2; j++){
-            std::cout << P(i,j) << "      ";
-        }
-        std::cout << '\n';
-    }
+//    for(size_t i = 0; i < Nqd; i++){
+//        for(size_t j = 0; j < k+2; j++){
+//            std::cout << P(i,j) << "      ";
+//        }
+//        std::cout << '\n';
+//    }
+//    
+//    std::cout << std::endl;
     
     // attach to quad weights
     for(size_t i = 0; i < Nqd; i++){
-        for(size_t j = 0; j < Nelts; j++){
+        for(size_t j = 0; j < k+1; j++){
             P(i,j) = P(i,j)*q1d[i][1];
         }
     }
@@ -146,7 +145,7 @@ void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
     
     // dump what's left in V into fh
     for(size_t j = 0; j < Nelts; j++){
-        for(size_t i = 1; i < k+1; i++){
+        for(size_t i = 0; i < k+1; i++){
             fh(i,j) = V(i+1,j);
         }
     }
