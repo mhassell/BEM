@@ -97,18 +97,7 @@ void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
     }
 
     boost::numeric::ublas::matrix<double> Psi(Nqd, k+2);
-    
     legendreBasis(k+1, x, 2, Psi);
-    
-    // tests
-//    for(size_t i = 0; i < Nqd; i++){
-//        for(size_t j = 0; j < k+2; j++){
-//            std::cout << Psi(i,j) << "      ";
-//        }
-//        std::cout << '\n';
-//    }
-//    
-//    std::cout << std::endl;
     
     // attach to quad weights
     for(size_t i = 0; i < Nqd; i++){
@@ -143,13 +132,62 @@ void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
             fh(i,j) = V(i+1,j);
         }
     }
-    
 }
 
 // test vector valued functions (dotted with n) against Yh
 void testYh(geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
 {
+    
+}
 
+//
+void projectXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d,
+               boost::numeric::ublas::matrix<double>& fh)
+{
+ 
+    size_t Nqd = q1d.size();
+    boost::numeric::ublas::matrix<double> P(Nqd, k+1);
+    
+    // basis on physical element
+    std::vector<double> x;
+    x.assign(Nqd, 0);
+    for(size_t i = 0; i < Nqd; i++){
+        x[i] = q1d[i][0];
+    }
+    
+    legendreBasis(k, x, 1, P);
+    
+    boost::numeric::ublas::matrix<double> Pt = boost::numeric::ublas::trans(P);
+    
+    // attach quad weights
+    for(size_t i = 0; i < P.size1(); i++){
+        for(size_t j = 0; j < P.size2(); j++){
+            P(i,j)*=q1d[i][1]/2;
+        }
+    }
+    boost::numeric::ublas::matrix<double> PP = boost::numeric::ublas::prod(Pt, P);
+
+    // degugging
+//    for(size_t i = 0; i < PP.size1(); i++){
+//        for(size_t j = 0; j < PP.size2(); j++){
+//            std::cout << PP(i,j) << "          ";
+//        }
+//        std::cout << "\n\n";
+//    }
+    
+    boost::numeric::ublas::matrix<double> Ainv = boost::numeric::ublas::identity_matrix<float>(PP.size1());
+    boost::numeric::ublas::permutation_matrix<size_t> pm(PP.size1());
+    boost::numeric::ublas::lu_factorize(PP,pm)
+    boost::numeric::ublas::lu_substitute(A, pm, Ainv);
+    
+    boost::numeric::ublas::permutation_matrix<double> piv;
+    boost::numeric::ublas::lu_factorize(A, piv);
+    boost::numeric::ublas::lu_substitute(A, piv, x);
+    
     
     
 }
+
+
+
+

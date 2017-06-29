@@ -37,7 +37,7 @@ int main(){
     f = ff;
     
     // quadrature & polynomial stuff
-    int k = 3;
+    int k = 1;
     std::vector<std::vector<double> > q1d;
     q1d = tableGauss(9);
     
@@ -45,7 +45,8 @@ int main(){
     boost::numeric::ublas::matrix<double> fh(k+1, g.nElts);
     
     //testXh(g, f, k, q1d, fh);
-    testYh(g, f, k, q1d, fh);
+    //testYh(g, f, k, q1d, fh);
+    projectXh(g, f, k, q1d, fh);
     
     for(int i = 0; i < k+1; i++){
         for(int j = 0; j < g.nElts; j++){
