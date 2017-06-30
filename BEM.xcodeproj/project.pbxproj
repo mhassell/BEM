@@ -12,6 +12,7 @@
 		A2E75EAC1EFC73DF00A7A9AB /* testsAndProjections.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2E75EAA1EFC73DF00A7A9AB /* testsAndProjections.cpp */; };
 		A2E75EAE1EFC895500A7A9AB /* quadTables.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2E75EAD1EFC895500A7A9AB /* quadTables.cpp */; };
 		A2E75EBC1F02E61400A7A9AB /* testLegendre.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2E75EBA1F02E61400A7A9AB /* testLegendre.cpp */; };
+		A2E75EBF1F06D6A800A7A9AB /* OperatorsAndPotentials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2E75EBD1F06D6A800A7A9AB /* OperatorsAndPotentials.cpp */; };
 		A2EED2AF1EF7409A00FF9D28 /* legendrebasis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2EED2AD1EF7409A00FF9D28 /* legendrebasis.cpp */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,8 @@
 		A2E75EAF1EFE8D2400A7A9AB /* quadTables.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = quadTables.hpp; sourceTree = "<group>"; };
 		A2E75EBA1F02E61400A7A9AB /* testLegendre.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testLegendre.cpp; sourceTree = "<group>"; };
 		A2E75EBB1F02E61400A7A9AB /* testLegendre.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = testLegendre.hpp; sourceTree = "<group>"; };
+		A2E75EBD1F06D6A800A7A9AB /* OperatorsAndPotentials.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OperatorsAndPotentials.cpp; sourceTree = "<group>"; };
+		A2E75EBE1F06D6A800A7A9AB /* OperatorsAndPotentials.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OperatorsAndPotentials.hpp; sourceTree = "<group>"; };
 		A2EED2AD1EF7409A00FF9D28 /* legendrebasis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = legendrebasis.cpp; sourceTree = "<group>"; };
 		A2EED2AE1EF7409A00FF9D28 /* legendrebasis.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = legendrebasis.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +80,8 @@
 				A2EED2AD1EF7409A00FF9D28 /* legendrebasis.cpp */,
 				A2EED2AE1EF7409A00FF9D28 /* legendrebasis.hpp */,
 				A27B3AC81EE770DA00380B5F /* main.cpp */,
+				A2E75EBD1F06D6A800A7A9AB /* OperatorsAndPotentials.cpp */,
+				A2E75EBE1F06D6A800A7A9AB /* OperatorsAndPotentials.hpp */,
 				A2E75EBA1F02E61400A7A9AB /* testLegendre.cpp */,
 				A2E75EBB1F02E61400A7A9AB /* testLegendre.hpp */,
 				A2E75EAA1EFC73DF00A7A9AB /* testsAndProjections.cpp */,
@@ -144,6 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2E75EBF1F06D6A800A7A9AB /* OperatorsAndPotentials.cpp in Sources */,
 				A2EED2AF1EF7409A00FF9D28 /* legendrebasis.cpp in Sources */,
 				A27B3AC91EE770DA00380B5F /* main.cpp in Sources */,
 				A2E75EAE1EFC895500A7A9AB /* quadTables.cpp in Sources */,

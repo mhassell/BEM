@@ -23,6 +23,18 @@ double ff(double x, double y){
     
 };
 
+double ff1(double x, double y){
+    
+    return 2*x*y;
+    
+}
+
+double ff2(double x, double y){
+    
+    return -3*(x+y);
+    
+}
+
 int main(){
     
     // geometry mess
@@ -36,17 +48,26 @@ int main(){
     double (*f)(double,double);
     f = ff;
     
+    double (*f1)(double, double);
+    f1 = ff1;
+    
+    double (*f2)(double, double);
+    f2 = ff2;
+    
     // quadrature & polynomial stuff
     int k = 3;
-    std::vector<std::vector<double> > q1d;
-    q1d = tableGauss(9);
+    std::vector<std::vector<double> > q1d = tableGauss(9);
     
     // solution array
     boost::numeric::ublas::matrix<double> fh(k+1, g.nElts);
     
     //testXh(g, f, k, q1d, fh);
     //testYh(g, f, k, q1d, fh);
-    projectXh(g, f, k, q1d, fh);
+    //testYh(g, f1, f2, k, q1d, fh);
+    //projectXh(g, f, k, q1d, fh);
+    //projectXh(g, f1, f2, k, q1d, fh);
+    projectYh(g, f, k, q1d, fh);
+    
     
     for(int i = 0; i < k+1; i++){
         for(int j = 0; j < g.nElts; j++){
