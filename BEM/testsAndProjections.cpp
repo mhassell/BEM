@@ -12,6 +12,10 @@
 #include "testsAndProjections.hpp"
 #include "geometry.hpp"
 
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/lu.hpp>
+
+
 void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     size_t Nqd = q1d.size();
@@ -24,7 +28,6 @@ void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
     
     // the function evaluated at the physical quadrature points
     boost::numeric::ublas::matrix<double> F(Nqd, Nelts);
-    
     
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
@@ -43,11 +46,11 @@ void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
         x[i] = q1d[i][0];
     }
     
-    boost::numeric::ublas::matrix<double> P(Nqd, Nelts);
+    boost::numeric::ublas::matrix<double> P(Nqd, k+1);
     legendreBasis(k, x, 1, P);
     
-    for(size_t i = 0; i < Nqd; i++){
-        for(size_t j = 0; j < Nelts; j++){
+    for(size_t i = 0; i < P.size1(); i++){
+        for(size_t j = 0; j < P.size2(); j++){
             P(i,j) = P(i,j)*q1d[i][1];
         }
     }
@@ -55,8 +58,8 @@ void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
     P = boost::numeric::ublas::trans(P);
     fh = boost::numeric::ublas::prod(P, F);
     
-    for(size_t i = 0; i < k+1; i++){
-        for(size_t j = 0; j < Nelts; j++){
+    for(size_t i = 0; i < fh.size1(); i++){
+        for(size_t j = 0; j < fh.size2(); j++){
             fh(i,j) *= 0.5*g.lengths[j];
         }
     }
@@ -165,25 +168,23 @@ void projectXh(geometry& g, double (*f)(double,double), int k, std::vector<std::
             P(i,j)*=q1d[i][1]/2;
         }
     }
+    
     boost::numeric::ublas::matrix<double> PP = boost::numeric::ublas::prod(Pt, P);
-
-    // degugging
-//    for(size_t i = 0; i < PP.size1(); i++){
-//        for(size_t j = 0; j < PP.size2(); j++){
-//            std::cout << PP(i,j) << "          ";
-//        }
-//        std::cout << "\n\n";
-//    }
-    
-    boost::numeric::ublas::matrix<double> Ainv = boost::numeric::ublas::identity_matrix<float>(PP.size1());
+    boost::numeric::ublas::matrix<double> PPinv = boost::numeric::ublas::identity_matrix<float>(PP.size1());
     boost::numeric::ublas::permutation_matrix<size_t> pm(PP.size1());
-    boost::numeric::ublas::lu_factorize(PP,pm)
-    boost::numeric::ublas::lu_substitute(A, pm, Ainv);
+    boost::numeric::ublas::lu_factorize(PP, pm);
+    boost::numeric::ublas::lu_substitute(PP, pm, PPinv);
+    boost::numeric::ublas::matrix<double> ffh(k+1, g.nElts);
     
-    boost::numeric::ublas::permutation_matrix<double> piv;
-    boost::numeric::ublas::lu_factorize(A, piv);
-    boost::numeric::ublas::lu_substitute(A, piv, x);
+    testXh(g, f, k, q1d, ffh);
     
+    fh = boost::numeric::ublas::prod(PPinv, ffh);
+    
+    for(size_t i = 0; i < fh.size1(); i++){
+        for(size_t j = 0; j < fh.size2(); j++){
+            fh(i,j) /= g.lengths[j];
+        }
+    }
     
     
 }
