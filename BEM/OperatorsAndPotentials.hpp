@@ -11,9 +11,16 @@
 
 #include "legendrebasis.hpp"
 #include "quadTables.hpp"
+#include "geometry.hpp"
+#include <boost/numeric/ublas/matrix.hpp>
 
-void massMatrixXhXh();
-void massMatrixXhYh();
-void massMatrixYhYh();
+// mass matrices
+void massMatrixXhXh(geometry& g, int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
+void massMatrixXhYh(geometry& g, int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
+void massMatrixYhYh(geometry& g, int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
+
+// operators
+
+// potentials
 
 #endif /* OperatorsAndPotentials_hpp */
