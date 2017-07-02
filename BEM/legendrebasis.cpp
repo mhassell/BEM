@@ -27,7 +27,7 @@ type : integer for the type of polynomial we compute
 
  */
 
-void legendreBasis(int n, std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y){
+void legendreBasis(int n, const std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y){
     
     // number of evaluation points
     size_t nPoints = x.size();

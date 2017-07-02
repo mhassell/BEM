@@ -12,6 +12,6 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <vector>
 
-void legendreBasis(int n, std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y);
+void legendreBasis(int n, const std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y);
 
 #endif /* legendrebasis_hpp */

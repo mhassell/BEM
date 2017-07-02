@@ -16,7 +16,7 @@
 #include <boost/numeric/ublas/lu.hpp>
 
 // test a scalar function against Xh
-void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void testXh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     size_t Nqd = q1d.size();
     size_t Nelts = g.nElts;
@@ -67,7 +67,7 @@ void testXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
 }
 
 // test a scalar valued function against Yh
-void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void testYh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     
     size_t Nqd = q1d.size();
@@ -139,7 +139,7 @@ void testYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vec
 }
 
 // test vector valued functions (dotted with n) against Yh
-void testYh(geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
+void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     
     size_t Nqd = q1d.size();
@@ -211,7 +211,7 @@ void testYh(geometry& g, double (*f1)(double,double), double(*f2)(double,double)
 }
 
 // project a scalar onto Xh
-void projectXh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d,
+void projectXh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d,
                boost::numeric::ublas::matrix<double>& fh)
 {
  
@@ -257,7 +257,7 @@ void projectXh(geometry& g, double (*f)(double,double), int k, std::vector<std::
 
 
 // project a vector field along the normal vector into Xh
-void projectXh(geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
+void projectXh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
 {
 
     size_t Nqd = q1d.size();
@@ -304,7 +304,7 @@ void projectXh(geometry& g, double (*f1)(double,double), double(*f2)(double,doub
 }
 
 // vanilla Yh projection for a scalar function
-void projectYh(geometry& g, double (*f)(double,double), int k, std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void projectYh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     
     // TBD: needs Yh x Yh mass matrix
