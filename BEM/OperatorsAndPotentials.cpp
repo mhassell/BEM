@@ -8,21 +8,23 @@
 
 // Includes methods for computing: Mass matrices, BEM matrices, and discretized layer potentials
 
+#include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include "OperatorsAndPotentials.hpp"
 #include "legendrebasis.hpp"
+#include "matrixRoutines.hpp"
 
-void massMatrixXhXh(const geometry& g, int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void massMatrixXhXh(const geometry& g, int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     
 }
 
-void massMatrixXhYh(const geometry& g, int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void massMatrixXhYh(const geometry& g, int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     
 }
 
-void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
 {
     
     size_t Nelt = g.nElts;
@@ -49,6 +51,12 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
     PsiQd = boost::numeric::ublas::trans(PsiQd);
     PsiPsi = boost::numeric::ublas::prod(PsiQd, Psi);
     
+    // which is more appropriate? mapped_matrix or compressed_matrix?
+    boost::numeric::ublas::mapped_matrix<double> lengths(g.nElts,g.nElts,g.nElts);
     
+    // map to physical elements with a sparse matrix of weights and a kronecker product
+    for(size_t i = 0; i < g.nElts; i++){
+        lengths(i,i) = g.lengths[i];
+    }
     
 }

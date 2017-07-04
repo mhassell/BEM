@@ -11,10 +11,10 @@
 
 #include <boost/numeric/ublas/matrix.hpp>
 
-// kronecker product of two (double) matrices
-boost::numeric::ublas::matrix<double> kron(const boost::numeric::ublas::matrix<double> A, const boost::numeric::ublas::matrix<double> B);
+// kronecker product of two (double precision) matrices
+boost::numeric::ublas::matrix<double> kron(const boost::numeric::ublas::matrix<double>& A, const boost::numeric::ublas::matrix<double>& B);
 
 // solve Ax = b or AX = B for a vector x or a matrix X
-boost::numeric::ublas::matrix<double> solve(const boost::numeric::ublas::matrix<double> A, const boost::numeric::ublas::matrix<double> B);
+boost::numeric::ublas::matrix<double> solve(const boost::numeric::ublas::matrix<double>& A, const boost::numeric::ublas::matrix<double>& B);
 
 #endif /* matrixRoutines_hpp */

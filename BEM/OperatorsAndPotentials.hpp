@@ -15,9 +15,9 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 // mass matrices
-void massMatrixXhXh(const geometry& g, int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
-void massMatrixXhYh(const geometry& g, int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
-void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh);
+void massMatrixXhXh(const geometry& g, int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh);
+void massMatrixXhYh(const geometry& g, int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh);
+void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh);
 
 // operators
 
