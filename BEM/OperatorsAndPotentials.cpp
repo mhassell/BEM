@@ -28,17 +28,18 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
 {
     
     size_t Nelt = g.nElts;
-    boost::numeric::ublas::matrix<double> Psi(k+2,Nelt);
+    size_t Nqd = q1d.size();
+    boost::numeric::ublas::matrix<double> Psi(Nqd, k+2);
     
-    std::vector<double> x(q1d.size());
-    for(size_t i = 0; i < q1d.size(); i++){
+    std::vector<double> x(Nqd);
+    for(size_t i = 0; i < Nqd; i++){
         x[i] = q1d[i][0];   // dump quad nodes into x
     }
     
     // generate the legendre basis and compute the inner products on the reference element
     legendreBasis(k+1, x, 2, Psi);
     boost::numeric::ublas::matrix<double> PsiPsi(k+2,k+2);
-    boost::numeric::ublas::matrix<double> PsiQd(k+2, Nelt);
+    boost::numeric::ublas::matrix<double> PsiQd(Nqd, k+2);
     
     // attach quad weights
     for(size_t i = 0; i < PsiQd.size1(); i++){
@@ -58,9 +59,18 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
     for(size_t i = 0; i < g.nElts; i++){
         lengths(i,i) = g.lengths[i];
     }
-    
     boost::numeric::ublas::matrix<double> M = kron(lengths, PsiPsi);
     
+    // nodalDOF array
+    std::vector<std::vector<double> > nodalDOF;
+    nodalDOF.assign(2, std::vector<double>(Nelt));
     
+    for(size_t i = 0; i < Nelt; i++){
+        nodalDOF[0][i] =     (k+2)*i;
+        nodalDOF[1][i] = 1 + (k+2)*i;
+    }
+    
+    // assemble M in to MM by rows
+    boost::numeric::ublas::matrix<double> MM((k+1)*Nelt, (k+2)*Nelt);
     
 }
