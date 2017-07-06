@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <math.h>
 #include "geometry.hpp"
 #include "legendrebasis.hpp"
@@ -23,7 +24,8 @@ int main(){
     N = 2;
     P = 3;
     Q = 3;
-    boost::numeric::ublas::matrix<double> A(M,N);
+    
+    boost::numeric::ublas::mapped_matrix<double> A(M,N,M*N);
     boost::numeric::ublas::matrix<double> B(P,Q);
     for(size_t i = 0; i < M; i ++){
         for(size_t j = 0; j < N; j++){
@@ -41,7 +43,7 @@ int main(){
         std::cout << '\n';
     }
     
-    boost::numeric::ublas::matrix<double> C = kron(A,B);
+    boost::numeric::ublas::matrix<double> C = kron(A, B);;
     
     for(size_t i = 0; i < C.size1(); i++){
         for(size_t j = 0; j < C.size2(); j++){

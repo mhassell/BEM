@@ -59,4 +59,8 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
         lengths(i,i) = g.lengths[i];
     }
     
+    boost::numeric::ublas::matrix<double> M = kron(lengths, PsiPsi);
+    
+    
+    
 }
