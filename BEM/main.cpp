@@ -20,7 +20,7 @@
 
 int main(){
     
-    int k = 1;
+    int k = 0;
     
     std::vector<std::vector<double> > coords;
     std::vector<std::vector<int> > elts;
@@ -28,17 +28,18 @@ int main(){
     elts = {{0,1},{2,3},{1,2},{3,0}};
     geometry g(coords,elts);
     
-    std::vector<std::vector<double> > q1d = tableGauss(9);
+    std::vector<std::vector<double> > q1d = tableGauss(3);
     
     boost::numeric::ublas::matrix<double> fh((k+1)*g.nElts, (k+1)*g.nElts);
     massMatrixYhYh(g, k, q1d, fh);
-    
+    /*
     for(size_t i = 0; i < fh.size1(); i++){
         for(size_t j = 0; j < fh.size2(); j++){
             std::cout << fh(i,j) << "     ";
         }
         std::cout << '\n';
     }
+     */
     
     
 }
