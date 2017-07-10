@@ -44,7 +44,7 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
     // attach quad weights
     for(size_t i = 0; i < PsiQd.size1(); i++){
         for(size_t j = 0; j < PsiQd.size2(); j++){
-            PsiQd(i,j) = Psi(i,j)*q1d[i][0];
+            PsiQd(i,j) = Psi(i,j)*q1d[i][1];
         }
     }
     
@@ -57,9 +57,19 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
     
     // map to physical elements with a sparse matrix of weights and a kronecker product
     for(size_t i = 0; i < g.nElts; i++){
-        lengths(i,i) = g.lengths[i];
+        lengths(i,i) = 0.5*g.lengths[i];
     }
+    
     boost::numeric::ublas::matrix<double> M = kron(lengths, PsiPsi);
+    
+    // DEBUGGING
+//    for(size_t i = 0; i < M.size1(); i++){
+//        for(size_t j = 0; j < M.size2(); j++){
+//            std::cout << M(i,j) << "       ";
+//        }
+//        std::cout << '\n';
+//    }
+
     
     // nodalDOF array
     std::vector<std::vector<double> > nodalDOF;
@@ -86,7 +96,17 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
 }
 
     
+    
+    
     // assemble M in to MM by rows
     boost::numeric::ublas::matrix<double> MM((k+1)*Nelt, (k+2)*Nelt);
+    for(size_t i = 0; i < Nelt; i++){
+        for(size_t j = 0; j < Nelt; j++){
+            
+        }
+    }
+    
+    //assemble MM into fh by columns
+    
     
 }
