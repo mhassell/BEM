@@ -69,6 +69,13 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
         nodalDOF[0][i] =     (k+2)*i;
         nodalDOF[1][i] = 1 + (k+2)*i;
     }
+
+    // internalDOF array
+    std::vector<double> internalDOF((k+2)*Nelt);
+    for(size_t i = 0; i < internalDOF.size(); i++){
+	internalDOF[i] = i;
+}
+
     
     // assemble M in to MM by rows
     boost::numeric::ublas::matrix<double> MM((k+1)*Nelt, (k+2)*Nelt);
