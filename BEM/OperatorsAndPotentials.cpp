@@ -70,10 +70,19 @@ void massMatrixYhYh(const geometry& g, int k, const std::vector<std::vector<doub
         nodalDOF[1][i] = 1 + (k+2)*i;
     }
 
+    // need to reshape this for easier access down below
+    std::vector<double> nodalDOFVector(2*nodalDOF.size())
+
+    for(size_t i = 0; i < 2; i++){
+        for(size_t j = 0; j < nodalDOF.size(); j++){
+            nodalDOFVector[i+j*nodalDOF.size()] = nodalDOF[i][j];
+        }
+    }
+
     // internalDOF array
-    std::vector<double> internalDOF((k+2)*Nelt);
-    for(size_t i = 0; i < internalDOF.size(); i++){
-	internalDOF[i] = i;
+    std::vector<double> internalDOF((k+2)*Nelt - 2*nodalDOF.size());
+    for(size_t i = 0; i < nodalDOF.size(); i++){
+	// if the index is not in nodalDOF, then put it into internalDOF
 }
 
     
