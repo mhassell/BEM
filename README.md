@@ -8,7 +8,7 @@ Goals:
 
 2. Eventually code FEM from scratch as well and work on BEM-FEM coupling, completing the conversion of my thesis to C++
 
-3. Find a matrix library with linear algebra routines and nice constructors.
+3. (DONE) Find a matrix library with linear algebra routines and nice constructors.
 
 4. Eventually compile some of the libraries to be standalone and interface with Matlab - 
     see if there's any speed improvement.
@@ -33,3 +33,4 @@ Goals:
 
 Some conventions I'm following are the use of std::vectors/std::arrays for pieces that need user initialization (and where it was easier to copy from Matlab, like with quadrature rules).   Anything that needs linear algebra operations done on it or is part of another calculuation with matrices and vectors is done with the boost::numeric::ublas classes since they come with built in matrix operations. This choice is because the boost classes don't have nice initializers like the STL does.  I'd like to improve this in the future.  I also don't like the difference in access operators between boost and STL.  It's just one more layer of syntax complexity between the user and program.
 
+8/24/17 Update: I think I'm going to port a lot of the library to use eigen libraries.  These have nice constructors and tie in well with linear algebra routines.  Also, note to self: I'm putting the eigen header files in /usr/local/include
