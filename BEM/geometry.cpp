@@ -6,9 +6,8 @@
 //  Copyright © 2017 Matthew Hassell. All rights reserved.
 //
 
-#include <vector>
+#include <Eigen/Dense>
 #include <math.h>
-#include <iostream>
 
 class geometry{
     
