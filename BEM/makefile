@@ -1,3 +1,7 @@
-bem: 
-	g++ -I /usr/local/include/eigen main.cpp -o main
+all: main
+	
+main: geometry.o
+	g++ -I /usr/local/include/eigen geometry.cpp main.cpp -o main
 
+geometry.o: geometry.cpp
+	g++ -I /usr/local/include/eigen -c geometry.cpp

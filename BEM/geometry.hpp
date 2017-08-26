@@ -9,26 +9,26 @@
 #ifndef geometry_hpp
 #define geometry_hpp
 
-#include <vector>
+#include <Eigen/Dense>
 
 class geometry{
     
 public:
     
     // methods
-    geometry(std::vector<std::vector<double> >& coords, std::vector<std::vector<int> >& elts);
+    geometry(Eigen::MatrixXd &coords, Eigen::MatrixXd &elts);
     void enhance();
     void refine();
-    void refine(std::vector<int> tag);
+    void refine(Eigen::MatrixXd tag);
     
     // attributes
     bool enhanced;
-    std::vector<std::vector<int> >& elements;
-    std::vector<std::vector<double> >& coordinates;
-    std::vector<std::vector<double> > normals;
-    std::vector<double> lengths;
-    std::vector<int> prev;
-    std::vector<int> next;
+    Eigen::MatrixXd &elements;
+    Eigen::MatrixXd &coordinates;
+    Eigen::MatrixXd normals;
+    Eigen::MatrixXd lengths;
+    Eigen::MatrixXd prev;
+    Eigen::MatrixXd next;
     size_t nElts;
     
 };
