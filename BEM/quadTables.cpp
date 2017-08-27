@@ -6,13 +6,13 @@
 //  Copyright © 2017 Matthew Hassell. All rights reserved.
 //
 
-#include <vector>
+#include <Eigen/Dense>
 
 // standard gaussian quad
 
-std::vector<std::vector<double> > tableGauss(int k){
+Eigen::MatrixXd tableGauss(int k){
     
-    std::vector<std::vector<double> > qd;
+    Eigen::MatrixXd qd = Eigen::MatrixXd::Zero;
     
     switch (k) {
         case 1:

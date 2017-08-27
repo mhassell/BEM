@@ -8,21 +8,20 @@
 
 #include <Eigen/Dense>
 #include <math.h>
-#include <iostream>
 
 class geometry{
     
 public:
     
     // methods
-    geometry(Eigen::MatrixXd &coords, Eigen::MatrixXd &elts);
+    geometry(Eigen::MatrixXd &coords, Eigen::MatrixXi &elts);
     void enhance();
     void refine();
-    void refine(Eigen::MatrixXd tags);
+    void refine(Eigen::MatrixXi tags);
     
     // attributes
     bool enhanced;
-    Eigen::MatrixXd & elements;
+    Eigen::MatrixXi & elements;
     Eigen::MatrixXd & coordinates;
     Eigen::MatrixXd normals;
     Eigen::MatrixXd lengths;
@@ -32,7 +31,7 @@ public:
     
 };
 
-geometry::geometry(Eigen::MatrixXd &coords, Eigen::MatrixXd &elts)
+geometry::geometry(Eigen::MatrixXd &coords, Eigen::MatrixXi &elts)
 : coordinates(coords), elements(elts)
 {
     // use the constructor list above to make the needed basic arrays
@@ -48,15 +47,15 @@ void geometry::enhance(){
     
     Eigen::MatrixXd normals = Eigen::MatrixXd::Zero(nElts, 2);
     Eigen::MatrixXd lengths = Eigen::MatrixXd::Zero(nElts, 2);
-    Eigen::MatrixXd prev = Eigen::MatrixXd::Zero(nElts, 1);
-    Eigen::MatrixXd next = Eigen::MatrixXd::Zero(nElts, 1);
+    Eigen::MatrixXi prev = Eigen::MatrixXi::Zero(nElts, 1);
+    Eigen::MatrixXi next = Eigen::MatrixXi::Zero(nElts, 1);
     
     Eigen::VectorXd x1 = Eigen::VectorXd::Zero(nElts);
     Eigen::VectorXd x2 = Eigen::VectorXd::Zero(nElts);
     Eigen::VectorXd y1 = Eigen::VectorXd::Zero(nElts);
     Eigen::VectorXd y2 = Eigen::VectorXd::Zero(nElts);
     
-    Eigen::VectorXd tmp = Eigen::VectorXd::Zero(nElts);
+    Eigen::VectorXi tmp = Eigen::VectorXi::Zero(nElts);
     
     double norm;
     
@@ -75,56 +74,42 @@ void geometry::enhance(){
         normals(i,0) /= norm;
         normals(i,1) /= norm;
 
-		std::cout << tmp((int) elements(i,0)) << std::endl;
-
-        // std::cout << tmp(elements(i,0)) << std::endl;// = (int) i;
-      
-		// tmp(elements(i,0)) = (int) i;
+		tmp(elements(i,0)) = (int) i;
 		
     }
-    
-/*
 
     // it would be great to be able to do this in one felswoop
     for(size_t i = 0; i<nElts; i++){
-        // next(i) = tmp(elements(i,1));
-		// int n = next(i);
-		// prev(n) = (int) i;        
-		// prev(next(i)) = (int) i;
+        next(i) = tmp(elements(i,1));       
+		prev(next(i)) = (int) i;
     }
     
     enhanced = true;
-
-*/
     
 }
-
-/*
 
 // uniform refinement of all elements
 void geometry::refine(){
     
-    std::vector<std::vector<double> > allCoord(2*nElts);
-    allCoord.assign(2*nElts,std::vector<double>(2));
-    std::vector<std::vector<int> > allElts(2*nElts);
-    allElts.assign(2*nElts, std::vector<int>(2));
+    Eigen::MatrixXd allCoord = Eigen::MatrixXd::Zero(2*nElts,2);
+  	Eigen::MatrixXi allElts = Eigen::MatrixXi::Zero(2*nElts,2);
     
     for(size_t i = 0; i < nElts; i++){
         // put the new coordinates at the beginning of the vector
-        allCoord[i][0] = coordinates[i][0];
-        allCoord[i][1] = coordinates[i][1];
+        allCoord(i,0) = coordinates(i,0);
+        allCoord(i,1) = coordinates(i,1);
         
         // and put the new coordinates at the end of the vector
-        allCoord[nElts+i][0] =
-            0.5*(coordinates[elements[i][0]][0] + coordinates[elements[i][1]][0]);
-        allCoord[nElts+i][1] =
-            0.5*(coordinates[elements[i][0]][1] + coordinates[elements[i][1]][1]);
+        allCoord(nElts+i,0) =
+            0.5*(coordinates(elements(i,0),0) + coordinates(elements(i,1),0));
+        allCoord(nElts+i,1) =
+            0.5*(coordinates(elements(i,0),1) + coordinates(elements(i,1),1));
         
-        allElts[2*i+1][0] = (int) (nElts+i);
-        allElts[2*i][0] = (int) elements[i][0];
+        allElts(2*i+1,0) = (int) (nElts+i);
+        allElts(2*i,0) = (int) elements(i,0);
         
-        allElts[2*i][1] = (int) (nElts+i);
-        allElts[2*i+1][1] = (int) elements[i][1];
+        allElts(2*i,1) = (int) (nElts+i);
+        allElts(2*i+1,1) = (int) elements(i,1);
 
     }
     
@@ -135,6 +120,7 @@ void geometry::refine(){
     
 }
 
+/*
 // bisect only the tagged elements
 void geometry::refine(std::vector<int> tag){
     
@@ -144,5 +130,4 @@ void geometry::refine(std::vector<int> tag){
     geometry::enhance();
     
 }
-
 */

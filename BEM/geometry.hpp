@@ -16,19 +16,19 @@ class geometry{
 public:
     
     // methods
-    geometry(Eigen::MatrixXd &coords, Eigen::MatrixXd &elts);
+    geometry(Eigen::MatrixXd &coords, Eigen::MatrixXi &elts);
     void enhance();
     void refine();
-    void refine(Eigen::MatrixXd tag);
+    void refine(Eigen::MatrixXi tag);
     
     // attributes
     bool enhanced;
-    Eigen::MatrixXd &elements;
+    Eigen::MatrixXi &elements;
     Eigen::MatrixXd &coordinates;
     Eigen::MatrixXd normals;
     Eigen::MatrixXd lengths;
-    Eigen::MatrixXd prev;
-    Eigen::MatrixXd next;
+    Eigen::MatrixXi prev;
+    Eigen::MatrixXi next;
     size_t nElts;
     
 };

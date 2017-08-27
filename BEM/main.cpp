@@ -7,9 +7,6 @@
 //
 
 #include <iostream>
-#include <vector>
-// #include <boost/numeric/ublas/matrix.hpp>
-// #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <Eigen/Dense>
 #include <math.h>
 #include "geometry.hpp"
@@ -24,47 +21,28 @@ int main(){
     int k = 0;
 	
     Eigen::MatrixXd coords(4,2);
-    Eigen::MatrixXd elts(4,2);
+    Eigen::MatrixXi elts(4,2);
 
 	coords << 	0, 	0,
 				1, 	0,
 			  	0.8, 0.8, 
-			  	0.2, 1;
+			  	0.2, 0.6;
 
 	elts << 	0, 	1,
 				2,	3,
 				1, 	2,
 				3, 	0;
+	
+	geometry g(coords, elts);	  
+	
+	g.refine();
 
-	Eigen::VectorXd test(5);
+	for(size_t i = 0; i < 8; i++){
+		std::cout << g.coordinates(i,0) << ' ' << g.coordinates(i,1) << std::endl;
+	}  
 
-	test << 1, 2, 3, 4, 5;
-
-	for(size_t i = 0; i < 5; i++){
-		std::cout << test(i) << std::endl;
+	for(size_t i = 0; i < 8; i++){
+		std::cout << g.elements(i,0) << ' ' << g.elements(i,1) << std::endl;
 	}
-	//geometry g(coords, elts);	    
     
 }
-
- /* 
-    std::vector<std::vector<double> > coords;
-    std::vector<std::vector<int> > elts;
-    coords = {{0,0},{1,0},{0.8,0.8},{0.2,1}};
-    elts = {{0,1},{2,3},{1,2},{3,0}};
-    geometry g(coords,elts);
-    
-    std::vector<std::vector<double> > q1d = tableGauss(3);
-    
-    boost::numeric::ublas::matrix<double> fh((k+1)*g.nElts, (k+1)*g.nElts);
-    massMatrixYhYh(g, k, q1d, fh);
-	*/
-	
-    /*
-    for(size_t i = 0; i < fh.size1(); i++){
-        for(size_t j = 0; j < fh.size2(); j++){
-            std::cout << fh(i,j) << "     ";
-        }
-        std::cout << '\n';
-    }
-     */

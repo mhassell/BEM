@@ -9,8 +9,10 @@
 #ifndef quadTables_h
 #define quadTables_h
 
-std::vector<std::vector<double> > tableGauss(int k);
+#include <Eigen/Dense>
 
-std::vector<std::vector<double> > tableLogGauss(int k);
+Eigen::MatrixXd tableGauss(int k);
+
+Eigen::MatrixXd tableLogGauss(int k);
 
 #endif /* quadTables_h */

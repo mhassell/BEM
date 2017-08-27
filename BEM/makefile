@@ -5,3 +5,9 @@ main: geometry.o
 
 geometry.o: geometry.cpp
 	g++ -I /usr/local/include/eigen -c geometry.cpp
+
+quadTables.o: quadTables.cpp
+	g++ -I /usr/local/include/eigen -c quadTables.cpp
+
+clean:
+	rm *.o
