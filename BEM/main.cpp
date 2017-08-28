@@ -17,6 +17,22 @@
 #include "OperatorsAndPotentials.hpp"
 
 int main(){
+
+	int k = 12;
+	
+	
+	Eigen::MatrixXd q1d = tableGauss(k);
+
+	std::cout << q1d.rows() << "   " << q1d.cols() << std::endl;
+
+	for(size_t i = 0; i < q1d.rows(); i++){
+		std::cout << q1d(i,0) << "   "  << q1d(i,1) << std::endl;
+	}
+
+    
+}
+
+/*
     
     int k = 0;
 	
@@ -44,5 +60,5 @@ int main(){
 	for(size_t i = 0; i < 8; i++){
 		std::cout << g.elements(i,0) << ' ' << g.elements(i,1) << std::endl;
 	}
-    
-}
+
+*/
