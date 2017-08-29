@@ -11,7 +11,6 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/math/special_functions/legendre.hpp>
 #include <math.h>
-
 #include "legendrebasis.hpp"
 
 /*

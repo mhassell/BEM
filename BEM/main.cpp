@@ -18,8 +18,7 @@
 
 int main(){
 
-	int k = 12;
-	
+	int k = 2;
 	
 	Eigen::MatrixXd q1d = tableGauss(k);
 
