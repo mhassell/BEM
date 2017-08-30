@@ -28,7 +28,7 @@ void legendrebasis(int n, Eigen::VectorXd &x, int type, Eigen::MatrixXd &y){
     // number of evaluation points
     size_t nPoints = x.size();
     size_t nDegs = n+1;
-    
+
     // type = 0 for orthonormal, type = 1 for orthogonal
     if(type == 0 || type == 1){
         for(size_t i = 0; i < nPoints; i++){

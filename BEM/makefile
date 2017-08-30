@@ -20,9 +20,8 @@ testQuadTables: quadTables.cpp scriptTestQuadrature.cpp
 testLegendre: scriptTestLegendre.cpp
 	g++ -L /usr/lib scriptTestLegendre.cpp -o scriptTestLegendre
 
-scriptTestLegendreBasis: legendrebasis.o
+scriptTestLegendreBasis: legendrebasis.o scriptTestLegendreBasis.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib legendrebasis.cpp scriptTestLegendreBasis.cpp -o scriptTestLegendreBasis
-
 
 
 clean:
