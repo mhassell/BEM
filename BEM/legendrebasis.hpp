@@ -9,9 +9,8 @@
 #ifndef legendrebasis_hpp
 #define legendrebasis_hpp
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <vector>
+#include <Eigen/Dense>
 
-void legendreBasis(int n, const std::vector<double> &x, int type, boost::numeric::ublas::matrix<double> &y);
+void legendrebasis(int n, Eigen::VectorXd &x, int type, Eigen::MatrixXd &y);
 
 #endif /* legendrebasis_hpp */

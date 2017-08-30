@@ -9,11 +9,21 @@ geometry.o: geometry.cpp
 quadTables.o: quadTables.cpp
 	g++ -I /usr/local/include/eigen -c quadTables.cpp
 
+legendrebasis.o: legendrebasis.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib -c legendrebasis.cpp
+
+# scripts down here
+
 testQuadTables: quadTables.cpp scriptTestQuadrature.cpp
 	g++ -I /usr/local/include/eigen quadTables.cpp scriptTestQuadrature.cpp -o scriptTestQuadrature
 
 testLegendre: scriptTestLegendre.cpp
-	g++ -L /usr/lib -std=c++17 scriptTestLegendre.cpp -o scriptTestLegendre
+	g++ -L /usr/lib scriptTestLegendre.cpp -o scriptTestLegendre
+
+scriptTestLegendreBasis: legendrebasis.o
+	g++ -I /usr/local/include/eigen -L /usr/lib legendrebasis.cpp scriptTestLegendreBasis.cpp -o scriptTestLegendreBasis
+
+
 
 clean:
 	rm *.o
