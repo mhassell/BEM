@@ -14,18 +14,18 @@
 
 #include "matrixRoutines.hpp"
 
-// kronecker product of two (double precision) boost matrices
-boost::numeric::ublas::matrix<double> kron(const boost::numeric::ublas::matrix<double>& A, const boost::numeric::ublas::matrix<double>& B)
+// kronecker product of two (double precision) Eigen dense matrices
+Eigen::MatrixXd kron(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B)
 {
     //kron of an MxN with a PxQ is an MN x PQ matrix
     
     size_t M,N,P,Q, i,j,k,l;
-    M = A.size1();
-    N = A.size2();
-    P = B.size1();
-    Q = B.size2();
+    M = A.rows();
+    N = A.cols();
+    P = B.rows();
+    Q = B.cols();
     
-    boost::numeric::ublas::matrix<double> C(M*P,N*Q);
+    Eigen::MatrixXd C = Eigen::MatrixXd(M*P,N*Q);
     
     for(i=0; i<M; i++){
         for(j=0; j<N; j++){
@@ -41,42 +41,31 @@ boost::numeric::ublas::matrix<double> kron(const boost::numeric::ublas::matrix<d
     
 }
 
-// kronecker product of a (double precision) sparse with a vanilla boost matrix
-boost::numeric::ublas::matrix<double> kron(boost::numeric::ublas::mapped_matrix<double>& A, const boost::numeric::ublas::matrix<double>& B)
-{
-    //kron of an MxN with a PxQ is an MN x PQ matrix
+
+// solve AX = B for a matrix X
+Eigen::MatrixXd solve(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B){
     
-    size_t M,N,P,Q, i,j,k,l;
-    M = A.size1();
-    N = A.size2();
-    P = B.size1();
-    Q = B.size2();
+    // size_t M = A.rows();
+    size_t N = B.rows();
+	size_t P = B.cols();
     
-    boost::numeric::ublas::matrix<double> C(M*P,N*Q);
+    Eigen::MatrixXd C = Eigen::MatrixXd(N,P);
     
-    for(i=0; i<M; i++){
-        for(j=0; j<N; j++){
-            for(k=0; k<P; k++){
-                for(l=0; l<Q; l++){
-                    C(P*i+k, Q*j+l)=A(i,j)*B(k,l);
-                }
-            }
-        }
-    }
+    C = A.partialPivLu().solve(B);
     
     return C;
     
 }
 
-// solve Ax = b or AX = B for a vector x or a matrix X
-boost::numeric::ublas::matrix<double> solve(const boost::numeric::ublas::matrix<double>& A, const boost::numeric::ublas::matrix<double>& B){
+
+// solve Ax = b for a vector x 
+Eigen::VectorXd solve(const Eigen::MatrixXd& A, const Eigen::VectorXd& b){
     
-    size_t M = B.size1();
-    size_t N = B.size2();
+    size_t M = A.rows();
     
-    boost::numeric::ublas::matrix<double> C(M,N);
+    Eigen::VectorXd C = Eigen::VectorXd(M);
     
-    
+    C = A.partialPivLu().solve(b);
     
     return C;
     

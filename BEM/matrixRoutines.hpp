@@ -9,16 +9,15 @@
 #ifndef matrixRoutines_hpp
 #define matrixRoutines_hpp
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_sparse.hpp>
+#include<Eigen/Dense>
+
 
 // kronecker product of two (double precision) matrices
-boost::numeric::ublas::matrix<double> kron(const boost::numeric::ublas::matrix<double>& A, const boost::numeric::ublas::matrix<double>& B);
-
-// kron of sparse with a regular matrix
-boost::numeric::ublas::matrix<double> kron(boost::numeric::ublas::mapped_matrix<double>& A, const boost::numeric::ublas::matrix<double>& B);
+Eigen::MatrixXd kron(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B);
 
 // solve Ax = b or AX = B for a vector x or a matrix X
-boost::numeric::ublas::matrix<double> solve(const boost::numeric::ublas::matrix<double>& A, const boost::numeric::ublas::matrix<double>& B);
+Eigen::MatrixXd solve(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B);
+
+Eigen::VectorXd solve(const Eigen::MatrixXd& A, const Eigen::VectorXd& b);
 
 #endif /* matrixRoutines_hpp */

@@ -12,6 +12,9 @@ quadTables.o: quadTables.cpp
 legendrebasis.o: legendrebasis.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib -c legendrebasis.cpp
 
+matrixRoutines.o: matrixRoutines.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib -c matrixRoutines.cpp
+
 # scripts down here
 
 testQuadTables: quadTables.cpp scriptTestQuadrature.cpp
@@ -22,6 +25,9 @@ testLegendre: scriptTestLegendre.cpp
 
 scriptTestLegendreBasis: legendrebasis.o scriptTestLegendreBasis.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib legendrebasis.cpp scriptTestLegendreBasis.cpp -o scriptTestLegendreBasis
+
+scriptTestMatrixRoutines: matrixRoutines.o scriptTestMatrixRoutines.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp scriptTestMatrixRoutines.cpp -o scriptTestMatrixRoutines 
 
 
 clean:
