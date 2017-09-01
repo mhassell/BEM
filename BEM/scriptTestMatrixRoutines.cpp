@@ -81,10 +81,18 @@ int main(){
 	}
 
 	// and finally test the regular solver
-
-
 	std::cout << "Solution to the linear equation:" << std::endl;
 	
+	Eigen::VectorXd b = Eigen::VectorXd(3);
 	
+	b << 1,
+		 3,
+		 5;		
+
+	Eigen::VectorXd x = solve(A,b);
+
+	for(size_t i = 0; i < b.rows(); i++){
+		std::cout << x(i) << std::endl;
+	}	
 	
 }
