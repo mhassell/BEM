@@ -6,132 +6,122 @@
 //  Copyright © 2017 Matthew Hassell. All rights reserved.
 //
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <vector>
+#include <Eigen/Dense>
 #include "legendrebasis.hpp"
 #include "testsAndProjections.hpp"
 #include "geometry.hpp"
 
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/lu.hpp>
 
 // test a scalar function against Xh
-void testXh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void testXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d, Eigen::MatrixXd& fh)
 {
     size_t Nqd = q1d.size();
     size_t Nelts = g.nElts;
 
     // these  contain the quadrature points mapped to the phyical elements
-    std::vector<std::vector<double> > P1t, P2t;
-    P1t.assign(Nqd, std::vector<double>(Nelts));
-    P2t.assign(Nqd, std::vector<double>(Nelts));
+    Eigen::MatrixXd P1t, P2t = Eigen::MatrixXd(Nqd,Nelts);
     
     // the function evaluated at the physical quadrature points
-    boost::numeric::ublas::matrix<double> F(Nqd, Nelts);
+    Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
     
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
-            P1t[i][j] = 0.5*(1 - q1d[i][0])*g.coordinates[g.elements[j][0]][0] + 0.5*(1 + q1d[i][0])*g.coordinates[g.elements[j][1]][0];
-            P2t[i][j] = 0.5*(1 - q1d[i][0])*g.coordinates[g.elements[j][0]][1] + 0.5*(1 + q1d[i][0])*g.coordinates[g.elements[j][1]][1];
-            F(i,j) = f(P1t[i][j], P2t[i][j]);
+            P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
+            P2t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),1);
+            F(i,j) = f(P1t(i,j), P2t(i,j));
         }
     }
     
     // polynomial bits
     
     // basis on physical element
-    std::vector<double> x;
-    x.assign(Nqd, 0);
+    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
     for(size_t i = 0; i < Nqd; i++){
-        x[i] = q1d[i][0];
+        x(i) = q1d(i,0);
     }
     
-    boost::numeric::ublas::matrix<double> P(Nqd, k+1);
+    Eigen::MatrixXd P = Eigen::MatrixXd(Nqd, k+1);
     legendreBasis(k, x, 1, P);
     
-    for(size_t i = 0; i < P.size1(); i++){
-        for(size_t j = 0; j < P.size2(); j++){
-            P(i,j) = P(i,j)*q1d[i][1];
+    for(size_t i = 0; i < P.rows(); i++){
+        for(size_t j = 0; j < P.cols(); j++){
+            P(i,j) = P(i,j)*q1d(i,1);
         }
     }
     
-    P = boost::numeric::ublas::trans(P);
-    fh = boost::numeric::ublas::prod(P, F);
+    P.transposeInPlace();   // don't do P = P.transpose()
+    fh = P*F;				// nice, overloaded operators!
     
-    for(size_t i = 0; i < fh.size1(); i++){
-        for(size_t j = 0; j < fh.size2(); j++){
-            fh(i,j) *= 0.5*g.lengths[j];
+    for(size_t i = 0; i < fh.rows(); i++){
+        for(size_t j = 0; j < fh.cols(); j++){
+            fh(i,j) *= 0.5*g.lengths(j);
         }
     }
 
 }
 
 // test a scalar valued function against Yh
-void testYh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+void testYh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d, Eigen::MatrixXd& fh)
 {
     
     size_t Nqd = q1d.size();
     size_t Nelts = g.nElts;
     
     // these  contain the quadrature points mapped to the phyical elements
-    std::vector<std::vector<double> > P1t, P2t;
-    P1t.assign(Nqd, std::vector<double>(Nelts));
-    P2t.assign(Nqd, std::vector<double>(Nelts));
-    
+    Eigen::MatrixXd P1t, P2t = Eigen::MatrixXd(Nqd,Nelts);
     
     // the function evaluated at the physical quadrature points
-    boost::numeric::ublas::matrix<double> F(Nqd, Nelts);
+    Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
     
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
-            P1t[i][j] = 0.5*(1 - q1d[i][0])*g.coordinates[g.elements[j][0]][0] + 0.5*(1 + q1d[i][0])*g.coordinates[g.elements[j][1]][0];
-            P2t[i][j] = 0.5*(1 - q1d[i][0])*g.coordinates[g.elements[j][0]][1] + 0.5*(1 + q1d[i][0])*g.coordinates[g.elements[j][1]][1];
-            F(i,j) = f(P1t[i][j], P2t[i][j]);
+            P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
+            P2t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),1);
+            F(i,j) = f(P1t(i,j), P2t(i,j));
         }
     }
     
     // polynomial bits
     
     // basis on physical element
-    std::vector<double> x;
-    x.assign(Nqd, 0);
+    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
     for(size_t i = 0; i < Nqd; i++){
-        x[i] = q1d[i][0];
+        x(i) = q1d(i,0);
     }
 
-    boost::numeric::ublas::matrix<double> Psi(Nqd, k+2);
+    Eigen::MatrixXd Psi = Eigen::MatrixXd(Nqd, k+2);
     legendreBasis(k+1, x, 2, Psi);
     
     // attach to quad weights
     for(size_t i = 0; i < Nqd; i++){
-        for(size_t j = 0; j < Psi.size2(); j++){
-            Psi(i,j) = Psi(i,j)*q1d[i][1];
+        for(size_t j = 0; j < Psi.cols(); j++){
+            Psi(i,j) = Psi(i,j)*q1d(i,1);
         }
     }
     
     // transpose and multiply
-    Psi = boost::numeric::ublas::trans(Psi);
-    boost::numeric::ublas::matrix<double> V = boost::numeric::ublas::prod(Psi, F);
+    Psi.transposeInPlace();
+    Eigen::MatrixXd V = Psi*F;
     
     // scale by element lengths
-    for(size_t i = 0; i < V.size1(); i++){
-        for(size_t j = 0; j < V.size2(); j++){
-            V(i,j) *= 0.5*g.lengths[j];
+    for(size_t i = 0; i < V.rows(); i++){
+        for(size_t j = 0; j < V.cols(); j++){
+            V(i,j) *= 0.5*g.lengths(j);
         }
     }
     
     // assemble the nodal DoFs
     for(size_t j = 0; j < Nelts; j++){
-        fh(0,g.elements[j][0]) = V(0,j);
+        fh(0,g.elements(j,0)) = V(0,j);
     }
     
     for(size_t j = 0; j < Nelts; j++){
-        fh(0,g.elements[j][1]) += V(1,j);
+        fh(0,g.elements(j,1)) += V(1,j);
     }
     
     // dump what's left in V into fh
-    for(size_t i = 1; i < V.size1()-1; i++){
-        for(size_t j = 0; j < V.size2(); j++){
+    for(size_t i = 1; i < V.rows()-1; i++){
+        for(size_t j = 0; j < V.cols(); j++){
             fh(i,j) = V(i+1,j);
         }
     }
@@ -139,71 +129,67 @@ void testYh(const geometry& g, double (*f)(double,double), int k, const std::vec
 }
 
 // test vector valued functions (dotted with n) against Yh
-void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
+void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, Eigen::MatrixXd& q1d, Eigen::MatrixXd& fh)
 {
     
-    size_t Nqd = q1d.size();
+        size_t Nqd = q1d.size();
     size_t Nelts = g.nElts;
     
     // these  contain the quadrature points mapped to the phyical elements
-    std::vector<std::vector<double> > P1t, P2t;
-    P1t.assign(Nqd, std::vector<double>(Nelts));
-    P2t.assign(Nqd, std::vector<double>(Nelts));
-    
+    Eigen::MatrixXd P1t, P2t = Eigen::MatrixXd(Nqd,Nelts);
     
     // the function evaluated at the physical quadrature points
-    boost::numeric::ublas::matrix<double> F(Nqd, Nelts);
+    Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
     
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
-            P1t[i][j] = 0.5*(1 - q1d[i][0])*g.coordinates[g.elements[j][0]][0] + 0.5*(1 + q1d[i][0])*g.coordinates[g.elements[j][1]][0];
-            P2t[i][j] = 0.5*(1 - q1d[i][0])*g.coordinates[g.elements[j][0]][1] + 0.5*(1 + q1d[i][0])*g.coordinates[g.elements[j][1]][1];
-            F(i,j) = f1(P1t[i][j], P2t[i][j])*g.normals[j][0] + f2(P1t[i][j], P2t[i][j])*g.normals[j][1];
+            P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
+            P2t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),1);
+            F(i,j) = f(P1t(i,j), P2t(i,j));
         }
     }
-    
+
     // polynomial bits
     
     // basis on physical element
-    std::vector<double> x;
-    x.assign(Nqd, 0);
+    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
     for(size_t i = 0; i < Nqd; i++){
-        x[i] = q1d[i][0];
+        x(i) = q1d(i,0);
     }
     
-    boost::numeric::ublas::matrix<double> Psi(Nqd, k+2);
+    Eigen::MatrixXd Psi = Eigen::MatriXd(Nqd, k+2);
     legendreBasis(k+1, x, 2, Psi);
     
     // attach to quad weights
     for(size_t i = 0; i < Nqd; i++){
-        for(size_t j = 0; j < Psi.size2(); j++){
-            Psi(i,j) = Psi(i,j)*q1d[i][1];
+        for(size_t j = 0; j < Psi.cols(); j++){
+            Psi(i,j) = Psi(i,j)*q1d(i,1);
         }
     }
     
     // transpose and multiply
-    Psi = boost::numeric::ublas::trans(Psi);
-    boost::numeric::ublas::matrix<double> V = boost::numeric::ublas::prod(Psi, F);
+    Psi.transposeInPlace();
+    Eigen::MatrixXd V = Psi*F;
     
     // scale by element lengths
-    for(size_t i = 0; i < V.size1(); i++){
-        for(size_t j = 0; j < V.size2(); j++){
-            V(i,j) *= 0.5*g.lengths[j];
+    for(size_t i = 0; i < V.rows(); i++){
+        for(size_t j = 0; j < V.cols(); j++){
+            V(i,j) *= 0.5*g.lengths(j);
         }
     }
     
     // assemble the nodal DoFs
     for(size_t j = 0; j < Nelts; j++){
-        fh(0,g.elements[j][0]) = V(0,j);
+        fh(0,g.elements(j,0)) = V(0,j);
     }
     
     for(size_t j = 0; j < Nelts; j++){
-        fh(0,g.elements[j][1]) += V(1,j);
+        fh(0,g.elements(j,1)) += V(1,j);
     }
     
     // dump what's left in V into fh
-    for(size_t i = 1; i < V.size1()-1; i++){
-        for(size_t j = 0; j < V.size2(); j++){
+    for(size_t i = 1; i < V.rows()-1; i++){
+        for(size_t j = 0; j < V.cols(); j++){
             fh(i,j) = V(i+1,j);
         }
     }
@@ -211,30 +197,31 @@ void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,d
 }
 
 // project a scalar onto Xh
-void projectXh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d,
-               boost::numeric::ublas::matrix<double>& fh)
+void projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d,
+               Eigen::MatrixXd& fh)
 {
  
     size_t Nqd = q1d.size();
-    boost::numeric::ublas::matrix<double> P(Nqd, k+1);
+    Eigen::MatrixXd P = Eigen::MatrixXd(Nqd, k+1);
     
     // basis on physical element
-    std::vector<double> x;
-    x.assign(Nqd, 0);
+    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
     for(size_t i = 0; i < Nqd; i++){
-        x[i] = q1d[i][0];
+        x(i) = q1d(i,0);
     }
     
     legendreBasis(k, x, 1, P);
     
-    boost::numeric::ublas::matrix<double> Pt = boost::numeric::ublas::trans(P);
+    Eigen::MatrixXd Pt = P.transpose();
     
     // attach quad weights
-    for(size_t i = 0; i < P.size1(); i++){
-        for(size_t j = 0; j < P.size2(); j++){
-            P(i,j)*=q1d[i][1]/2;
+    for(size_t i = 0; i < P.rows(); i++){
+        for(size_t j = 0; j < P.cols(); j++){
+            P(i,j)*=q1d(i,1)/2;
         }
     }
+
+	// got up to here
     
     boost::numeric::ublas::matrix<double> PP = boost::numeric::ublas::prod(Pt, P);
     boost::numeric::ublas::matrix<double> PPinv = boost::numeric::ublas::identity_matrix<float>(PP.size1());
