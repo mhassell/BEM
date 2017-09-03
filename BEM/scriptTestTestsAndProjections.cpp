@@ -7,3 +7,9 @@
 #include "legendrebasis.hpp"
 #include "matrixRoutines.hpp"
 #include "quadTables.hpp"
+
+int main(){
+
+	
+
+}

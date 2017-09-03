@@ -10,10 +10,11 @@
 #include "legendrebasis.hpp"
 #include "testsAndProjections.hpp"
 #include "geometry.hpp"
+#include "matrixRoutines.hpp"
 
 
 // test a scalar function against Xh
-void testXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d, Eigen::MatrixXd& fh)
+Eigen::MatrixXd testXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
     size_t Nqd = q1d.size();
     size_t Nelts = g.nElts;
@@ -41,7 +42,7 @@ void testXh(const geometry& g, double (*f)(double,double), int k, const Eigen::M
     }
     
     Eigen::MatrixXd P = Eigen::MatrixXd(Nqd, k+1);
-    legendreBasis(k, x, 1, P);
+    legendrebasis(k, x, 1, P);
     
     for(size_t i = 0; i < P.rows(); i++){
         for(size_t j = 0; j < P.cols(); j++){
@@ -61,7 +62,7 @@ void testXh(const geometry& g, double (*f)(double,double), int k, const Eigen::M
 }
 
 // test a scalar valued function against Yh
-void testYh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d, Eigen::MatrixXd& fh)
+Eigen::MatrixXd testYh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
     
     size_t Nqd = q1d.size();
@@ -90,7 +91,7 @@ void testYh(const geometry& g, double (*f)(double,double), int k, const Eigen::M
     }
 
     Eigen::MatrixXd Psi = Eigen::MatrixXd(Nqd, k+2);
-    legendreBasis(k+1, x, 2, Psi);
+    legendrebasis(k+1, x, 2, Psi);
     
     // attach to quad weights
     for(size_t i = 0; i < Nqd; i++){
@@ -129,10 +130,10 @@ void testYh(const geometry& g, double (*f)(double,double), int k, const Eigen::M
 }
 
 // test vector valued functions (dotted with n) against Yh
-void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, Eigen::MatrixXd& q1d, Eigen::MatrixXd& fh)
+Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
     
-        size_t Nqd = q1d.size();
+    size_t Nqd = q1d.size();
     size_t Nelts = g.nElts;
     
     // these  contain the quadrature points mapped to the phyical elements
@@ -145,7 +146,7 @@ void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,d
         for(size_t j = 0; j < Nelts; j++){
             P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
             P2t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),1);
-            F(i,j) = f(P1t(i,j), P2t(i,j));
+            F(i,j) = f1(P1t(i,j),P2t(i,j))*g.normals(j,0) + f2(P1t(i,j),P2t(i,j))*g.normals(j,1);
         }
     }
 
@@ -157,8 +158,8 @@ void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,d
         x(i) = q1d(i,0);
     }
     
-    Eigen::MatrixXd Psi = Eigen::MatriXd(Nqd, k+2);
-    legendreBasis(k+1, x, 2, Psi);
+    Eigen::MatrixXd Psi = Eigen::MatrixXd(Nqd, k+2);
+    legendrebasis(k+1, x, 2, Psi);
     
     // attach to quad weights
     for(size_t i = 0; i < Nqd; i++){
@@ -197,8 +198,7 @@ void testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,d
 }
 
 // project a scalar onto Xh
-void projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d,
-               Eigen::MatrixXd& fh)
+Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
  
     size_t Nqd = q1d.size();
@@ -210,7 +210,7 @@ void projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen
         x(i) = q1d(i,0);
     }
     
-    legendreBasis(k, x, 1, P);
+    legendrebasis(k, x, 1, P);
     
     Eigen::MatrixXd Pt = P.transpose();
     
@@ -223,20 +223,16 @@ void projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen
 
 	// got up to here
     
-    boost::numeric::ublas::matrix<double> PP = boost::numeric::ublas::prod(Pt, P);
-    boost::numeric::ublas::matrix<double> PPinv = boost::numeric::ublas::identity_matrix<float>(PP.size1());
-    boost::numeric::ublas::permutation_matrix<size_t> pm(PP.size1());
-    boost::numeric::ublas::lu_factorize(PP, pm);
-    boost::numeric::ublas::lu_substitute(PP, pm, PPinv);
-    boost::numeric::ublas::matrix<double> ffh(k+1, g.nElts);
+    Eigen::MatrixXd PP = Pt*P;
+    Eigen::MatrixXd ffh = Eigen::MatrixXd(k+1, g.nElts);
     
     testXh(g, f, k, q1d, ffh);
     
-    fh = boost::numeric::ublas::prod(PPinv, ffh);
+    fh = solve(PP, ffh);
     
-    for(size_t i = 0; i < fh.size1(); i++){
-        for(size_t j = 0; j < fh.size2(); j++){
-            fh(i,j) /= g.lengths[j];
+    for(size_t i = 0; i < fh.rows(); i++){
+        for(size_t j = 0; j < fh.cols(); j++){
+            fh(i,j) /= g.lengths(j);
         }
     }
     
@@ -244,54 +240,50 @@ void projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen
 
 
 // project a vector field along the normal vector into Xh
-void projectXh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const std::vector<std::vector<double> >& q1d, boost::numeric::ublas::matrix<double>& fh)
+Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
 
     size_t Nqd = q1d.size();
-    boost::numeric::ublas::matrix<double> P(Nqd, k+1);
+    Eigen::MatrixXd P = Eigen::MatrixXd(Nqd, k+1);
     
     // basis on physical element
-    std::vector<double> x(Nqd);
+    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
     for(size_t i = 0; i < Nqd; i++){
-        x[i] = q1d[i][0];
+        x(i) = q1d(i,0);
     }
     
-    legendreBasis(k, x, 1, P);
+    legendrebasis(k, x, 1, P);
     
-    boost::numeric::ublas::matrix<double> Pt = boost::numeric::ublas::trans(P);
+    Eigen::MatrixXd Pt = P.transpose();
     
     // attach quad weights
-    for(size_t i = 0; i < P.size1(); i++){
-        for(size_t j = 0; j < P.size2(); j++){
-            P(i,j)*=q1d[i][1]/2;
+    for(size_t i = 0; i < P.rows(); i++){
+        for(size_t j = 0; j < P.cols(); j++){
+            P(i,j)*=q1d(i,1)/2;
         }
     }
     
-    boost::numeric::ublas::matrix<double> PP = boost::numeric::ublas::prod(Pt, P);
-    boost::numeric::ublas::matrix<double> PPinv = boost::numeric::ublas::identity_matrix<float>(PP.size1());
-    boost::numeric::ublas::permutation_matrix<size_t> pm(PP.size1());
-    boost::numeric::ublas::lu_factorize(PP, pm);
-    boost::numeric::ublas::lu_substitute(PP, pm, PPinv);
-    boost::numeric::ublas::matrix<double> fhx(k+1, g.nElts);
-    boost::numeric::ublas::matrix<double> fhy(k+1, g.nElts);
+    Eigen::MatrixXd PP = Pt*P;
+    Eigen::MatrixXd fhx = Eigen::MatrixXd(k+1, g.nElts);
+    Eigen::MatrixXd fhy = Eigen::MatrixXd(k+1, g.nElts);
     
     testXh(g, f1, k, q1d, fhx);
     testXh(g, f2, k, q1d, fhy);
     
-    fhx = boost::numeric::ublas::prod(PPinv, fhx);
-    fhy = boost::numeric::ublas::prod(PPinv, fhy);
+    fhx = solve(PP, fhx);
+    fhy = solve(PP, fhy);
     
-    for(size_t i = 0; i < fh.size1(); i++){
-        for(size_t j = 0; j < fh.size2(); j++){
-            fh(i,j) = (g.normals[j][0]/g.lengths[j])*fhx(i,j)
-                + (g.normals[j][1]/g.lengths[j])*fhy(i,j);
+    for(size_t i = 0; i < fh.rows(); i++){
+        for(size_t j = 0; j < fh.cols(); j++){
+            fh(i,j) = (g.normals(j,0)/g.lengths(j))*fhx(i,j)
+                + (g.normals(j,1)/g.lengths(j))*fhy(i,j);
         }
     }
     
 }
 
 // vanilla Yh projection for a scalar function
-void projectYh(const geometry& g, double (*f)(double,double), int k, const std::vector<std::vector<double> > q1d, boost::numeric::ublas::matrix<double>& fh)
+Eigen::MatrixXd projectYh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
     
     // TBD: needs Yh x Yh mass matrix

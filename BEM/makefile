@@ -15,6 +15,9 @@ legendrebasis.o: legendrebasis.cpp
 matrixRoutines.o: matrixRoutines.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib -c matrixRoutines.cpp
 
+testsAndProjections.o: testsAndProjections.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib -c testsAndProjections.cpp
+
 # scripts down here
 
 testQuadTables: quadTables.cpp scriptTestQuadrature.cpp
@@ -27,7 +30,10 @@ scriptTestLegendreBasis: legendrebasis.o scriptTestLegendreBasis.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib legendrebasis.cpp scriptTestLegendreBasis.cpp -o scriptTestLegendreBasis
 
 scriptTestMatrixRoutines: matrixRoutines.o scriptTestMatrixRoutines.cpp
-	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp scriptTestMatrixRoutines.cpp -o scriptTestMatrixRoutines 
+	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp scriptTestMatrixRoutines.cpp -o scriptTestMatrixRoutines
+
+scriptTestTestsAndProjecions: testsAndProjections.o quadTables.o matrixRoutines.o legendrebasis.o geometry.o
+	 g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp quadTables.cpp legendrebasis.cpp geometry.cpp  -o scriptTestMatrixRoutines
 
 
 clean:
