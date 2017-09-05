@@ -20,6 +20,9 @@ testsAndProjections.o: testsAndProjections.cpp
 
 # scripts down here
 
+testGeometry: geometry.o
+	g++ -I /usr/local/include/eigen geometry.cpp scriptTestGeometry.cpp -o scriptTestGeometry
+
 testQuadTables: quadTables.cpp scriptTestQuadrature.cpp
 	g++ -I /usr/local/include/eigen quadTables.cpp scriptTestQuadrature.cpp -o scriptTestQuadrature
 

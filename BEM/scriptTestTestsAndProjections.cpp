@@ -33,6 +33,11 @@ int main(){
 	
 	geometry g(coords, elts);
 
+	std::cout << g.lengths << std::endl;
+
+	// std::cout << g.lengths(0) << std::endl;
+	
+	/* 
 	// quadrature
 	Eigen::MatrixXd q1d = tableGauss(63);	  
 
@@ -40,8 +45,6 @@ int main(){
 	double (*fp)(double,double) = &f;
 	Eigen::MatrixXd fh;
 	
-	std::cout << "Here" << std::endl;
-
 	fh = testXh(g,fp,k,q1d);
 
 	std::cout << "Result for testXh: " << std::endl;
@@ -50,7 +53,8 @@ int main(){
 			std::cout << fh(i,j) << "    ";
 		}
 		std::cout << std::endl;
-	}		
+	}	
+*/ 	
 
 }
 

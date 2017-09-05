@@ -61,12 +61,11 @@ Eigen::MatrixXd testXh(const geometry& g, double (*f)(double,double), int k, con
 
     for(size_t i = 0; i < fh.rows(); i++){
         for(size_t j = 0; j < fh.cols(); j++){
-			std::cout << i << "   " << j << std::endl;
-            fh(i,j) *= 0.5*g.lengths(j);
+			// std::cout << fh(i,j) << std::endl;
+			std::cout << g.lengths(j) << std::endl;            
+			//fh(i,j) = fh(i,j)*0.5*g.lengths(j);
         }
     }
-
-	std::cout << "Made it here" << std::endl;
 
 	return fh;
 

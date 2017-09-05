@@ -25,8 +25,8 @@ public:
     Eigen::MatrixXd & coordinates;
     Eigen::MatrixXd normals;
     Eigen::MatrixXd lengths;
-    Eigen::MatrixXd prev;
-    Eigen::MatrixXd next;
+    Eigen::MatrixXi prev;
+    Eigen::MatrixXi next;
     size_t nElts;
     
 };
@@ -36,6 +36,7 @@ geometry::geometry(Eigen::MatrixXd &coords, Eigen::MatrixXi &elts)
 {
     // use the constructor list above to make the needed basic arrays
     enhanced = false;
+    size_t nElts = this->elements.rows();
     geometry::enhance();
     
 }
@@ -45,10 +46,10 @@ void geometry::enhance(){
     
     nElts = elements.rows();
     
-    Eigen::MatrixXd normals = Eigen::MatrixXd::Zero(nElts, 2);
-    Eigen::MatrixXd lengths = Eigen::MatrixXd::Zero(nElts, 2);
-    Eigen::MatrixXi prev = Eigen::MatrixXi::Zero(nElts, 1);
-    Eigen::MatrixXi next = Eigen::MatrixXi::Zero(nElts, 1);
+    this->normals = Eigen::MatrixXd::Zero(nElts, 2);
+    this->lengths = Eigen::VectorXd::Zero(nElts);
+    this->prev = Eigen::VectorXi::Zero(nElts);
+    this->next = Eigen::VectorXi::Zero(nElts);
     
     Eigen::VectorXd x1 = Eigen::VectorXd::Zero(nElts);
     Eigen::VectorXd x2 = Eigen::VectorXd::Zero(nElts);
@@ -68,11 +69,11 @@ void geometry::enhance(){
   
         lengths(i) = sqrt(pow(x2(i)-x1(i),2)+pow(y2(i)-y1(i),2));
         
-        normals(i,0) = y2(i)-y1(i);
-        normals(i,1) = x1(i)-x2(i);
+        this->normals(i,0) = y2(i)-y1(i);
+        this->normals(i,1) = x1(i)-x2(i);
         norm = sqrt(pow(normals(i,0),2)+pow(normals(i,1),2));
-        normals(i,0) /= norm;
-        normals(i,1) /= norm;
+        this->normals(i,0) /= norm;
+        this->normals(i,1) /= norm;
 
 		tmp(elements(i,0)) = (int) i;
 		
@@ -80,8 +81,8 @@ void geometry::enhance(){
 
     // it would be great to be able to do this in one felswoop
     for(size_t i = 0; i<nElts; i++){
-        next(i) = tmp(elements(i,1));       
-		prev(next(i)) = (int) i;
+        this->next(i) = tmp(elements(i,1));       
+		this->prev(next(i)) = (int) i;
     }
     
     enhanced = true;
