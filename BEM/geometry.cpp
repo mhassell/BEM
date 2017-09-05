@@ -31,8 +31,7 @@ public:
     
 };
 
-geometry::geometry(Eigen::MatrixXd &coords, Eigen::MatrixXi &elts)
-: coordinates(coords), elements(elts)
+geometry::geometry(Eigen::MatrixXd &coords, Eigen::MatrixXi &elts): coordinates(coords), elements(elts)
 {
     // use the constructor list above to make the needed basic arrays
     enhanced = false;
@@ -114,8 +113,8 @@ void geometry::refine(){
 
     }
     
-    coordinates = allCoord;
-    elements = allElts;
+    this->coordinates = allCoord;
+    this->elements = allElts;
     
     geometry::enhance();
     

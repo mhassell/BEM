@@ -61,9 +61,7 @@ Eigen::MatrixXd testXh(const geometry& g, double (*f)(double,double), int k, con
 
     for(size_t i = 0; i < fh.rows(); i++){
         for(size_t j = 0; j < fh.cols(); j++){
-			// std::cout << fh(i,j) << std::endl;
-			std::cout << g.lengths(j) << std::endl;            
-			//fh(i,j) = fh(i,j)*0.5*g.lengths(j);
+			fh(i,j) = fh(i,j)*0.5*g.lengths(j);
         }
     }
 
@@ -75,17 +73,18 @@ Eigen::MatrixXd testXh(const geometry& g, double (*f)(double,double), int k, con
 Eigen::MatrixXd testYh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
     
-    size_t Nqd = q1d.size();
+    size_t Nqd = q1d.rows();
     size_t Nelts = g.nElts;
 
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1,Nelts);
     
     // these  contain the quadrature points mapped to the phyical elements
-    Eigen::MatrixXd P1t, P2t = Eigen::MatrixXd(Nqd,Nelts);
-    
+    Eigen::MatrixXd P1t = Eigen::MatrixXd(Nqd,Nelts);
+	Eigen::MatrixXd P2t = Eigen::MatrixXd(Nqd,Nelts);
+	
     // the function evaluated at the physical quadrature points
     Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
-    
+
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
             P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
@@ -147,7 +146,7 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f)(double,double), int k, con
 Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
     
-    size_t Nqd = q1d.size();
+    size_t Nqd = q1d.rows();
     size_t Nelts = g.nElts;
 
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1,Nelts);
@@ -172,8 +171,8 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
     Eigen::VectorXd x = Eigen::VectorXd(Nqd);
     for(size_t i = 0; i < Nqd; i++){
         x(i) = q1d(i,0);
-    }
-    
+    }    
+
     Eigen::MatrixXd Psi = Eigen::MatrixXd(Nqd, k+2);
     legendrebasis(k+1, x, 2, Psi);
     
@@ -219,7 +218,7 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
 Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
  
-    size_t Nqd = q1d.size();
+    size_t Nqd = q1d.rows();
 	size_t Nelts = g.nElts;    
 
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1,Nelts);
@@ -251,12 +250,14 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, 
     ffh = testXh(g, f, k, q1d);
     
     fh = solve(PP, ffh);
-    
+   
     for(size_t i = 0; i < fh.rows(); i++){
         for(size_t j = 0; j < fh.cols(); j++){
             fh(i,j) /= g.lengths(j);
         }
     }
+
+	return fh;
     
 }
 
@@ -265,7 +266,7 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, 
 Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
 
-    size_t Nqd = q1d.size();
+    size_t Nqd = q1d.rows();
 	size_t Nelts = g.nElts;
 
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1, Nelts);
@@ -305,6 +306,8 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double
                 + (g.normals(j,1)/g.lengths(j))*fhy(i,j);
         }
     }
+
+	return fh;
     
 }
 

@@ -15,7 +15,7 @@ double f(double, double);
 int main(){
 
 	// polynomial degree
-	int k = 0;
+	int k = 2;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);
@@ -32,12 +32,7 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-
-	std::cout << g.lengths << std::endl;
-
-	// std::cout << g.lengths(0) << std::endl;
 	
-	/* 
 	// quadrature
 	Eigen::MatrixXd q1d = tableGauss(63);	  
 
@@ -53,8 +48,31 @@ int main(){
 			std::cout << fh(i,j) << "    ";
 		}
 		std::cout << std::endl;
-	}	
-*/ 	
+	}
+
+	// testing against Yh
+	fh.setZero();
+	fh = testYh(g,fp,k,q1d);
+
+	std::cout << "Result for testYh: " << std::endl;
+	for(size_t i = 0; i < k+1; i++){
+		for(size_t j = 0; j < g.nElts; j++){
+			std::cout << fh(i,j) << "    ";
+		}
+		std::cout << std::endl;
+	}	 	
+
+	// projecting into Xh
+	fh.setZero();
+	fh = projectXh(g,fp,k,q1d);
+
+	std::cout << "Result for projectXh (scalar case): " << std::endl;
+	for(size_t i = 0; i < k+1; i++){
+		for(size_t j = 0; j < g.nElts; j++){
+			std::cout << fh(i,j) << "    ";
+		}
+		std::cout << std::endl;
+	}	 	
 
 }
 

@@ -22,7 +22,7 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
 
 // project into the BEM spaces
 
-Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd q1d);
+Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d);
 
 Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double(*f2)(double,double), int k, const Eigen::MatrixXd& q1d);
 
