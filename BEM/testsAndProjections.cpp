@@ -7,8 +7,8 @@
 //
 
 #include <iostream>
-
 #include <Eigen/Dense>
+
 #include "legendrebasis.hpp"
 #include "testsAndProjections.hpp"
 #include "geometry.hpp"
@@ -152,11 +152,11 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1,Nelts);
     
     // these  contain the quadrature points mapped to the phyical elements
-    Eigen::MatrixXd P1t, P2t = Eigen::MatrixXd(Nqd,Nelts);
-    
+    Eigen::MatrixXd P1t = Eigen::MatrixXd(Nqd,Nelts);
+    Eigen::MatrixXd P2t = Eigen::MatrixXd(Nqd,Nelts);
     // the function evaluated at the physical quadrature points
     Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
-    
+
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
             P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
@@ -164,6 +164,7 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
             F(i,j) = f1(P1t(i,j),P2t(i,j))*g.normals(j,0) + f2(P1t(i,j),P2t(i,j))*g.normals(j,1);
         }
     }
+
 
     // polynomial bits
     

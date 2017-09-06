@@ -11,11 +11,13 @@
 
 
 double f(double, double);
+double f1(double, double);
+double f2(double, double);
 
 int main(){
 
 	// polynomial degree
-	int k = 2;
+	int k = 3;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);
@@ -38,8 +40,10 @@ int main(){
 
 	// test against Xh
 	double (*fp)(double,double) = &f;
+	double (*fp1)(double,double) = &f1;
+	double (*fp2)(double,double) = &f2;
+
 	Eigen::MatrixXd fh;
-	
 	fh = testXh(g,fp,k,q1d);
 
 	std::cout << "Result for testXh: " << std::endl;
@@ -72,12 +76,48 @@ int main(){
 			std::cout << fh(i,j) << "    ";
 		}
 		std::cout << std::endl;
-	}	 	
+	}
+
+	// test vector functions against Yh	 	
+	fh.setZero();
+	fh = testYh(g,fp1,fp2,k,q1d);	
+
+	std::cout << "Result for testYh (vector case): " << std::endl;
+	for(size_t i = 0; i < k+1; i++){
+		for(size_t j = 0; j < g.nElts; j++){
+			std::cout << fh(i,j) << "    ";
+		}
+		std::cout << std::endl;
+	}
+
+	// project vector functions into Xh	 	
+	fh.setZero();
+	fh = projectXh(g,fp1,fp2,k,q1d);	
+
+	std::cout << "Result for projectXh (vector case): " << std::endl;
+	for(size_t i = 0; i < k+1; i++){
+		for(size_t j = 0; j < g.nElts; j++){
+			std::cout << fh(i,j) << "    ";
+		}
+		std::cout << std::endl;
+	}
 
 }
 
 double f(double x1, double x2){
 
 	return pow(x1,2) + 3*x2;
+
+}
+
+double f1(double x1, double x2){
+
+	return sin(x1) + cos(x2);
+
+}
+
+double f2(double x1, double x2){
+
+	return x1*x2;
 
 }
