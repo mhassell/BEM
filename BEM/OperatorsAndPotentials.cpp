@@ -33,6 +33,7 @@ Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& 
 {
     
     size_t Nelt = g.nElts;
+	size_t Nnd = g.coordinates.rows();
     size_t Nqd = q1d.rows();
     Eigen::MatrixXd Psi = Eigen::MatrixXd(Nqd, k+2);
 
@@ -58,7 +59,7 @@ Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& 
     PsiQd.transposeInPlace();
     PsiPsi = PsiQd*Psi;
     
-    // which is more appropriate? mapped_matrix or compressed_matrix?
+    // this should be sparse!
     Eigen::MatrixXd lengths = Eigen::MatrixXd(g.nElts,g.nElts);
 	lengths.setZero();
     
@@ -68,42 +69,56 @@ Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& 
     }
     
     Eigen::MatrixXd M = kron(lengths, PsiPsi);
+    
+    // nodalDOF arrays
+    Eigen::VectorXd nodalDOF1 = Eigen::VectorXd(Nelt);
+	Eigen::VectorXd nodalDOF2 = Eigen::VectorXd(Nelt);    
 
-	// good up to here - 9/6/17
-    
-    // nodalDOF array
-    Eigen::MatrixXd nodalDOF = Eigen::MatrixXd(2,Nelt);
-    
     for(size_t i = 0; i < Nelt; i++){
-        nodalDOF(0,i) =     (k+2)*i;
-        nodalDOF(1,i) = 1 + (k+2)*i;
-    }
-
-    // need to reshape this for easier access down below
-    Eigen::VectorXd nodalDOFVector = Eigen::VectorXd(2*nodalDOF.cols());
-
-    for(size_t i = 0; i < 2; i++){
-        for(size_t j = 0; j < nodalDOF.size(); j++){
-            nodalDOFVector(i+j*nodalDOF.size()) = nodalDOF(i,j);
-        }
+        nodalDOF1(i) =     (k+2)*i;
+        nodalDOF2(i) = 1 + (k+2)*i;
     }
 
     // internalDOF array
-    Eigen::VectorXd internalDOF = Eigen::VectorXd((k+2)*Nelt - 2*nodalDOF.size());
-    
-	for(size_t i = 0; i < nodalDOF.size(); i++){
-		// if the index is not in nodalDOF, then put it into internalDOF
+    Eigen::VectorXd internalDOF((k+2)*Nelt - 2*Nelt);
+	for(size_t i = 0; i < Nelt; i++){
+		// each element has 2 nodal DOFs and k internal DOFs (for a total of k+2 DOFs)
+		for(size_t j = 0; j < k; j++){
+			internalDOF(i*k + j) = 2+(k+2)*i + j;	
+		}		
 	}
-   
+
+	// good up to here - 9/7/17	
+
     // assemble M in to MM by rows
-    Eigen::MatrixXd MM = Eigen::MatrixXd((k+1)*Nelt, (k+2)*Nelt);
+    Eigen::MatrixXd MM((k+1)*Nelt, (k+2)*Nelt);
     
 	for(size_t i = 0; i < Nelt; i++){
-        for(size_t j = 0; j < Nelt; j++){
-            
+        for(size_t j = 0; j < (k+2)*Nelt; j++){
+			std::cout << i << " " << j << std::endl;
+        	MM(g.elements(i,0),j) = M(nodalDOF1(i),j);
+			MM(g.elements(i,1),j) = MM(g.elements(i,1),j) + MM(nodalDOF2(i),j);   
         }
     }
-    
+
+	std::cout << "Here" << std::endl;
+
+	for(size_t i = 0; i < MM.rows(); i++){
+		for(size_t j = 0; j < MM.cols(); j++){
+			std::cout << M(i,j) << " ";
+		}
+		std::cout << std::endl;
+	}
+	
+	
+	/*
+	for(size_t i = 0; i < internalDOF.rows(); i++){
+		for(size_t j = 0; j < MM.cols(); j++){
+			MM(Nnd+i,j) = M(internalDOF(i),j);
+		}
+	} 
+	*/   
+	
     //assemble MM into fh by columns
 
 	return MM;   

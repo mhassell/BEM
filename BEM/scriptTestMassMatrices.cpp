@@ -25,7 +25,8 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-	
+	//g.refine();	
+
 	// quadrature
 	Eigen::MatrixXd q1d = tableGauss(63);	  
 
