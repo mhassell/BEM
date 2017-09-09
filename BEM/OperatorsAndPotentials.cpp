@@ -92,20 +92,51 @@ Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& 
 
     // assemble M in to MM by rows
     Eigen::MatrixXd MM((k+1)*Nelt, (k+2)*Nelt);
-    
-	for(size_t i = 0; i < Nelt; i++){
-        for(size_t j = 0; j < (k+2)*Nelt; j++){
-			std::cout << i << " " << j << std::endl;
-        	MM(g.elements(i,0),j) = M(nodalDOF1(i),j);
-			MM(g.elements(i,1),j) = MM(g.elements(i,1),j) + MM(nodalDOF2(i),j);   
+	MM.setZero();
+	
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < MM.cols(); j++){
+			MM(g.elements(i,0),j) = M(nodalDOF1(i),j); 
         }
     }
 
-	std::cout << "Here" << std::endl;
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < MM.cols(); j++){
+			MM(g.elements(i,1),j) += M(nodalDOF2(i),j);   
+        }
+    }
 
-	for(size_t i = 0; i < MM.rows(); i++){
+	for(size_t i = 0; i < internalDOF.rows(); i++){
 		for(size_t j = 0; j < MM.cols(); j++){
-			std::cout << M(i,j) << " ";
+			MM(Nnd+i,j) = M(internalDOF(i),j);
+		}
+	}
+
+	Eigen::MatrixXd M3((k+1)*Nelt, (k+1)*Nelt);
+	M3.setZero();
+
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < M3.cols(); j++){
+			M3(j,g.elements(i,0)) = MM(j,nodalDOF1(i)); 
+        }
+    }
+
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < M3.cols(); j++){
+			M3(j,g.elements(i,1)) += MM(j,nodalDOF2(i));   
+        }
+    }
+
+	for(size_t i = 0; i < internalDOF.rows(); i++){
+		for(size_t j = 0; j < M3.rows(); j++){
+			M3(j,Nnd+i) = MM(j,internalDOF(i));
+		}
+	}
+	
+
+	for(size_t i = 0; i < M3.rows(); i++){
+		for(size_t j = 0; j < M3.cols(); j++){
+			std::cout << M3(i,j) << " ";
 		}
 		std::cout << std::endl;
 	}
