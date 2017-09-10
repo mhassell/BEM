@@ -21,6 +21,9 @@ testsAndProjections.o: testsAndProjections.cpp
 massMatrices.o: OperatorsAndPotentials.cpp legendrebasis.o
 	g++ -I /usr/local/include/eigen -L /usr/lib legendrebasis.cpp -c OperatorsAndPotentials.cpp
 
+errors.o: errors.cpp geometry.o quadTables.o legendrebasis.o
+	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp quadTables.cpp legendrebasis.cpp -c errors.cpp 
+
 # scripts down here
 
 testGeometry: geometry.o
@@ -43,6 +46,10 @@ scriptTestTestsAndProjections: testsAndProjections.o quadTables.o matrixRoutines
 
 scriptTestMassMatrices: massMatrices.o geometry.o quadTables.o legendrebasis.o matrixRoutines.o
 	g++ -I /usr/local/include/eigen -L /usr/lib  matrixRoutines.cpp quadTables.cpp legendrebasis.cpp geometry.cpp OperatorsAndPotentials.cpp scriptTestMassMatrices.cpp -o scriptTestMassMatrices
+
+scriptTestErrors: errors.o geometry.o quadTables.o legendrebasis.o testsAndProjections.o matrixRoutines.o massMatrices.o scriptTestErrors.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib errors.cpp geometry.cpp quadTables.cpp legendrebasis.cpp testsAndProjections.cpp matrixRoutines.cpp OperatorsAndPotentials.cpp scriptTestErrors.cpp -o scriptTestErrors
+
 
 clean:
 	rm *.o
