@@ -11,6 +11,7 @@
 
 #include "geometry.hpp"
 #include <Eigen/Dense>
+#include "OperatorsAndPotentials.hpp"
 
 // test against the BEM spaces
 

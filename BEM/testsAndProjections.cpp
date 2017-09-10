@@ -13,6 +13,7 @@
 #include "testsAndProjections.hpp"
 #include "geometry.hpp"
 #include "matrixRoutines.hpp"
+#include "OperatorsAndPotentials.hpp"
 
 // test a scalar function against Xh
 Eigen::MatrixXd testXh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
@@ -316,11 +317,29 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double
 Eigen::MatrixXd projectYh(const geometry& g, double (*f)(double,double), int k, const Eigen::MatrixXd& q1d)
 {
     
-    // TBD: needs Yh x Yh mass matrix
-    
+	size_t Nelt = g.nElts;
+	size_t Nnd = g.nElts;
+
+    Eigen::MatrixXd M = massMatrixYhYh(g,k,q1d);
+	Eigen::MatrixXd b = testYh(g,f,k,q1d);
+
+	Eigen::VectorXd rhs((k+1)*Nelt);
+	rhs.setZero();
+	
+	// nodal DOFs first
+	for(size_t i = 0; i < Nnd; i++){
+		rhs(i) = b(0,i);	
+	}
+
+	// now internal DOFs, by element
+    for(size_t j = 1; j < k+1; j++){
+		for(size_t i = 0; i < Nelt; i++){
+			rhs(Nelt+k*i+j-1) = b(j,i);		// careful with the indexing!
+		}
+	}
+
+	Eigen::MatrixXd fh = solve(M,rhs);
+
+	return fh;
+	
 }
-
-
-
-
-

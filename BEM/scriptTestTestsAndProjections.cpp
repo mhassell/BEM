@@ -8,7 +8,7 @@
 #include "legendrebasis.hpp"
 #include "matrixRoutines.hpp"
 #include "quadTables.hpp"
-
+#include "OperatorsAndPotentials.hpp"
 
 double f(double, double);
 double f1(double, double);
@@ -17,7 +17,7 @@ double f2(double, double);
 int main(){
 
 	// polynomial degree
-	int k = 3;
+	int k = 2;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);
@@ -34,6 +34,7 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
+	g.refine();
 	
 	// quadrature
 	Eigen::MatrixXd q1d = tableGauss(63);	  
@@ -101,6 +102,16 @@ int main(){
 		}
 		std::cout << std::endl;
 	}
+
+	// project scalar functions into Yh
+	fh.setZero();
+	fh = projectYh(g,f,k,q1d);
+	
+	std::cout << "Result for projectYh (scalar case): " << std::endl;
+	for(size_t i = 0; i < fh.size(); i++){
+			std::cout << fh(i) << std::endl;
+	}
+	
 
 }
 

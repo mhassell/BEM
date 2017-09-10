@@ -132,26 +132,7 @@ Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& 
 			M3(j,Nnd+i) = MM(j,internalDOF(i));
 		}
 	}
-	
 
-	for(size_t i = 0; i < M3.rows(); i++){
-		for(size_t j = 0; j < M3.cols(); j++){
-			std::cout << M3(i,j) << " ";
-		}
-		std::cout << std::endl;
-	}
-	
-	
-	/*
-	for(size_t i = 0; i < internalDOF.rows(); i++){
-		for(size_t j = 0; j < MM.cols(); j++){
-			MM(Nnd+i,j) = M(internalDOF(i),j);
-		}
-	} 
-	*/   
-	
-    //assemble MM into fh by columns
-
-	return MM;   
+	return M3;   
     
 }

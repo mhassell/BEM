@@ -38,8 +38,8 @@ scriptTestLegendreBasis: legendrebasis.o scriptTestLegendreBasis.cpp
 scriptTestMatrixRoutines: matrixRoutines.o scriptTestMatrixRoutines.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp scriptTestMatrixRoutines.cpp -o scriptTestMatrixRoutines
 
-scriptTestTestsAndProjections: testsAndProjections.o quadTables.o matrixRoutines.o legendrebasis.o geometry.o scriptTestTestsAndProjections.cpp
-	 g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp quadTables.cpp legendrebasis.cpp geometry.cpp testsAndProjections.cpp scriptTestTestsAndProjections.cpp  -o scriptTestTestsAndProjections
+scriptTestTestsAndProjections: testsAndProjections.o quadTables.o matrixRoutines.o legendrebasis.o geometry.o massMatrices.o scriptTestTestsAndProjections.cpp
+	 g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp quadTables.cpp legendrebasis.cpp geometry.cpp testsAndProjections.cpp OperatorsAndPotentials.cpp scriptTestTestsAndProjections.cpp  -o scriptTestTestsAndProjections
 
 scriptTestMassMatrices: massMatrices.o geometry.o quadTables.o legendrebasis.o matrixRoutines.o
 	g++ -I /usr/local/include/eigen -L /usr/lib  matrixRoutines.cpp quadTables.cpp legendrebasis.cpp geometry.cpp OperatorsAndPotentials.cpp scriptTestMassMatrices.cpp -o scriptTestMassMatrices
