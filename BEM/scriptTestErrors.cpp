@@ -48,7 +48,7 @@ int main(){
 	double (*fp2)(double,double) = &f2;
 
 	Eigen::MatrixXd fh;
-
+/*
 	// projecting into Xh
 	std::cout << "Result for projectXh (scalar case): " << std::endl;
 	for(int i = 0; i < nLevels; i++){
@@ -58,23 +58,42 @@ int main(){
 		fh.setZero();
 		fh = projectXh(g,fp,k,q1d);
 
-		double errorXhScalar = errorXh(g,f,fh,k,q1d);
+		double errorXhScalar = errorXh(g,fp,fh,k,q1d);
 		std::cout << errorXhScalar << std::endl;
 
 	}
 	
 	// project vector functions into Xh	 	
 	fh.setZero();
-	fh = projectXh(g,fp1,fp2,k,q1d);	
 
 	std::cout << "Result for projectXh (vector case): " << std::endl;
+	for(int i = 0; i < nLevels; i++){
+
+		g.refine();		
+	
+		fh.setZero();
+		fh = projectXh(g,fp1,fp2,k,q1d);
+
+		double errorXhVector = errorXh(g,fp1,fp2,fh,k,q1d);
+		std::cout << errorXhVector << std::endl;
+
+	}
+
+*/
 
 	// project scalar functions into Yh
-	fh.setZero();
-	fh = projectYh(g,f,k,q1d);
-	
 	std::cout << "Result for projectYh (scalar case): " << std::endl;
+	for(int i = 0; i < nLevels; i++){
 
+		g.refine();		
+	
+		fh.setZero();
+		fh = projectYh(g,f,k,q1d);
+
+		double errorYhScalar = errorYh(g,f,fh,k,q1d);
+		std::cout << errorYhScalar << std::endl;
+
+	}
 }
 
 double f(double x1, double x2){
