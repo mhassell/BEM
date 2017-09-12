@@ -14,6 +14,7 @@
 #include "legendrebasis.hpp"
 #include "quadTables.hpp"
 #include "geometry.hpp"
+#include "matrixRoutines.hpp"
 
 // mass matrices
 /*
@@ -23,6 +24,10 @@ Eigen::MatrixXd massMatrixXhYh(const geometry& g, int k, const Eigen::MatrixXd& 
 */
 
 Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& q1d);
+
+// differentiation matrix
+
+Eigen::MatrixXd differentiationMatrix(const geometry &g, int k);
 
 // operators
 

@@ -9,11 +9,14 @@
 // Includes methods for computing: Mass matrices, BEM matrices, and discretized layer potentials
 
 #include <Eigen/Dense>
+#include <cmath>
 #include <iostream>
 
 #include "OperatorsAndPotentials.hpp"
 #include "legendrebasis.hpp"
 #include "matrixRoutines.hpp"
+#include "geometry.hpp"
+#include "quadTables.hpp"
 
 /*
 
@@ -28,6 +31,76 @@ void massMatrixXhYh(const geometry& g, int k, const std::vector<std::vector<doub
 }
 
 */
+
+Eigen::MatrixXd differentiationMatrix(const geometry &g, int k){
+
+	size_t Nelt = g.nElts;
+	size_t Nnd = g.coordinates.rows();
+
+	Eigen::MatrixXd D1(k+1,k+2);
+	D1(0,0) = -0.5;
+	D1(0,1) = 0.5;
+	
+	// it would be nice to do this with D1.bottomRightCorner()
+	for(size_t i = 1; i < k+1; i++){
+		for(size_t j = 2; j < k+2; j++){
+			if(i == j - 1){
+				double val = (double) 2*i+1;
+				D1(i,j) = pow(val/2,0.5);
+			}	
+		}
+	}
+
+	Eigen::MatrixXd lengths(Nelt,Nelt);
+	for(size_t i = 0; i < Nelt; i++){
+		lengths(i,i) = 2/g.lengths(i);
+	}
+	
+
+	Eigen::MatrixXd D2 = kron(lengths,D1);
+
+	// nodalDOF arrays
+    Eigen::VectorXd nodalDOF1 = Eigen::VectorXd(Nelt);
+	Eigen::VectorXd nodalDOF2 = Eigen::VectorXd(Nelt);    
+
+    for(size_t i = 0; i < Nelt; i++){
+        nodalDOF1(i) =     (k+2)*i;
+        nodalDOF2(i) = 1 + (k+2)*i;
+    }
+
+    // internalDOF array
+    Eigen::VectorXd internalDOF((k+2)*Nelt - 2*Nelt);
+	for(size_t i = 0; i < Nelt; i++){
+		// each element has 2 nodal DOFs and k internal DOFs (for a total of k+2 DOFs)
+		for(size_t j = 0; j < k; j++){
+			internalDOF(i*k + j) = 2+(k+2)*i + j;	
+		}		
+	}
+
+	// assemble MM into M3 by columns
+	Eigen::MatrixXd D((k+1)*Nelt, (k+1)*Nelt);
+	D.setZero();
+
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < D.cols(); j++){
+			D(j,g.elements(i,0)) = D2(j,nodalDOF1(i)); 
+        }
+    }
+
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < D.cols(); j++){
+			D(j,g.elements(i,1)) += D2(j,nodalDOF2(i));   
+        }
+    }
+
+	for(size_t i = 0; i < internalDOF.rows(); i++){
+		for(size_t j = 0; j < D.rows(); j++){
+			D(j,Nnd+i) = D2(j,internalDOF(i));
+		}
+	}
+
+	return D;
+}
 
 Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& q1d)
 {
@@ -88,8 +161,6 @@ Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& 
 		}		
 	}
 
-	// good up to here - 9/7/17	
-
     // assemble M in to MM by rows
     Eigen::MatrixXd MM((k+1)*Nelt, (k+2)*Nelt);
 	MM.setZero();
@@ -111,7 +182,8 @@ Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& 
 			MM(Nnd+i,j) = M(internalDOF(i),j);
 		}
 	}
-
+	
+	// assemble MM into M3 by columns
 	Eigen::MatrixXd M3((k+1)*Nelt, (k+1)*Nelt);
 	M3.setZero();
 

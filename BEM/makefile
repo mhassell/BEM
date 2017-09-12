@@ -50,6 +50,8 @@ scriptTestMassMatrices: massMatrices.o geometry.o quadTables.o legendrebasis.o m
 scriptTestErrors: errors.o geometry.o quadTables.o legendrebasis.o testsAndProjections.o matrixRoutines.o massMatrices.o scriptTestErrors.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib errors.cpp geometry.cpp quadTables.cpp legendrebasis.cpp testsAndProjections.cpp matrixRoutines.cpp OperatorsAndPotentials.cpp scriptTestErrors.cpp -o scriptTestErrors
 
+scriptTestDiffMatrix: geometry.o massMatrices.o matrixRoutines.o legendrebasis.o
+	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp OperatorsAndPotentials.cpp matrixRoutines.cpp legendrebasis.cpp scriptTestDiffMatrix.cpp -o scriptTestDiffMatrix 
 
 clean:
 	rm *.o
