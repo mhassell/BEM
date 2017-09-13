@@ -6,9 +6,11 @@
 //  Copyright © 2017 Matthew Hassell. All rights reserved.
 //
 
-#include "legendrebasis.hpp"
 #include <tr1/cmath>
 #include <Eigen/Dense>
+#include <iostream>
+
+#include "legendrebasis.hpp"
 
 /*
  

@@ -3,7 +3,6 @@
 
 #include "OperatorsAndPotentials.hpp"
 #include "geometry.hpp"
-#include "quadTables.hpp"
 
 int main(){
 
@@ -25,11 +24,15 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-	//g.refine();	
+	g.refine();
 
-	// quadrature
-	Eigen::MatrixXd q1d = tableGauss(63);	  
+	Eigen::MatrixXd D = differentiationMatrix(g,k);
 
-	Eigen::MatrixXd MYhYh = massMatrixYhYh(g, k, q1d);
+	for(size_t i = 0; i < D.rows(); i++){
+		for(size_t j = 0; j < D.cols(); j++){
+			std::cout << D(i,j) << "   ";
+		}
+		std::cout << std::endl;
+	}
 
 }

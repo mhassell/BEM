@@ -17,11 +17,10 @@
 #include "matrixRoutines.hpp"
 
 // mass matrices
-/*
+
 Eigen::MatrixXd massMatrixXhXh(const geometry& g, int k, const Eigen::MatrixXd& q1d);
 
 Eigen::MatrixXd massMatrixXhYh(const geometry& g, int k, const Eigen::MatrixXd& q1d);
-*/
 
 Eigen::MatrixXd massMatrixYhYh(const geometry& g, int k, const Eigen::MatrixXd& q1d);
 
