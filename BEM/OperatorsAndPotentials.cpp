@@ -30,7 +30,7 @@ Eigen::MatrixXd massMatrixXhXh(const geometry& g, int k, const Eigen::MatrixXd& 
 
 	Eigen::VectorXd x = Eigen::VectorXd(Nqd);
     for(size_t i = 0; i < Nqd; i++){
-        x(i) = q1d(i,0);   // dump quad nodes into x
+        x(i) = q1d(i,0);
     }
 	
 	legendrebasis(k, x, 1, P);
@@ -76,10 +76,9 @@ Eigen::MatrixXd massMatrixXhYh(const geometry& g, int k, const Eigen::MatrixXd& 
 	Eigen::MatrixXd Psi(Nqd, k+2);
 	Eigen::MatrixXd P(Nqd,k+1);
 	    
-	legendrebasis(k+2, x, 2, Psi);
-	legendrebasis(k+1, x, 1, P);	
+	legendrebasis(k+1, x, 2, Psi);
+	legendrebasis(k, x, 1, P);	
 
-    Eigen::MatrixXd PsiPsi = Eigen::MatrixXd(k+2,k+2);
     Eigen::MatrixXd PsiQd = Eigen::MatrixXd(Nqd, k+2);
     
     // attach quad weights
@@ -102,7 +101,7 @@ Eigen::MatrixXd massMatrixXhYh(const geometry& g, int k, const Eigen::MatrixXd& 
         lengths(i,i) = 0.5*g.lengths(i);
     }
     
-    Eigen::MatrixXd M = kron(lengths, PsiPsi);
+    Eigen::MatrixXd M = kron(lengths, PsiP);
     
     // nodalDOF arrays
     Eigen::VectorXd nodalDOF1 = Eigen::VectorXd(Nelt);
