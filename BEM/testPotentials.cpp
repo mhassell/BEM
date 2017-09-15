@@ -1,10 +1,9 @@
 #include <Eigen/Dense>
-#include <complex>
 
 #include "geometry.hpp"
 #include "legendrebasis.hpp"
 
-Eigen::MatrixCf testPotentialXh(const geometry& g, std::complex (*kernel)(double,double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d, std::complex s){
+Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double,double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d){
 
 	size_t Nelt = g.nElt;
 	size_t Nqd = q1d.rows();
@@ -26,12 +25,26 @@ Eigen::MatrixCf testPotentialXh(const geometry& g, std::complex (*kernel)(double
 	P1t.transposeInPlace();
 	P2t.transposeInPlace();
 
-	P1t.reshape(1,Nqd);
-	P2t.reshape(1,Nqd);
+	P1t.reshape(1,Nqd*Nelt);
+	P2t.reshape(1,Nqd*Nelt);
 
 	Eigen::MatrixXd Z1minusY1(Nobs,Nqd);
 	Eigen::MatrixXd Z2minusY2(Nobs,Nqd);
 
-	
+	for(size_t i = 0; i < Nobs; i++){
+		for(size_t j = 0; j < Nqd*Nelt; j++){
+			Z1minuxY1(i,j) = z(i,0) - P1t(0,j);
+			Z2minuxY2(i,j) = z(i,1) - P2t(0,j);
+		}
+	}
+
+	Z1minusY1.reshape(Nobs*Nelt, Nqd);
+	Z2minusY2.reshape(Nobs*Nelt, Nqd);	
+
+	Eigen::MatrixXcd SL;
+
+	return SL;
 
 }
+
+
