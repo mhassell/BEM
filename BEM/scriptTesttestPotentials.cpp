@@ -33,7 +33,19 @@ int main(){
 	// quadrature
 	Eigen::MatrixXd q1d = tableGauss(63);	  
 
+	// kernel
 	double (*ker)(double) = &kernel;
+
+	// obs pts
+	Eigen::MatrixXd obs(5,2);
+
+	obs << 1, 2,
+		   2, 3,
+		  -1.5, 0.8,
+		  -1.1, -0.5,
+		   1.5, -0.3;	
+
+	Eigen::MatrixXd SL = testPotentialXh(g, ker, obs, k, q1d);
 
 }
 

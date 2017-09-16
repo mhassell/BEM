@@ -6,6 +6,6 @@
 #include "geometry.hpp"
 #include "quadTables.hpp"
 
-Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double,double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d);
+Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d);
 
 #endif

@@ -3,7 +3,7 @@
 #include "geometry.hpp"
 #include "legendrebasis.hpp"
 
-Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double,double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d){
+Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d){
 
 	size_t Nelt = g.nElt;
 	size_t Nqd = q1d.rows();
@@ -33,8 +33,8 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double,doubl
 
 	for(size_t i = 0; i < Nobs; i++){
 		for(size_t j = 0; j < Nqd*Nelt; j++){
-			Z1minuxY1(i,j) = z(i,0) - P1t(0,j);
-			Z2minuxY2(i,j) = z(i,1) - P2t(0,j);
+			Z1minusY1(i,j) = obs(i,0) - P1t(0,j);
+			Z2minusY2(i,j) = obs(i,1) - P2t(0,j);
 		}
 	}
 
