@@ -1,32 +1,59 @@
 #include <Eigen/Dense>
+#include <iostream>
 
 #include "geometry.hpp"
 #include "legendrebasis.hpp"
 
 Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d){
 
-	size_t Nelt = g.nElt;
+	size_t Nelt = g.nElts;
 	size_t Nqd = q1d.rows();
 	size_t Nobs = obs.rows();
 
 	// these  contain the quadrature points mapped to the phyical elements
-    Eigen::MatrixXd P1t = Eigen::MatrixXd(Nqd,Nelts);
-    Eigen::MatrixXd P2t = Eigen::MatrixXd(Nqd,Nelts);
+    Eigen::MatrixXd P1t = Eigen::MatrixXd(Nqd,Nelt);
+    Eigen::MatrixXd P2t = Eigen::MatrixXd(Nqd,Nelt);
     // the function evaluated at the physical quadrature points
-    Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
+    Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelt);
 
     for(size_t i = 0; i < Nqd; i++){
-        for(size_t j = 0; j < Nelts; j++){
+        for(size_t j = 0; j < Nelt; j++){
             P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
             P2t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),1);
         }
     }
 
+	std::cout << Nqd*Nelt << std::endl;
+	
+	// reshape P1t and P2t
+	Eigen::MatrixXd tmp(1,Nqd*Nelt);
+	
+	P1t.transposeInPlace();
+	for(size_t i = 0; i < Nelt; i++){
+		for(size_t j = 0; j < Nqd; j++){
+			std::cout << i*Nqd + j << std::endl;
+			tmp(0,i*Nqd + j) = P1t(i,j);
+		}
+	}
+	P1t = tmp;
+	tmp.setZero();
+
+	P2t.transposeInPlace();
+	for(size_t i = 0; i < Nelt; i++){
+		for(size_t j = 0; j < Nqd; j++){
+			tmp(0,i*Nqd + j) = P2t(i,j);
+		}
+	}
+	P2t = tmp;
+	tmp.setZero();
+
+	/*
 	P1t.transposeInPlace();
 	P2t.transposeInPlace();
 
 	P1t.reshape(1,Nqd*Nelt);
 	P2t.reshape(1,Nqd*Nelt);
+	*/
 
 	Eigen::MatrixXd Z1minusY1(Nobs,Nqd);
 	Eigen::MatrixXd Z2minusY2(Nobs,Nqd);
@@ -38,10 +65,10 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 		}
 	}
 
-	Z1minusY1.reshape(Nobs*Nelt, Nqd);
-	Z2minusY2.reshape(Nobs*Nelt, Nqd);	
+	// Z1minusY1.reshape(Nobs*Nelt, Nqd);
+	// Z2minusY2.reshape(Nobs*Nelt, Nqd);	
 
-	Eigen::MatrixXcd SL;
+	Eigen::MatrixXd SL;
 
 	return SL;
 
