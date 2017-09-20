@@ -31,7 +31,7 @@ int main(){
 	// g.refine();
 
 	// quadrature
-	Eigen::MatrixXd q1d = tableGauss(63);	  
+	Eigen::MatrixXd q1d = tableGauss(5);	  
 
 	// kernel
 	double (*ker)(double) = &kernel;
