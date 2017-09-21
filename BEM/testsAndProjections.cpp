@@ -153,8 +153,8 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1,Nelts);
     
     // these  contain the quadrature points mapped to the phyical elements
-    Eigen::MatrixXd P1t = Eigen::MatrixXd(Nqd,Nelts);
-    Eigen::MatrixXd P2t = Eigen::MatrixXd(Nqd,Nelts);
+    Eigen::MatrixXd P1t(Nqd,Nelts);
+    Eigen::MatrixXd P2t(Nqd,Nelts);
     // the function evaluated at the physical quadrature points
     Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
 
@@ -170,12 +170,12 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
     // polynomial bits
     
     // basis on physical element
-    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
+    Eigen::VectorXd x(Nqd);
     for(size_t i = 0; i < Nqd; i++){
         x(i) = q1d(i,0);
     }    
 
-    Eigen::MatrixXd Psi = Eigen::MatrixXd(Nqd, k+2);
+    Eigen::MatrixXd Psi(Nqd, k+2);
     legendrebasis(k+1, x, 2, Psi);
     
     // attach to quad weights
@@ -226,12 +226,12 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, 
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1,Nelts);
 
     // basis on physical element
-    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
+    Eigen::VectorXd x(Nqd);
     for(size_t i = 0; i < Nqd; i++){
         x(i) = q1d(i,0);
     }
 
-	Eigen::MatrixXd P = Eigen::MatrixXd(Nqd, k+1);
+	Eigen::MatrixXd P(Nqd, k+1);
     
     legendrebasis(k, x, 1, P);
     
@@ -247,7 +247,7 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f)(double,double), int k, 
 	// got up to here
     
     Eigen::MatrixXd PP = Pt*P;
-    Eigen::MatrixXd ffh = Eigen::MatrixXd(k+1, g.nElts);
+    Eigen::MatrixXd ffh(k+1, g.nElts);
     
     ffh = testXh(g, f, k, q1d);
     
@@ -273,10 +273,10 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double
 
 	Eigen::MatrixXd fh = Eigen::MatrixXd::Zero(k+1, Nelts);
 
-    Eigen::MatrixXd P = Eigen::MatrixXd(Nqd, k+1);
+    Eigen::MatrixXd P(Nqd, k+1);
     
     // basis on physical element
-    Eigen::VectorXd x = Eigen::VectorXd(Nqd);
+    Eigen::VectorXd x(Nqd);
     for(size_t i = 0; i < Nqd; i++){
         x(i) = q1d(i,0);
     }
@@ -293,8 +293,8 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double
     }
     
     Eigen::MatrixXd PP = Pt*P;
-    Eigen::MatrixXd fhx = Eigen::MatrixXd(k+1, g.nElts);
-    Eigen::MatrixXd fhy = Eigen::MatrixXd(k+1, g.nElts);
+    Eigen::MatrixXd fhx(k+1, g.nElts);
+    Eigen::MatrixXd fhy(k+1, g.nElts);
     
     fhx = testXh(g, f1, k, q1d);
     fhy = testXh(g, f2, k, q1d);
@@ -308,7 +308,7 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double
                 + (g.normals(j,1)/g.lengths(j))*fhy(i,j);
         }
     }
-
+s
 	return fh;
     
 }

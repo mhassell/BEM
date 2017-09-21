@@ -1,5 +1,6 @@
 #include <Eigen/Dense>
 #include <iostream>
+#include <math.h>
 
 #include "geometry.hpp"
 #include "legendrebasis.hpp"
@@ -23,92 +24,71 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
         }
     }
 
-
 	// reshape P1t and P2t
 	Eigen::MatrixXd tmp(1,Nqd*Nelt);
 	
 	P1t.transposeInPlace();
 	P1t.resize(1,Nqd*Nelt);
-	/*
-	for(size_t i = 0; i < Nelt; i++){
-		for(size_t j = 0; j < Nqd; j++){
-			tmp(0,i*Nqd + j) = P1t(i,j);
-		}
-	}
-	*/
-	//P1t = tmp;
-
-	for(size_t i = 0; i < P1t.rows(); i++){
-		for(size_t j = 0 ; j < P1t.cols(); j++){
-			std::cout << P1t(i,j) << " ";		
-		}
-		std::cout << std::endl;
-	}
-	tmp.setZero();
-
+	
 	P2t.transposeInPlace();
-	for(size_t i = 0; i < Nelt; i++){
-		for(size_t j = 0; j < Nqd; j++){
-			tmp(0,i*Nqd + j) = P2t(i,j);
-		}
-	}
-	P2t = tmp;
-	tmp.setZero();
+	P2t.resize(1,Nqd*Nelt);
 
 	Eigen::MatrixXd Z1minusY1(Nobs,Nqd*Nelt);
 	Eigen::MatrixXd Z2minusY2(Nobs,Nqd*Nelt);
 
 	for(size_t i = 0; i < Nobs; i++){
-		for(size_t j = 0; j < Nqd*Nelt; j++){
-			
+		for(size_t j = 0; j < Nqd*Nelt; j++){		
 			Z1minusY1(i,j) = obs(i,0) - P1t(0,j);
 			Z2minusY2(i,j) = obs(i,1) - P2t(0,j);
 		}
 	}
 
-	/*
-	for(size_t i = 0; i < Z2minusY2.rows(); i++){
-		for(size_t j = 0; j < Z2minusY2.cols(); j++){
-			std::cout << Z2minusY2(i,j) << " ";
-		}
-		std::cout << std::endl;
-	}
-	*/	
-
-	// Nelt x 1 blocks of (Nobs x Nqd)
-	tmp.resize(Nobs*Nelt,Nqd);
-	tmp.setZero();
-	
-	Z2minusY2.transposeInPlace();
+	Z1minusY1.resize(Nobs*Nelt,Nqd);
 	Z2minusY2.resize(Nobs*Nelt,Nqd);
-
-	/*
-	for(size_t i = 0; i < Z2minusY2.rows(); i++){
-		for(size_t j = 0; j < Z2minusY2.cols(); j++){
-			std::cout << Z2minusY2(i,j) << " ";
-		}
-		std::cout << std::endl;
-	}
-	*/	
 	
-	for(size_t i = 0; i < Nobs; i++){
-		for(size_t j = 0; j < Nelt; j++){
-			for(size_t k = 0; k < Nqd; k++){
-				// std::cout << i << " " << j << " " << k << std::endl;
-				tmp(i*Nelt+j,k) = Z1minusY1(i,k*Nelt+j);		
-			}
-		}	
-	}	
+	Eigen::MatrixXd r(Nobs*Nelt, Nqd);
 
-	/*
-	for(size_t i = 0; i < tmp.rows(); i++){
-		for(size_t j = 0; j < tmp.cols(); j++){
-			std::cout << tmp(i,j) << " ";
+	for(size_t i = 0; i < Nobs*Nelt; i++){
+		for(size_t j = 0; j < Nqd; j++){
+			r(i,j) = pow(Z1minusY1(i,j),2) + pow(Z2minusY2(i,j),2);
+			r(i,j) = pow(r(i,j), 0.5);
 		}
+	}
+
+	Eigen::VectorXd x(Nqd);
+	for(size_t i = 0; i < Nqd; i++){
+		x(i) = q1d(i,0);
+	}
+	
+	std::cout << "here" << std::endl;
+	
+	Eigen::MatrixXd lb;
+	legendrebasis(k,x,1,lb);
+
+	std::cout << "here" << std::endl;
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < lb.cols(); j++){
+			lb(i,j) *= q1d(i,1);
+		}
+	}
+
+	Eigen::MatrixXd SL;
+
+	for(size_t i = 0; i < r.rows(); i++){
+		for(size_t j = 0; j < r.cols(); j++){
+			SL(i,j) = kernel(r(i,j));		
+		}	
+	}
+
+	SL = SL*lb;
+
+	for(size_t i = 0; i < SL.rows(); i++){
+		for(size_t j = 0; j < SL.cols(); j++){
+			std::cout << SL(i,j) << " ";
+		}	
 		std::cout << std::endl;
 	}	
-	*/
-	Eigen::MatrixXd SL;
 
 	return SL;
 
