@@ -43,9 +43,9 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 		}
 	}
 
-	Z1minusY1.resize(Nobs*Nelt,Nqd);
-	Z2minusY2.resize(Nobs*Nelt,Nqd);
-	
+	Z1minusY1.resize(Nobs*Nelt, Nqd);
+	Z2minusY2.resize(Nobs*Nelt, Nqd);
+	s
 	Eigen::MatrixXd r(Nobs*Nelt, Nqd);
 
 	for(size_t i = 0; i < Nobs*Nelt; i++){
@@ -60,12 +60,8 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 		x(i) = q1d(i,0);
 	}
 	
-	std::cout << "here" << std::endl;
-	
-	Eigen::MatrixXd lb;
+	Eigen::MatrixXd lb(Nqd,k+1);
 	legendrebasis(k,x,1,lb);
-
-	std::cout << "here" << std::endl;
 
 	for(size_t i = 0; i < Nqd; i++){
 		for(size_t j = 0; j < lb.cols(); j++){
@@ -73,7 +69,7 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 		}
 	}
 
-	Eigen::MatrixXd SL;
+	Eigen::MatrixXd SL(r.rows(), r.cols());
 
 	for(size_t i = 0; i < r.rows(); i++){
 		for(size_t j = 0; j < r.cols(); j++){
