@@ -24,8 +24,8 @@ massMatrices.o: OperatorsAndPotentials.cpp legendrebasis.o
 errors.o: errors.cpp geometry.o quadTables.o legendrebasis.o
 	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp quadTables.cpp legendrebasis.cpp -c errors.cpp 
 
-testPotentials.o: geometry.o legendrebasis.o quadTables.o
-	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp quadTables.cpp legendrebasis.cpp -c testPotentials.cpp 
+testPotentials.o: geometry.o legendrebasis.o quadTables.o matrixRoutines.o
+	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp quadTables.cpp legendrebasis.cpp matrixRoutines.cpp -c testPotentials.cpp 
 
 
 
@@ -58,8 +58,8 @@ scriptTestErrors: errors.o geometry.o quadTables.o legendrebasis.o testsAndProje
 scriptTestDiffMatrix: geometry.o massMatrices.o matrixRoutines.o legendrebasis.o
 	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp OperatorsAndPotentials.cpp matrixRoutines.cpp legendrebasis.cpp scriptTestDiffMatrix.cpp -o scriptTestDiffMatrix 
 
-scriptTestPotentials: geometry.o legendrebasis.o quadTables.o testPotentials.o
-	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp legendrebasis.cpp quadTables.cpp testPotentials.cpp scriptTesttestPotentials.cpp -o scriptTesttestPotentials
+scriptTestPotentials: geometry.o legendrebasis.o quadTables.o testPotentials.o matrixRoutines.o
+	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp legendrebasis.cpp quadTables.cpp testPotentials.cpp matrixRoutines.cpp scriptTesttestPotentials.cpp -o scriptTesttestPotentials
 
 clean:
 	rm *.o

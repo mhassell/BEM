@@ -4,6 +4,7 @@
 
 #include "geometry.hpp"
 #include "legendrebasis.hpp"
+#include "matrixRoutines.hpp"
 
 Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), const Eigen::MatrixXd& obs, int k, const Eigen::MatrixXd& q1d){
 
@@ -45,7 +46,7 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 
 	Z1minusY1.resize(Nobs*Nelt, Nqd);
 	Z2minusY2.resize(Nobs*Nelt, Nqd);
-	s
+	
 	Eigen::MatrixXd r(Nobs*Nelt, Nqd);
 
 	for(size_t i = 0; i < Nobs*Nelt; i++){
@@ -79,12 +80,28 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 
 	SL = SL*lb;
 
+	Eigen::MatrixXd lens(Nelt,1);
+
+	for(size_t i = 0; i < Nelt; i++){
+		lens(i) = 0.5*g.lengths(i);
+	}
+
+	Eigen::MatrixXd ones = Eigen::MatrixXd::Constant(Nobs,1,1);
+	
+	lens = kron(lens,ones);
+
+	for(size_t i = 0; i < SL.rows(); i++){
+		SL(i) *= lens(i);
+	}
+
 	for(size_t i = 0; i < SL.rows(); i++){
 		for(size_t j = 0; j < SL.cols(); j++){
 			std::cout << SL(i,j) << " ";
 		}	
 		std::cout << std::endl;
 	}	
+
+	SL.resize(
 
 	return SL;
 
