@@ -94,14 +94,14 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 		SL(i) *= lens(i);
 	}
 
+	SL.resize(Nobs, Nelt*(k+1));
+
 	for(size_t i = 0; i < SL.rows(); i++){
 		for(size_t j = 0; j < SL.cols(); j++){
 			std::cout << SL(i,j) << " ";
 		}	
 		std::cout << std::endl;
 	}	
-
-	SL.resize(
 
 	return SL;
 

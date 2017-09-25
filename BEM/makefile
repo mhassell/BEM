@@ -61,5 +61,8 @@ scriptTestDiffMatrix: geometry.o massMatrices.o matrixRoutines.o legendrebasis.o
 scriptTestPotentials: geometry.o legendrebasis.o quadTables.o testPotentials.o matrixRoutines.o
 	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp legendrebasis.cpp quadTables.cpp testPotentials.cpp matrixRoutines.cpp scriptTesttestPotentials.cpp -o scriptTesttestPotentials
 
+scriptReshape: scriptReshape.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib scriptReshape.cpp -o scriptReshape
+
 clean:
 	rm *.o
