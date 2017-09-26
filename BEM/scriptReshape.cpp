@@ -44,6 +44,8 @@ int main(){
 	std::cout << std::endl;
 
 	}
+	
+	/*	
 
 	// now to permute the last two indices
 	
@@ -69,11 +71,14 @@ int main(){
 
 	}
 
+	*/
+
 	// now with new and delete!
 	const int dim1 = 3;
 	const int dim2 = 3;
 	const int dim3 = 3;
 
+	/*
 	int ***array = new int**[dim1];
 
 	for(size_t i = 0; i < dim1; i++){
@@ -91,7 +96,6 @@ int main(){
 		}
 	}
 
-	
 	for(size_t i = 0; i < dim1; i++){
 		for(size_t j = 0; j < dim2; j++){
 			for(size_t k = 0; k < dim3; k++){
@@ -102,6 +106,29 @@ int main(){
 		std::cout << std::endl;
 		std::cout << std::endl;
 	}
+
+	*/
+
+	// and this is what we need
+
+	int ***arrayp = new int**[dim1];
+
+	for(size_t i = 0; i < dim1; i++){
+		arrayp[i] = new int*[dim3];
+		for(size_t j = 0; j < dim3; j++){	
+			arrayp[i][j] = new int[dim2];
+		}
+	}
+
+	for(size_t i = 0; i < dim1; i++){
+		for(size_t j = 0; j < dim2; j++){
+			for(size_t k = 0; k < dim3; k++){
+				arrayp[k][i][j] = a[k][i][j];
+			}
+		}
+	}	
 		
-	delete []array;
+	delete [] arrayp;
+	// delete []array;
+
 }

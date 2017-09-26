@@ -91,10 +91,10 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 	lens = kron(lens,ones);
 
 	for(size_t i = 0; i < SL.rows(); i++){
-		SL(i) *= lens(i);
+		for(size_t j = 0; j < SL.cols(); j++){
+			SL(i,j) *= lens(i);
+		}
 	}
-
-	SL.resize(Nobs, Nelt*(k+1));
 
 	for(size_t i = 0; i < SL.rows(); i++){
 		for(size_t j = 0; j < SL.cols(); j++){
@@ -102,6 +102,10 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 		}	
 		std::cout << std::endl;
 	}	
+
+	Eigen::MatrixXd tmp2 = Eigen::MatrixXd::Zero(Nobs,(k+1)*Nelt);
+
+	
 
 	return SL;
 
