@@ -105,7 +105,9 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 
 	Eigen::MatrixXd tmp2 = Eigen::MatrixXd::Zero(Nobs,(k+1)*Nelt);
 
+	// use SL.block(i,j,m,n) here to simplify greatly 
 	
+		
 
 	return SL;
 
