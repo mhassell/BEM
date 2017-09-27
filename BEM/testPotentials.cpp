@@ -96,18 +96,23 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 		}
 	}
 
-	for(size_t i = 0; i < SL.rows(); i++){
-		for(size_t j = 0; j < SL.cols(); j++){
-			std::cout << SL(i,j) << " ";
-		}	
-		std::cout << std::endl;
-	}	
-
 	Eigen::MatrixXd tmp2 = Eigen::MatrixXd::Zero(Nobs,(k+1)*Nelt);
 
 	// use SL.block(i,j,m,n) here to simplify greatly 
 	
-		
+	for(size_t i = 0; i < Nelt; i++){
+		for(size_t j = 0; j < k+1; j++){
+			std::cout << j+i*Nelt << "   " <<  j*Nobs << std::endl;	
+			tmp2.block(0,j+i*(k+1),Nobs,1) = SL.block(i*Nobs,j,Nobs,1);
+		}	
+	}
+
+	for(size_t i = 0; i < tmp2.rows(); i++){
+		for(size_t j = 0; j < tmp2.cols(); j++){
+			std::cout << tmp2(i,j) << " ";
+		}	
+		std::cout << std::endl;
+	}		
 
 	return SL;
 
