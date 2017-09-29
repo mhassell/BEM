@@ -11,7 +11,7 @@ double kernel(double);
 int main(){
 
 	// polynomial degree
-	int k = 1;
+	int k = 0;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);
@@ -28,7 +28,7 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-	g.refine();
+	// g.refine();
 
 	// quadrature
 	Eigen::MatrixXd q1d = tableGauss(5);	  
@@ -45,12 +45,14 @@ int main(){
 		  -1.1, -0.5,
 		   1.5, -0.3;	
 
-	Eigen::MatrixXd SL = testPotentialXh(g, ker, obs, k, q1d);
+	// Eigen::MatrixXd SL = testPotentialXh(g, ker, obs, k, q1d);
+	Eigen::MatrixXd DL = testPotentialYh(g, ker, obs, k, q1d);
 
 }
 
 double kernel(double x){
 
 	return log(x);
+
 
 }
