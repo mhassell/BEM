@@ -184,17 +184,17 @@ Eigen::MatrixXd testPotentialYh(const geometry& g, double (*kernel)(double), con
 		}
 	}
 
-	Eigen::MatrixXd K(r.rows(), r.cols());
+	Eigen::MatrixXd M(r.rows(), r.cols());
 
-	/*
+	
 
 	for(size_t i = 0; i < r.rows(); i++){
 		for(size_t j = 0; j < r.cols(); j++){
-			K(i,j) = kernel(r(i,j));		
+			M(i,j) = kernel(r(i,j))*N(i,j);		
 		}	
 	}
 
-	K = K*lb;
+	M = M*Psi;
 
 	Eigen::MatrixXd lens(Nelt,1);
 
@@ -206,25 +206,61 @@ Eigen::MatrixXd testPotentialYh(const geometry& g, double (*kernel)(double), con
 	
 	lens = kron(lens,ones);
 
-	for(size_t i = 0; i < K.rows(); i++){
-		for(size_t j = 0; j < K.cols(); j++){
-			K(i,j) *= lens(i);
+	for(size_t i = 0; i < M.rows(); i++){
+		for(size_t j = 0; j < M.cols(); j++){
+			M(i,j) *= lens(i);
 		}
 	}
 
-	Eigen::MatrixXd tmp2 = Eigen::MatrixXd::Zero(Nobs,(k+1)*Nelt);
+	Eigen::MatrixXd tmp2 = Eigen::MatrixXd::Zero(Nobs,(k+2)*Nelt);
 
-	// use SL.block(i,j,m,n) here to simplify greatly 
 	for(size_t i = 0; i < Nelt; i++){
-		for(size_t j = 0; j < k+1; j++){
-			tmp2.block(0,j+i*(k+1),Nobs,1) = K.block(i*Nobs,j,Nobs,1);
+		for(size_t j = 0; j < k+2; j++){
+			tmp2.block(0,j+i*(k+2),Nobs,1) = M.block(i*Nobs,j,Nobs,1);
 		}	
 	}
 
-	K = tmp2;
+	// assembly
 
-	*/
+    Eigen::VectorXd nodalDOF1 = Eigen::VectorXd(Nelt);
+	Eigen::VectorXd nodalDOF2 = Eigen::VectorXd(Nelt);    
 
+    for(size_t i = 0; i < Nelt; i++){
+        nodalDOF1(i) =     (k+2)*i;
+        nodalDOF2(i) = 1 + (k+2)*i;
+    }
+
+    Eigen::VectorXd internalDOF((k+2)*Nelt - 2*Nelt);
+	for(size_t i = 0; i < Nelt; i++){
+		// each element has 2 nodal DOFs and k internal DOFs (for a total of k+2 DOFs)
+		for(size_t j = 0; j < k; j++){
+			internalDOF(i*k + j) = 2+(k+2)*i + j;	
+		}		
+	}
+
+	// assemble by columns
+
+	Eigen::MatrixXd K(Nobs, (k+1)*Nelt);
+	size_t Nnd = g.nElts;
+	
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < tmp2.rows(); j++){
+			K(j, g.elements(i,0)) = tmp2(j,nodalDOF1(i)); 
+        }
+    }
+
+	for(size_t i = 0; i < Nnd; i++){
+        for(size_t j = 0; j < tmp2.rows(); j++){			
+			K(j,g.elements(i,1)) += tmp2(j,nodalDOF2(i));   
+        }
+    }
+
+	for(size_t i = 0; i < internalDOF.rows(); i++){
+		for(size_t j = 0; j < tmp2.rows(); j++){
+			K(j,Nnd+i) = tmp2(j,internalDOF(i));
+		}
+	}
+	
 	return K;
 
 }
