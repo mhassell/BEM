@@ -11,6 +11,7 @@
 // functions:
 //     kronecker product of two boost arrays
 //     LU solvers (just a wrapper around the boost methods)
+//     meshgrid for two Eigen::VectorXd vectors
 
 #include "matrixRoutines.hpp"
 
@@ -70,3 +71,33 @@ Eigen::VectorXd solve(const Eigen::MatrixXd& A, const Eigen::VectorXd& b){
     return C;
     
 }
+
+grid meshgrid(const Eigen::VectorXd &x, const Eigen::VectorXd &y){
+
+	// return copies of x as rows, copies of y as columns
+
+	size_t N = x.rows();
+	size_t M = y.rows();
+
+	Eigen::MatrixXd X(M,N);
+	Eigen::MatrixXd Y(M,N);
+
+	for(size_t i = 0; i < M; i++){
+		for(size_t j = 0; j < N; j++){
+			X(i,j) = x(j);
+			Y(i,j) = y(i);
+		}
+	}	
+
+	grid g = {X,Y};
+
+	return g;
+
+}
+
+
+
+
+
+
+

@@ -11,6 +11,9 @@
 
 #include<Eigen/Dense>
 
+struct grid{
+	Eigen::MatrixXd X,Y;
+};
 
 // kronecker product of two (double precision) matrices
 Eigen::MatrixXd kron(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B);
@@ -19,5 +22,7 @@ Eigen::MatrixXd kron(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B);
 Eigen::MatrixXd solve(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B);
 
 Eigen::VectorXd solve(const Eigen::MatrixXd& A, const Eigen::VectorXd& b);
+
+grid meshgrid(const Eigen::VectorXd &x, const Eigen::VectorXd &y);
 
 #endif /* matrixRoutines_hpp */
