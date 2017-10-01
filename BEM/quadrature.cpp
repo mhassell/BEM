@@ -34,3 +34,35 @@ Eigen::MatrixXd tensorize(const Eigen::MatrixXd& f, const Eigen::MatrixXd& g){
 	return formula;
 
 }
+
+
+
+preparedQuads prepareQuad(const Eigen::MatrixXd &smoothf, const Eigen::MatrixXd &singf){
+
+	Eigen::MatrixXd GxS = tensorize(smoothf,singf);
+
+	Eigen::VectorXd X = GxS.block(0,0,GxS.rows(),1);
+	Eigen::VectorXd Y = GxS.block(0,1,GxS.rows(),1);
+	Eigen::VectorXd W = GxS.block(0,2,GxS.rows(),1);
+
+	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
