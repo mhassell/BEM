@@ -20,7 +20,7 @@ Goals:
 
 5. For time domain code, we're going to need an FFT library, I'll probably go with FFTW.
 
-6. Need to implement a Matlab like matrix library for my linear algebra needs.  This 
+6. (DONE) Need to implement a Matlab like matrix library for my linear algebra needs.  This 
 	would include a general solver (just with boost's LU routines), the kronecker product,
 	and I would like a linspace that returns stl::vectors so I can generate some 
 	bookeeping arrays a bit faster than now.  Some reshape routines would be helpful
@@ -31,6 +31,6 @@ Goals:
 	projects that may have overlaps in function names.   The matrix library described in #6 could then be pulled out
 	and used across other projects in the future.	
 
-Some conventions I'm following are the use of std::vectors/std::arrays for pieces that need user initialization (and where it was easier to copy from Matlab, like with quadrature rules).   Anything that needs linear algebra operations done on it or is part of another calculuation with matrices and vectors is done with the boost::numeric::ublas classes since they come with built in matrix operations. This choice is because the boost classes don't have nice initializers like the STL does.  I'd like to improve this in the future.  I also don't like the difference in access operators between boost and STL.  It's just one more layer of syntax complexity between the user and program.
+(NOT ANYMORE) Some conventions I'm following are the use of std::vectors/std::arrays for pieces that need user initialization (and where it was easier to copy from Matlab, like with quadrature rules).   Anything that needs linear algebra operations done on it or is part of another calculuation with matrices and vectors is done with the boost::numeric::ublas classes since they come with built in matrix operations. This choice is because the boost classes don't have nice initializers like the STL does.  I'd like to improve this in the future.  I also don't like the difference in access operators between boost and STL.  It's just one more layer of syntax complexity between the user and program.
 
 8/24/17 Update: I think I'm going to port a lot of the library to use eigen libraries.  These have nice constructors and tie in well with linear algebra routines.  Also, note to self: I'm putting the eigen header files in /usr/local/include
