@@ -12,7 +12,11 @@
 //     kronecker product of two boost arrays
 //     LU solvers (just a wrapper around the boost methods)
 //     meshgrid for two Eigen::VectorXd vectors
+//     printMatrix (print a matrix nicely)
 
+#include <iostream>
+#include <iomanip>
+#include <stdio.h>
 #include "matrixRoutines.hpp"
 
 // kronecker product of two (double precision) Eigen dense matrices
@@ -96,7 +100,16 @@ grid meshgrid(const Eigen::VectorXd &x, const Eigen::VectorXd &y){
 }
 
 
+void printMatrix(const Eigen::MatrixXd &A){
 
+	for(size_t i = 0; i < A.rows(); i++){
+		for(size_t j = 0; j < A.cols(); j++){
+			printf("%5f   ", A(i,j));
+		}
+		std::cout << std::endl;
+	}
+
+}
 
 
 

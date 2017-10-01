@@ -64,8 +64,8 @@ scriptTestPotentials: geometry.o legendrebasis.o quadTables.o testPotentials.o m
 scriptReshape: scriptReshape.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib scriptReshape.cpp -o scriptReshape
 
-scriptTestQuadrature: scriptTestQuadrature.cpp quadrature.cpp matrixRoutines.o
-	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp quadTables.cpp scriptTestQuadrature.cpp -o scriptTestQuadrature
+scriptTestQuadrature: scriptTestQuadrature.cpp quadrature.cpp matrixRoutines.o quadTables.o
+	g++ -I /usr/local/include/eigen -L /usr/lib quadrature.cpp matrixRoutines.cpp quadTables.cpp scriptTestQuadrature.cpp -o scriptTestQuadrature
 
 clean:
 	rm *.o

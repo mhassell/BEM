@@ -11,4 +11,6 @@ int main(){
 	
 	Eigen::MatrixXd qdd = tensorize(qdX, qdY); 
 
+	printMatrix(qdd);
+
 }

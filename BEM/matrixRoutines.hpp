@@ -25,4 +25,6 @@ Eigen::VectorXd solve(const Eigen::MatrixXd& A, const Eigen::VectorXd& b);
 
 grid meshgrid(const Eigen::VectorXd &x, const Eigen::VectorXd &y);
 
+void printMatrix(const Eigen::MatrixXd &A);
+
 #endif /* matrixRoutines_hpp */
