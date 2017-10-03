@@ -20,15 +20,16 @@ Eigen::MatrixXd tensorize(const Eigen::MatrixXd& f, const Eigen::MatrixXd& g){
 	formula.block(0,0,N*M,1) = gg.X;
 	formula.block(0,1,N*M,1) = gg.Y;
 
-	Eigen::MatrixXd W(M,N);
+	Eigen::MatrixXd W(N,M);
 	
-	for(size_t i = 0; i < M; i++){
-		for(size_t j = 0; j < N; j++){
-			W(i,j) = f(i,1)*g(j,1);
+	for(size_t i = 0; i < N; i++){
+		for(size_t j = 0; j < M; j++){
+			W(i,j) = f(j,1)*g(i,1);
 		}
 	}
 
 	W.resize(N*M,1);
+
 	formula.block(0,2,N*M,1) = W;
 
 	return formula;
@@ -65,12 +66,12 @@ preparedQuads prepareQuad(const Eigen::MatrixXd &smoothf, const Eigen::MatrixXd 
 
 	for(size_t i = 0; i < X.rows(); i++){
 		F2dssing(i,0) = 2*X(i)*(1-Y(i))-1;
-		F2dssing(i,1) = 2*(Y(i) + X(i)*1-Y(i))-1;
+		F2dssing(i,1) = 2*(Y(i) + X(i)*(1-Y(i)))-1;
 		F2dssing(i,2) = 4*(1-Y(i))*W(i);
 	}
 
 	for(size_t i = 0; i < X.rows(); i++){
-		F2dssing(i+nPts,0) = 2*(Y(i) + X(i)*1-Y(i))-1;
+		F2dssing(i+nPts,0) = 2*(Y(i) + X(i)*(1-Y(i)))-1;
 		F2dssing(i+nPts,1) = 2*X(i)*(1-Y(i))-1;
 		F2dssing(i+nPts,2) = 4*(1-Y(i))*W(i);
 	}
