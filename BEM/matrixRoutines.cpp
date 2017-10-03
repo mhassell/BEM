@@ -93,7 +93,7 @@ grid meshgrid(const Eigen::VectorXd &x, const Eigen::VectorXd &y){
 		}
 	}	
 
-	grid g = {X,Y};
+	grid g = {X,Y};  // should this be new'd to put it on the heap?
 
 	return g;
 

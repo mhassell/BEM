@@ -46,7 +46,6 @@ int main(){
 	}
 	
 	/*	
-
 	// now to permute the last two indices
 	
 	double ap[3][3][3];
@@ -57,7 +56,6 @@ int main(){
 			}
 		}	
 	}
-
 	// this works
 	for(size_t k = 0; k < 3; k++){ 
 		for(size_t i = 0; i < 3; i++){
@@ -68,9 +66,7 @@ int main(){
 		} 
 	std::cout << std::endl;
 	std::cout << std::endl;
-
 	}
-
 	*/
 
 	// now with new and delete!
@@ -80,14 +76,12 @@ int main(){
 
 	/*
 	int ***array = new int**[dim1];
-
 	for(size_t i = 0; i < dim1; i++){
 		array[i] = new int*[dim2];
 		for(size_t j = 0; j < dim2; j++){	
 			array[i][j] = new int[dim3];
 		}
 	}	
-
 	for(size_t k = 0; k < dim1; k++){
 		for(size_t i = 0; i < dim2; i++){
 			for(size_t j = 0; j < dim3; j++){
@@ -95,7 +89,6 @@ int main(){
 			}
 		}
 	}
-
 	for(size_t i = 0; i < dim1; i++){
 		for(size_t j = 0; j < dim2; j++){
 			for(size_t k = 0; k < dim3; k++){
@@ -106,7 +99,6 @@ int main(){
 		std::cout << std::endl;
 		std::cout << std::endl;
 	}
-
 	*/
 
 	// and this is what we need

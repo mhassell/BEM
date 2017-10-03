@@ -76,7 +76,7 @@ preparedQuads prepareQuad(const Eigen::MatrixXd &smoothf, const Eigen::MatrixXd 
 		F2dssing(i+nPts,2) = 4*(1-Y(i))*W(i);
 	}
 
-	preparedQuads quads = {F2dsing,F2dssing};
+	preparedQuads quads = {F2dsing,F2dssing}; //should this be new'd to put it on the heap?
 
 	return quads;
 
