@@ -5,8 +5,8 @@
 
 struct preparedQuads{
 
-	Eigen::MatrixXd point;
-	Eigen::MatrixXd diagonal;
+	Eigen::MatrixXd F2dsing;
+	Eigen::MatrixXd F2dssing;
 
 };
 

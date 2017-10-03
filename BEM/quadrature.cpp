@@ -35,8 +35,6 @@ Eigen::MatrixXd tensorize(const Eigen::MatrixXd& f, const Eigen::MatrixXd& g){
 
 }
 
-
-
 preparedQuads prepareQuad(const Eigen::MatrixXd &smoothf, const Eigen::MatrixXd &singf){
 
 	Eigen::MatrixXd GxS = tensorize(smoothf,singf);
@@ -45,7 +43,41 @@ preparedQuads prepareQuad(const Eigen::MatrixXd &smoothf, const Eigen::MatrixXd 
 	Eigen::VectorXd Y = GxS.block(0,1,GxS.rows(),1);
 	Eigen::VectorXd W = GxS.block(0,2,GxS.rows(),1);
 
+	// point singularity
+	Eigen::MatrixXd F2dsing = Eigen::MatrixXd::Zero(2*X.rows(),3);
 	
+	size_t nPts = X.rows();
+
+	for(size_t i = 0; i < X.rows(); i++){
+		F2dsing(i,0) = 2*X(i)*Y(i)-1;
+		F2dsing(i,1) = 2*Y(i)-1;
+		F2dsing(i,2) = 4*W(i)*Y(i);
+	}
+
+	for(size_t i = 0; i < X.rows(); i++){
+		F2dsing(i+nPts,0) = 2*Y(i)-1;
+		F2dsing(i+nPts,1) = 2*X(i)*Y(i)-1;
+		F2dsing(i+nPts,2) = 4*W(i)*Y(i);
+	}
+
+	// diagonal singularity
+	Eigen::MatrixXd F2dssing = Eigen::MatrixXd::Zero(2*X.rows(),3);
+
+	for(size_t i = 0; i < X.rows(); i++){
+		F2dssing(i,0) = 2*X(i)*(1-Y(i))-1;
+		F2dssing(i,1) = 2*(Y(i) + X(i)*1-Y(i))-1;
+		F2dssing(i,2) = 4*(1-Y(i))*W(i);
+	}
+
+	for(size_t i = 0; i < X.rows(); i++){
+		F2dssing(i+nPts,0) = 2*(Y(i) + X(i)*1-Y(i))-1;
+		F2dssing(i+nPts,1) = 2*X(i)*(1-Y(i))-1;
+		F2dssing(i+nPts,2) = 4*(1-Y(i))*W(i);
+	}
+
+	preparedQuads quads = {F2dsing,F2dssing};
+
+	return quads;
 
 }
 
