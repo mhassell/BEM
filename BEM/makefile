@@ -68,7 +68,7 @@ scriptReshape: scriptReshape.cpp
 scriptTestQuadrature: scriptTestQuadrature.cpp quadrature.cpp matrixRoutines.o quadTables.o
 	g++ -I /usr/local/include/eigen -L /usr/lib quadrature.cpp matrixRoutines.cpp quadTables.cpp scriptTestQuadrature.cpp -o scriptTestQuadrature
 
-scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o legendrebasis.o geometry.o
+scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o legendrebasis.o geometry.o scriptTestOperators.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib Operators.cpp matrixRoutines.cpp quadTables.cpp quadrature.cpp legendrebasis.cpp geometry.cpp scriptTestOperators.cpp -o scriptTestOperators
 clean:
 	rm *.o

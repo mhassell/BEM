@@ -7,11 +7,8 @@
 
 Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), int k, const Eigen::MatrixXd& quadf, const Eigen::MatrixXd& quads, const Eigen::MatrixXd& quadss){
 
-	std::cout << "here" << std::endl;
-
-
 	size_t Nelt = g.nElts;
-	size_t Nqd = quads.rows();
+	size_t Nqd = quadf.rows();
 
     Eigen::MatrixXd P1t = Eigen::MatrixXd(Nqd,Nelt);
     Eigen::MatrixXd P2t = Eigen::MatrixXd(Nqd,Nelt);
@@ -56,10 +53,16 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		lengthlength(i,g.prev(i)) = 0;
 	}
 
-	printMatrix(lengthlength);
+	//printMatrix(lengthlength);
 	
+	
+	double PolPol;	
+	for(size_t q = 0; q < Nqd; q++){
+		
+	}
+
 	Eigen::MatrixXd K = Eigen::MatrixXd::Zero((k+1)*Nelt,(k+1)*Nelt);
 	
-	
+	return K;
 	
 }
