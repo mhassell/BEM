@@ -27,7 +27,8 @@ errors.o: errors.cpp geometry.o quadTables.o legendrebasis.o
 testPotentials.o: geometry.o legendrebasis.o quadTables.o matrixRoutines.o
 	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp quadTables.cpp legendrebasis.cpp matrixRoutines.cpp -c testPotentials.cpp 
 
-
+quadrature.o: matrixRoutines.o
+	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp quadrature.cpp -c quadrature.cpp
 
 # scripts down here
 
@@ -67,5 +68,7 @@ scriptReshape: scriptReshape.cpp
 scriptTestQuadrature: scriptTestQuadrature.cpp quadrature.cpp matrixRoutines.o quadTables.o
 	g++ -I /usr/local/include/eigen -L /usr/lib quadrature.cpp matrixRoutines.cpp quadTables.cpp scriptTestQuadrature.cpp -o scriptTestQuadrature
 
+scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o legendrebasis.o geometry.o
+	g++ -I /usr/local/include/eigen -L /usr/lib Operators.cpp matrixRoutines.cpp quadTables.cpp quadrature.cpp legendrebasis.cpp geometry.cpp scriptTestOperators.cpp -o scriptTestOperators
 clean:
 	rm *.o
