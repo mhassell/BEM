@@ -29,7 +29,7 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-	g.refine();
+	// g.refine();
 
 	Eigen::MatrixXd q1d = tableGauss(5);
 	Eigen::MatrixXd qlog = tableLogGauss(7);

@@ -1,5 +1,6 @@
 #include <Eigen/Dense>
 #include <iostream>
+#include <math.h>
 
 #include "matrixRoutines.hpp"
 #include "geometry.hpp"
@@ -36,8 +37,8 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		x2(i) = quadf(i,1);
 	}
 
-	legendrebasis(k,x1,0,Polt);
-	legendrebasis(k,x2,0,Poltau);
+	legendrebasis(k,x1,1,Polt);
+	legendrebasis(k,x2,1,Poltau);
 
 	Eigen::MatrixXd lengthlength = Eigen::MatrixXd::Zero(Nelt,Nelt);
 	for(size_t i = 0; i < Nelt; i++){
@@ -55,13 +56,32 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 
 	//printMatrix(lengthlength);
 	
-	
-	double PolPol;	
-	for(size_t q = 0; q < Nqd; q++){
-		
-	}
+	Eigen::MatrixXd X1minusY1(Nelt,Nelt);
+	Eigen::MatrixXd X2minusY2(Nelt,Nelt);
+	Eigen::MatrixXd R(Nelt,Nelt);
+	Eigen::MatrixXd PolPol = Eigen::MatrixXd::Zero(k+1,k+1);
+	Eigen::MatrixXd ker(Nelt,Nelt); 
 
 	Eigen::MatrixXd K = Eigen::MatrixXd::Zero((k+1)*Nelt,(k+1)*Nelt);
+
+	for(size_t q = 0; q < Nqd; q++){
+		PolPol = quadf(q,2)*Polt.block(q,0,1,2).transpose()*Poltau.block(q,0,1,2);
+		// compute pairwise diffs (not vectorized in eigen)
+		for(size_t i = 0; i < Nelt; i++){
+			for(size_t j = 0; j < Nelt; j++){
+				X1minusY1(i,j) = P1t(q,i) - P1tau(q,j);
+				X2minusY2(i,j) = P2t(q,i) - P2tau(q,j);
+				R(i,j) = pow(X1minusY1(i,j),2) + pow(X2minusY2(i,j),2);
+				R(i,j) = pow(R(i,j),0.5);
+				ker(i,j) = kernel(R(i,j))*lengthlength(i,j);					
+			}
+		}
+		std::cout << ker.rows() << " " << ker.cols() << std::endl;
+		std::cout << PolPol.rows() << " " << PolPol.cols() << std::endl;
+		Eigen::MatrixXd tmp = kron(ker,PolPol);
+		std::cout << tmp.rows() << " " << tmp.cols() << std::endl;
+		//K += kron(ker, PolPol);
+	}
 	
 	return K;
 	

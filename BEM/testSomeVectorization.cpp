@@ -15,8 +15,23 @@ int main(){
 	row << 1, 2, 3, 4, 5,
 		   4, 3, 2, 1, 0;
 
-	Eigen::MatrixXd ans = column.block(0,0,5,1)*row.block(0,0,1,5);
+	Eigen::MatrixXd outerProd = column.block(0,0,5,1)*row.block(0,0,1,5);
 
-	printMatrix(ans);
+	std::cout << "outer product: " << std::endl;
+	printMatrix(outerProd);
+
+
+
+
+	return 0;
+	
+	// just define f elsewhere - but can't build anyway
+	printMatrix(f(outerProd));
+
+	// no good
+	Eigen::MatrixXd diff = column.block(0,0,5,1) - row.block(0,0,1,5);
+
+	std::cout << "pairwise diffs: " << std::endl;
+	printMatrix(diff);
 
 }
