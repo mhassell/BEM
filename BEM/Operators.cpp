@@ -26,8 +26,8 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
         }
     }
 
-	Eigen::MatrixXd Polt = Eigen::MatrixXd::Zero(Nqd,Nelt);
-	Eigen::MatrixXd Poltau = Eigen::MatrixXd::Zero(Nqd,Nelt);
+	Eigen::MatrixXd Polt = Eigen::MatrixXd::Zero(Nqd,k+1);
+	Eigen::MatrixXd Poltau = Eigen::MatrixXd::Zero(Nqd,k+1);
 
 	Eigen::VectorXd x1(Nqd);
 	Eigen::VectorXd x2(Nqd);	
@@ -64,8 +64,8 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 
 	Eigen::MatrixXd K = Eigen::MatrixXd::Zero((k+1)*Nelt,(k+1)*Nelt);
 
-	for(size_t q = 0; q < Nqd; q++){
-		PolPol = quadf(q,2)*Polt.block(q,0,1,2).transpose()*Poltau.block(q,0,1,2);
+	for(size_t q = 0; q < Nqd; q++){		
+		PolPol = quadf(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+1);
 		// compute pairwise diffs (not vectorized in eigen)
 		for(size_t i = 0; i < Nelt; i++){
 			for(size_t j = 0; j < Nelt; j++){
@@ -76,11 +76,7 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 				ker(i,j) = kernel(R(i,j))*lengthlength(i,j);					
 			}
 		}
-		std::cout << ker.rows() << " " << ker.cols() << std::endl;
-		std::cout << PolPol.rows() << " " << PolPol.cols() << std::endl;
-		Eigen::MatrixXd tmp = kron(ker,PolPol);
-		std::cout << tmp.rows() << " " << tmp.cols() << std::endl;
-		//K += kron(ker, PolPol);
+		K += kron(ker, PolPol);
 	}
 	
 	return K;
