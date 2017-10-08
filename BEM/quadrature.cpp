@@ -82,6 +82,26 @@ preparedQuads prepareQuad(const Eigen::MatrixXd &smoothf, const Eigen::MatrixXd 
 
 }
 
+allquads allQuadrature(int k, bool overkill){
+
+	if(overkill){
+		Eigen::MatrixXd q1d = tableGauss(63);
+		Eigen::MatrixXd qsing = tableLogGuass(35);
+	}
+	else{
+		Eigen::MatrixXd q1d = tableGauss(k+2);
+		Eigen::MatrixXd qsing = tableLogGuass(k+2);
+	}
+
+	Eigen::MatrixXd qreg = q1d;
+	
+	for(size_t i = 0; i < qreg.rows(); i++){
+		
+	}
+	
+	
+
+}
 
 
 

@@ -78,6 +78,37 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		}
 		K += kron(ker, PolPol);
 	}
+
+	// clean up the diagonal
+	for(size_t i = 0; i < K.rows(); i++){
+		K(i,i) = 0;
+	}
+
+	// diagonal element interactions
+	
+	Nqd = quadss.rows();
+
+	Polt.resize(Nqd,Nelt);
+	Poltau.resize(Nqd,Nelt);
+	
+	x1.resize(Nqd);
+	x2.resize(Nqd);
+		
+	Polt.setZero();
+	Poltau.setZero();
+
+	x1.setZero();
+	x2.setZero();
+
+	for(size_t i = 0; i < Nqd; i++){
+		x1(i) = quadss(i,0);
+		x2(i) = quadss(i,1);
+	}
+
+	printMatrix(quadss);
+
+	//legendrebasis(k,x1,1,Polt);
+	//legendrebasis(k,x2,1,Poltau);
 	
 	return K;
 	

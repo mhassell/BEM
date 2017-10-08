@@ -32,7 +32,7 @@ int main(){
 	// g.refine();
 
 	Eigen::MatrixXd q1d = tableGauss(63);
-	Eigen::MatrixXd qlog = tableLogGauss(39);
+	Eigen::MatrixXd qlog = tableLogGauss(35);
 
 	Eigen::MatrixXd quadf = tensorize(q1d,q1d);
 	preparedQuads qds = prepareQuad(q1d, qlog);
