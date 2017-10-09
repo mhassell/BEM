@@ -1,5 +1,6 @@
 #include <Eigen/Dense>
 #include <iostream>
+#include "quadTables.hpp"
 #include "matrixRoutines.hpp"
 #include "quadrature.hpp"
 
@@ -82,24 +83,38 @@ preparedQuads prepareQuad(const Eigen::MatrixXd &smoothf, const Eigen::MatrixXd 
 
 }
 
-allquads allQuadrature(int k, bool overkill){
+allQuads allQuadrature(int k, bool overkill){
+
+	Eigen::MatrixXd q1d;
+	Eigen::MatrixXd qsing;
 
 	if(overkill){
-		Eigen::MatrixXd q1d = tableGauss(63);
-		Eigen::MatrixXd qsing = tableLogGuass(35);
+		q1d = tableGauss(63);
+		qsing = tableLogGauss(39);
 	}
 	else{
-		Eigen::MatrixXd q1d = tableGauss(k+2);
-		Eigen::MatrixXd qsing = tableLogGuass(k+2);
+		q1d = tableGauss(k+2);
+		qsing = tableLogGauss(k+2);
 	}
 
 	Eigen::MatrixXd qreg = q1d;
 	
 	for(size_t i = 0; i < qreg.rows(); i++){
-		
+		qreg(i,0) = 0.5*qreg(i,0)+0.5;
+		qreg(i,1) *= 0.5;
 	}
+
+	Eigen::MatrixXd regular = tensorize(q1d,q1d);
+	preparedQuads pointAndDiag = prepareQuad(qreg,qsing);	
+	preparedQuads poleQd = prepareQuad(qreg,qreg);
+
+	Eigen::MatrixXd point = pointAndDiag.F2dsing;
+	Eigen::MatrixXd diagonal = pointAndDiag.F2dssing;
+	Eigen::MatrixXd pole = poleQd.F2dsing;
 	
-	
+	allQuads preparedQds = {q1d, regular, point, diagonal, pole};  // use new here?
+
+	return preparedQds;
 
 }
 

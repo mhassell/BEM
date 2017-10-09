@@ -105,10 +105,31 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		x2(i) = quadss(i,1);
 	}
 
-	printMatrix(quadss);
+	legendrebasis(k,x1,1,Polt);
+	legendrebasis(k,x2,1,Poltau);
+	
+	P1t.resize(Nqd,Nelt);
+	P2t.resize(Nqd,Nelt);
 
-	//legendrebasis(k,x1,1,Polt);
-	//legendrebasis(k,x2,1,Poltau);
+	P1t.setZero();
+	P2t.setZero();
+
+	P1tau.resize(Nqd,Nelt);
+	P2tau.resize(Nqd,Nelt);
+
+	P1tau.setZero();
+	P2tau.setZero();
+
+	Eigen::MatrixXd Kdiag(Nqd,Nelt);
+
+	R.resize(Nqd,Nelt);
+	R.setZero(Nqd,Nelt);	
+	
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			
+		}
+	}
 	
 	return K;
 	

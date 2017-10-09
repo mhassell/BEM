@@ -31,20 +31,20 @@ int main(){
 	geometry g(coords, elts);
 	// g.refine();
 
-	Eigen::MatrixXd q1d = tableGauss(63);
-	Eigen::MatrixXd qlog = tableLogGauss(35);
+	allQuads qds = allQuadrature(k,1);
 
-	Eigen::MatrixXd quadf = tensorize(q1d,q1d);
-	preparedQuads qds = prepareQuad(q1d, qlog);
+	Eigen::MatrixXd regular = qds.regular;
+	Eigen::MatrixXd point = qds.point;
+	Eigen::MatrixXd diagonal = qds.diagonal; 		 
 	
-	Eigen::MatrixXd F2dsing = qds.F2dsing;
-	Eigen::MatrixXd F2dssing = qds.F2dssing;
+	std::cout << "here" << std::endl;
 
 	double (*kernel)(double) = &ker;
 	
-	Eigen::MatrixXd K = WeaklySingularXh(g, kernel, k, quadf, F2dsing, F2dssing);	
+	Eigen::MatrixXd K = WeaklySingularXh(g, kernel, k, regular, point, diagonal);	
 	
 	printMatrix(K);
+	
 }
 
 double ker(double x){
