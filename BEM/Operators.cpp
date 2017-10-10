@@ -122,14 +122,41 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 
 	Eigen::MatrixXd Kdiag(Nqd,Nelt);
 
-	R.resize(Nqd,Nelt);
-	R.setZero(Nqd,Nelt);	
-	
+	for(size_t i = 0; i < Nqd; i++){
+        for(size_t j = 0; j < Nelt; j++){
+            P1t(i,j) = 0.5*(1 - quadss(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + quadss(i,0))*g.coordinates(g.elements(j,1),0);
+            P2t(i,j) = 0.5*(1 - quadss(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + quadss(i,0))*g.coordinates(g.elements(j,1),1);
+            P1tau(i,j) = 0.5*(1 - quadss(i,1))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + quadss(i,1))*g.coordinates(g.elements(j,1),0);
+            P2tau(i,j) = 0.5*(1 - quadss(i,1))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + quadss(i,1))*g.coordinates(g.elements(j,1),1);
+        }
+    }			
+
+	double r;	
+		
 	for(size_t i = 0; i < Nqd; i++){
 		for(size_t j = 0; j < Nelt; j++){
-			
+			r = pow(P1t(i,j)-P1tau(i,j),2) + pow(P2t(i,j)-P2tau(i,j),2);	
+			Kdiag(i,j) = 0.25*kernel(pow(r,0.5))*pow(g.lengths(j),2);
 		}
 	}
+
+	Eigen::MatrixXd Kdq = Eigen::MatrixXd::Zero(Nelt,Nelt);
+
+	for(size_t q = 0; q < Nqd; q++){
+		PolPol.setZero();		
+		PolPol = quadss(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+1);		
+		for(size_t i = 0; i < Nelt; i++){
+				Kdq(i,i) = Kdiag(q,i);
+		}		
+		K += kron(Kdq,PolPol);
+	}
+
+	// bottom corner singularity
+
+	Nqd = quads.rows();
+	for(size_t i = 0; i < Nqd; i++){
+		
+	} 		
 	
 	return K;
 	

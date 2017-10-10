@@ -37,8 +37,6 @@ int main(){
 	Eigen::MatrixXd point = qds.point;
 	Eigen::MatrixXd diagonal = qds.diagonal; 		 
 	
-	std::cout << "here" << std::endl;
-
 	double (*kernel)(double) = &ker;
 	
 	Eigen::MatrixXd K = WeaklySingularXh(g, kernel, k, regular, point, diagonal);	
