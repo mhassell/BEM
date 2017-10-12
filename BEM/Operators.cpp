@@ -88,8 +88,8 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 	
 	Nqd = quadss.rows();
 
-	Polt.resize(Nqd,Nelt);
-	Poltau.resize(Nqd,Nelt);
+	Polt.resize(Nqd,k+1);
+	Poltau.resize(Nqd,k+1);
 	
 	x1.resize(Nqd);
 	x2.resize(Nqd);
@@ -152,12 +152,88 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 	}
 
 	// bottom corner singularity
-
 	Nqd = quads.rows();
-	for(size_t i = 0; i < Nqd; i++){
+
+	Polt.resize(Nqd,k+1);
+	Poltau.resize(Nqd,k+1);
+
+	Polt.setZero();
+	Poltau.setZero();
+
+	x1.resize(Nqd);
+	x2.resize(Nqd);
+
+	x1.setZero();
+	x2.setZero();	
 		
+	for(size_t i = 0; i < Nqd; i++){
+		x1(i) = -quads(i,0);
+		x2(i) = quads(i,1); 
 	} 		
+
+	legendrebasis(k,x1,1,Polt);
+	legendrebasis(k,x2,1,Poltau);
+
+	P1t.resize(Nqd,Nelt);
+	P2t.resize(Nqd,Nelt);
+
+	P1t.setZero();
+	P2t.setZero();
+
+	P1tau.resize(Nqd,Nelt);
+	P2tau.resize(Nqd,Nelt);
+
+	P1tau.setZero();
+	P2tau.setZero();
+
+	for(size_t i = 0; i < Nqd; i++){
+        for(size_t j = 0; j < Nelt; j++){
+			// careful of the sign on P1t and P2t!
+            P1t(i,j) = 0.5*(1 + quads(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 - quads(i,0))*g.coordinates(g.elements(j,1),0);
+            P2t(i,j) = 0.5*(1 + quads(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 - quads(i,0))*g.coordinates(g.elements(j,1),1);
+            P1tau(i,j) = 0.5*(1 - quads(i,1))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + quads(i,1))*g.coordinates(g.elements(j,1),0);
+            P2tau(i,j) = 0.5*(1 - quads(i,1))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + quads(i,1))*g.coordinates(g.elements(j,1),1);
+        }
+    }			
+
+	printMatrix(P1tau);
+	std::cout << std::endl;
+		
+	Eigen::MatrixXd Knext = Eigen::MatrixXd::Zero(Nqd,Nelt);
+	Eigen::MatrixXd Kprev = Eigen::MatrixXd::Zero(Nqd,Nelt);
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			r = pow(P1t(i,j) - P1tau(i,g.next(j)),2) + pow(P2t(i,j) - P2tau(i,g.next(j)),2);
+			Knext(i,j) = kernel(pow(r,0.5));
+			Knext *= 0.25*g.lengths(j)*g.lengths(g.next(j));
+			r = pow(P2t(i,j) - P2tau(i,g.prev(j)),2) + pow(P2t(i,j) - P2tau(i,g.prev(j)),2);
+			Kprev(i,j) = kernel(pow(r,0.5));					
+			Kprev *= 0.25*g.lengths(j)*g.lengths(g.prev(j));
+		}
+	}
 	
+	for(size_t q = 0; q < Nqd; q++){
+
+		PolPol.setZero();
+		PolPol = quads(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+1);	
+		Kdq.setZero();	
+
+		for(size_t i = 0; i < Nelt; i++){
+			Kdq(i,g.next(i)) = Knext(q,i);	
+		}
+
+		K += kron(Kdq,PolPol);
+		Kdq.setZero();
+
+		for(size_t i = 0; i < Nelt; i++){
+			Kdq(i,g.prev(i)) = Kprev(q,i);	
+		}
+		
+		K += kron(Kdq,PolPol.transpose());		
+	
+	}
+
 	return K;
 	
 }
