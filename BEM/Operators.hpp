@@ -7,4 +7,6 @@
 
 Eigen::MatrixXd WeaklySingularXh(const geometry&, double (*kernel)(double), int k, const Eigen::MatrixXd&, const Eigen::MatrixXd&, const Eigen::MatrixXd&);
 
+Eigen::MatrixXd DipoleXhYh(const geometry&, double (*kernel)(double), int k, const Eigen::MatrixXd&, const Eigen::MatrixXd&);
+
 #endif

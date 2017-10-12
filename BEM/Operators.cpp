@@ -79,9 +79,13 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		K += kron(ker, PolPol);
 	}
 
-	// clean up the diagonal
+	// clean up the infs/nans
 	for(size_t i = 0; i < K.rows(); i++){
-		K(i,i) = 0;
+		for(size_t j = 0; j < K.cols(); j++){
+			if(std::isinf(K(i,j)) || std::isnan(K(i,j))){
+				K(i,j) = 0;			
+			}		
+		}
 	}
 
 	// diagonal element interactions
@@ -195,9 +199,6 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
             P2tau(i,j) = 0.5*(1 - quads(i,1))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + quads(i,1))*g.coordinates(g.elements(j,1),1);
         }
     }			
-
-	printMatrix(P1tau);
-	std::cout << std::endl;
 		
 	Eigen::MatrixXd Knext = Eigen::MatrixXd::Zero(Nqd,Nelt);
 	Eigen::MatrixXd Kprev = Eigen::MatrixXd::Zero(Nqd,Nelt);
@@ -206,13 +207,19 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		for(size_t j = 0; j < Nelt; j++){
 			r = pow(P1t(i,j) - P1tau(i,g.next(j)),2) + pow(P2t(i,j) - P2tau(i,g.next(j)),2);
 			Knext(i,j) = kernel(pow(r,0.5));
-			Knext *= 0.25*g.lengths(j)*g.lengths(g.next(j));
-			r = pow(P2t(i,j) - P2tau(i,g.prev(j)),2) + pow(P2t(i,j) - P2tau(i,g.prev(j)),2);
+			r = pow(P1t(i,g.prev(j)) - P1tau(i,j),2) + pow(P2t(i,g.prev(j)) - P2tau(i,j),2);
 			Kprev(i,j) = kernel(pow(r,0.5));					
-			Kprev *= 0.25*g.lengths(j)*g.lengths(g.prev(j));
 		}
 	}
-	
+
+	// why do I have to do this separately?
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			Knext(i,j) *= 0.25*g.lengths(j)*g.lengths(g.next(j));
+			Kprev(i,j) *= 0.25*g.lengths(j)*g.lengths(g.prev(j));
+		}
+	}
+
 	for(size_t q = 0; q < Nqd; q++){
 
 		PolPol.setZero();
@@ -236,4 +243,10 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 
 	return K;
 	
+}
+
+Eigen::MatrixXd DipoleXhYh(const geometry& g, double (*kernel)(double), int k, const Eigen::MatrixXd& quadf, const Eigen::MatrixXd& quads){
+
+		
+
 }

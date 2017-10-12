@@ -12,7 +12,7 @@ double ker(double);
 int main(){
 
 	// polynomial degree
-	int k = 0;
+	int k = 2;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);

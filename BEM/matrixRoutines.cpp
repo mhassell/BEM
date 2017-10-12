@@ -108,6 +108,7 @@ void printMatrix(const Eigen::MatrixXd &A){
 		}
 		std::cout << std::endl;
 	}
+	std::cout << std::endl;
 
 }
 
