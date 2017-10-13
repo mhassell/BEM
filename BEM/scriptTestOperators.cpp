@@ -8,11 +8,12 @@
 #include <math.h>
 
 double ker(double);
+double kerDL(double);
 
 int main(){
 
 	// polynomial degree
-	int k = 2;
+	int k = 0;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);
@@ -35,16 +36,25 @@ int main(){
 
 	Eigen::MatrixXd regular = qds.regular;
 	Eigen::MatrixXd point = qds.point;
-	Eigen::MatrixXd diagonal = qds.diagonal; 		 
+	Eigen::MatrixXd diagonal = qds.diagonal; 
+	Eigen::MatrixXd pole = qds.pole;		 
 	
 	double (*kernel)(double) = &ker;
+	double (*kernelDL)(double) = &kerDL;	
 	
-	Eigen::MatrixXd K = WeaklySingularXh(g, kernel, k, regular, point, diagonal);	
-	
+	// Eigen::MatrixXd V = WeaklySingularXh(g, kernel, k, regular, point, diagonal);	
+	// printMatrix(V);
+
+	Eigen::MatrixXd K = DipoleXhYh(g, kernelDL, k, regular, pole);
 	printMatrix(K);
-	
+
+
 }
 
 double ker(double x){
 	return -log(x)/(2*M_PI);
+}
+
+double kerDL(double x){
+	return 1.0/(2*M_PI*pow(x,2));
 }

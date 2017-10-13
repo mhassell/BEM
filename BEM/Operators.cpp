@@ -247,6 +247,110 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 
 Eigen::MatrixXd DipoleXhYh(const geometry& g, double (*kernel)(double), int k, const Eigen::MatrixXd& quadf, const Eigen::MatrixXd& quads){
 
-		
+	size_t Nelt = g.nElts;
+	size_t Nnod = g.coordinates.rows();	
+	size_t Nqd = quadf.rows();
 
+    Eigen::MatrixXd P1t = Eigen::MatrixXd(Nqd,Nelt);
+    Eigen::MatrixXd P2t = Eigen::MatrixXd(Nqd,Nelt);
+
+	Eigen::MatrixXd P1tau = Eigen::MatrixXd(Nqd,Nelt);
+    Eigen::MatrixXd P2tau = Eigen::MatrixXd(Nqd,Nelt);
+
+	for(size_t i = 0; i < Nqd; i++){
+        for(size_t j = 0; j < Nelt; j++){
+            P1t(i,j) = 0.5*(1 - quadf(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + quadf(i,0))*g.coordinates(g.elements(j,1),0);
+            P2t(i,j) = 0.5*(1 - quadf(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + quadf(i,0))*g.coordinates(g.elements(j,1),1);
+            P1tau(i,j) = 0.5*(1 - quadf(i,1))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + quadf(i,1))*g.coordinates(g.elements(j,1),0);
+            P2tau(i,j) = 0.5*(1 - quadf(i,1))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + quadf(i,1))*g.coordinates(g.elements(j,1),1);
+        }
+    }
+
+	Eigen::MatrixXd Polt = Eigen::MatrixXd::Zero(Nqd,k+1);
+	Eigen::MatrixXd Poltau = Eigen::MatrixXd::Zero(Nqd,k+2);
+
+	Eigen::VectorXd x1(Nqd);
+	Eigen::VectorXd x2(Nqd);	
+	
+	for(size_t i = 0; i < Nqd; i++){
+		x1(i) = quadf(i,0);
+		x2(i) = quadf(i,1);
+	}
+
+	legendrebasis(k,x1,1,Polt);
+	legendrebasis(k+1,x2,2,Poltau);
+
+	Eigen::MatrixXd lengthlength = Eigen::MatrixXd::Zero(Nelt,Nelt);
+	for(size_t i = 0; i < Nelt; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			lengthlength(i,j) = 0.25*g.lengths(i)*g.lengths(j);
+		}
+	}
+
+	// emulate the neighbor sparse matrix here by hand (csc format)
+	for(size_t i = 0; i < Nelt; i++){
+		lengthlength(i,i) = 0;
+		lengthlength(i,g.next(i)) = 0;
+		lengthlength(i,g.prev(i)) = 0;
+	}
+		
+	Eigen::MatrixXd Kprime = Eigen::MatrixXd::Zero((k+1)*Nelt,(k+2)*Nelt);
+	
+	Eigen::MatrixXd PolPol(k+1,k+2);	
+	Eigen::MatrixXd X1minusY1(Nelt,Nelt);
+	Eigen::MatrixXd X2minusY2(Nelt,Nelt);
+	Eigen::MatrixXd R(Nelt,Nelt);
+	Eigen::MatrixXd dipole(Nelt,Nelt);
+	Eigen::MatrixXd tmp(Nelt,Nelt);
+	Eigen::MatrixXd ker(Nelt,Nelt);	
+
+	for(size_t q=0; q<Nqd; q++){
+
+		PolPol = quadf(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+2);
+		X1minusY1.setZero();
+		X2minusY2.setZero();
+		R.setZero();
+		dipole.setZero();
+
+		for(size_t i = 0; i < Nelt; i++){
+			for(size_t j = 0; j < Nelt; j++){
+				X1minusY1(i,j) = P1t(q,i) - P1tau(q,j);
+				X2minusY2(i,j) = P2t(q,i) - P2tau(q,j);
+			}
+		}
+	
+		for(size_t i = 0; i < Nelt; i++){
+			for(size_t j = 0; j < Nelt; j++){
+				R(i,j) = pow(X1minusY1(i,j),2) + pow(X2minusY2(i,j),2);
+				R(i,j) = pow(R(i,j),0.5);
+				ker(i,j) = kernel(R(i,j));
+			}
+		}
+
+		for(size_t i = 0; i < Nelt; i++){
+			for(size_t j = 0; j < Nelt; j++){
+				dipole(i,j) = X1minusY1(i,j)*g.normals(j,0) + X2minusY2(i,j)*g.normals(j,1);
+			}
+		}
+
+		for(size_t i = 0; i < Nelt; i++){
+			for(size_t j = 0; j < Nelt; j++){
+				tmp(i,j) = lengthlength(i,j)*ker(i,j)*dipole(i,j);						
+			}
+		}
+
+		Kprime += kron(tmp,PolPol);		
+			
+	}
+
+	for(size_t i = 0; i < Kprime.rows(); i++){
+		for(size_t j = 0; j < Kprime.cols(); j++){
+			if(std::isinf(Kprime(i,j)) || std::isnan(Kprime(i,j))){
+				Kprime(i,j) = 0;
+			} 
+		}
+	}
+
+	return Kprime;
+	
 }
