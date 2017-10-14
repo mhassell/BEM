@@ -30,9 +30,9 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-	// g.refine();
+	//g.refine();
 
-	allQuads qds = allQuadrature(k,0);
+	allQuads qds = allQuadrature(k,1);
 
 	Eigen::MatrixXd regular = qds.regular;
 	Eigen::MatrixXd point = qds.point;

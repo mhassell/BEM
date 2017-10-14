@@ -499,8 +499,28 @@ Eigen::MatrixXd DipoleXhYh(const geometry& g, double (*kernel)(double), int k, c
 		}		
 	}
 
-	
+	// assemble MM into M3 by columns
+	Eigen::MatrixXd K = Eigen::MatrixXd::Zero((k+1)*Nelt,(k+1)*Nelt);
 
-	return Kprime;
+	for(size_t i = 0; i < Nnod; i++){
+        for(size_t j = 0; j < K.cols(); j++){
+			K(j,g.elements(i,0)) = Kprime(j,nodalDOF1(i)); 
+        }
+    }
+
+	for(size_t i = 0; i < Nnod; i++){
+        for(size_t j = 0; j < K.cols(); j++){
+			K(j,g.elements(i,1)) += Kprime(j,nodalDOF2(i));   
+        }
+    }
+
+	for(size_t i = 0; i < internalDOF.rows(); i++){
+		for(size_t j = 0; j < K.rows(); j++){
+			K(j,Nnod+i) = Kprime(j,internalDOF(i));
+		}
+	}
+
+
+	return K;
 	
 }
