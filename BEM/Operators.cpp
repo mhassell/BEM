@@ -351,6 +351,156 @@ Eigen::MatrixXd DipoleXhYh(const geometry& g, double (*kernel)(double), int k, c
 		}
 	}
 
+	// next element interactions
+	
+	Nqd = quads.rows();
+
+	x1.resize(Nqd);
+	x2.resize(Nqd);
+
+	x1.setZero();
+	x2.setZero();
+
+	Polt.resize(Nqd,k+1);
+	Poltau.resize(Nqd,k+2);
+
+	Polt.setZero();
+	Poltau.setZero();
+	
+	for(size_t i = 0; i < Nqd; i++){
+		x1(i) = -quads(i,0);
+		x2(i) = quads(i,1);
+	}
+
+	legendrebasis(k,x1,1,Polt);
+	legendrebasis(k+1,x2,2,Poltau);
+
+	P1t.resize(Nqd,Nelt);
+	P2t.resize(Nqd,Nelt);
+	P1tau.resize(Nqd,Nelt);
+	P2tau.resize(Nqd,Nelt);
+
+	P1t.setZero();
+	P2t.setZero();
+	P1tau.setZero();
+	P2tau.setZero();
+
+	for(size_t i = 0; i < Nqd; i++){
+        for(size_t j = 0; j < Nelt; j++){
+			// careful of the sign on P1t and P2t!
+            P1t(i,j) = 0.5*(1 + quads(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 - quads(i,0))*g.coordinates(g.elements(j,1),0);
+            P2t(i,j) = 0.5*(1 + quads(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 - quads(i,0))*g.coordinates(g.elements(j,1),1);
+            P1tau(i,j) = 0.5*(1 - quads(i,1))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + quads(i,1))*g.coordinates(g.elements(j,1),0);
+            P2tau(i,j) = 0.5*(1 - quads(i,1))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + quads(i,1))*g.coordinates(g.elements(j,1),1);
+        }
+    }
+
+	Eigen::MatrixXd Diff1 = Eigen::MatrixXd::Zero(Nqd,Nelt);
+	Eigen::MatrixXd Diff2 = Eigen::MatrixXd::Zero(Nqd,Nelt);
+	Eigen::MatrixXd Knext = Eigen::MatrixXd::Zero(Nqd,Nelt);
+	
+	double r;
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			Diff1(i,j) = P1t(i,j) - P1tau(i,g.next(j));
+			Diff2(i,j) = P2t(i,j) - P2tau(i,g.next(j));
+			r = pow(Diff1(i,j),2) + pow(Diff2(i,j),2);			
+			Knext(i,j) = kernel(pow(r,0.5));
+		}
+	}
+
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			Knext(i,j) *= 0.25*g.lengths(j)*g.lengths(g.next(j));
+		}
+	}
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			Knext(i,j) *= (Diff1(i,j)*g.normals(g.next(j),0) + Diff2(i,j)*g.normals(g.next(j),1));
+		}
+	}	
+
+	Eigen::MatrixXd Kdq(Nelt,Nelt);
+	
+	for(size_t q = 0; q < Nqd; q++){
+		PolPol = quads(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+2);	
+		Kdq.setZero();
+
+		for(size_t i = 0; i < Nelt; i++){
+			Kdq(i,g.next(i)) = 	Knext(q,i);
+		}
+	
+		Kprime += kron(Kdq,PolPol);
+
+	}
+
+	Eigen::MatrixXd Kprev = Eigen::MatrixXd::Zero(Nqd,Nelt);
+	Poltau.resize(Nqd,k+1);
+	Poltau.setZero();
+
+	Eigen::MatrixXd Psit = Eigen::MatrixXd::Zero(Nqd,k+2);
+
+	legendrebasis(k,x2,1,Poltau);
+	legendrebasis(k+1,x1,2,Psit);
+
+	Diff1.setZero();
+	Diff2.setZero();
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			Diff1(i,j) = P1tau(i,j) - P1t(i,g.prev(j));
+			Diff2(i,j) = P2tau(i,j) - P2t(i,g.prev(j));
+			r = pow(Diff1(i,j),2) + pow(Diff2(i,j),2);			
+			Kprev(i,j) = kernel(pow(r,0.5));
+		}
+	}
+
+	
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			Kprev(i,j) *= 0.25*g.lengths(j)*g.lengths(g.prev(j));
+		}
+	}
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelt; j++){
+			Kprev(i,j) *= (Diff1(i,j)*g.normals(g.prev(j),0) + Diff2(i,j)*g.normals(g.prev(j),1));
+		}
+	}					
+
+	for(size_t q = 0; q < Nqd; q++){
+
+		PolPol = quads(q,2)*Poltau.block(q,0,1,k+1).transpose()*Psit.block(q,0,1,k+2);				
+		Kdq.setZero();
+		for(size_t i = 0; i < Nelt; i++){
+			Kdq(i,g.prev(i)) = Kprev(q,i); 
+		}
+		Kprime += kron(Kdq,PolPol);
+	}
+
+    // nodalDOF arrays
+    Eigen::VectorXd nodalDOF1 = Eigen::VectorXd(Nelt);
+	Eigen::VectorXd nodalDOF2 = Eigen::VectorXd(Nelt);    
+
+    for(size_t i = 0; i < Nelt; i++){
+        nodalDOF1(i) =     (k+2)*i;
+        nodalDOF2(i) = 1 + (k+2)*i;
+    }
+
+    // internalDOF array
+    Eigen::VectorXd internalDOF((k+2)*Nelt - 2*Nelt);
+	for(size_t i = 0; i < Nelt; i++){
+		// each element has 2 nodal DOFs and k internal DOFs (for a total of k+2 DOFs)
+		for(size_t j = 0; j < k; j++){
+			internalDOF(i*k + j) = 2+(k+2)*i + j;	
+		}		
+	}
+
+	
+
 	return Kprime;
 	
 }
