@@ -1,13 +1,22 @@
 // a script to test solving the Laplace equation
 
+#include <Eigen/Dense>
 #include <math.h>
+
 #include "geometry.hpp"
+#include "quadrature.hpp"
+#include "Operators.hpp"
+#include "OperatorsAndPotentials.hpp"
+#include "testsAndProjections.hpp"
 
 double r1(double, double);
 double r2(double, double);
 double u(double, double);
 double v1(double, double);
 double v2(double, double);
+double kerSL(double);
+double kerDL(double);
+double fone(double);
 
 int main(){
 
@@ -41,15 +50,41 @@ int main(){
 		 -1,  1,
 		 -1,  2;
 	
-	// exact solutions	
-	Eigen::VectorXd c0;
-	Eigen::VectorXd d0;
+	// quadrature things 
+	allQuads quads = allQuadrature(k,1);
+	Eigen::MatrixXd q1d = quads.q1d;
+	Eigen::MatrixXd regular = quads.regular;
+	Eigen::MatrixXd point = quads.point;
+	Eigen::MatrixXd diagonal = quads.diagonal;
+	Eigen::MatrixXd pole = quads.pole;
+		
+	double (*kerSLref) = &kerSL;
+	double (*kerDLref) = &kerDL;
+	
+	Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
+	Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
+	Eigen::MatrixXd D = differentiationMatrix(g,k);
+	Eigen::MatrixXd W = D.transpose()*V*D;
+	Eigen::MatrixXd M = massMatrixXhYh(g,k,q1d);
+	M.transposeInPlace();
 
-	c0 << 0.3, 0.2;
-	d0 << 0.4, 0.3;
+	double (*ur) = &u;
+
+	Eigen::MatrixXd beta0 = testXh(g, ur, k, q1d);
+	beta0.resize(q1d.rows()*g.nElts,1);
+	
+	double (*v1r) = &v1;
+	double (*v2r) = &v2;
+
+	Eigen::MatrixXd beta0tmp = testYh(g, v1r, v2r, k, q1d);
+	
+	Eigen::MatrixXd beta0 = Eigen::MatrixXd::Zero((k+1)*g.nElts,1);
+
+	for(size_t i = 0; i < g.nElts; i++){
+		beta0(i) = beta0tmp(0,i);
+	}
 
 	
-		
 
 }
 
@@ -85,7 +120,20 @@ double v2(double x1, double x2){
 
 }
 
+double kerSL(double x){
 
+	return -log(x)/(2*M_PI);
 
+}
 
+double kerDL(double x){
 
+	return 1.0/(2*M_PI*pow(x,2));
+
+}
+
+double fone(double x){
+	
+	return 1.0;	
+
+}
