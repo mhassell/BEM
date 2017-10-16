@@ -71,5 +71,8 @@ scriptTestQuadrature: scriptTestQuadrature.cpp quadrature.cpp matrixRoutines.o q
 scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o legendrebasis.o geometry.o scriptTestOperators.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib Operators.cpp matrixRoutines.cpp quadTables.cpp quadrature.cpp legendrebasis.cpp geometry.cpp scriptTestOperators.cpp -o scriptTestOperators
 
+scriptTestReshaping: matrixRoutines.o testsAndProjections.o scriptTestReshaping.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp testsAndProjections.cpp scriptTestReshaping.cpp -o scriptTestReshaping
+
 clean:
 	rm *.o

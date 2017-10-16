@@ -308,7 +308,7 @@ Eigen::MatrixXd projectXh(const geometry& g, double (*f1)(double,double), double
                 + (g.normals(j,1)/g.lengths(j))*fhy(i,j);
         }
     }
-s
+
 	return fh;
     
 }

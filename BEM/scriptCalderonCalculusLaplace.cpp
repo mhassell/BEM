@@ -84,7 +84,9 @@ int main(){
 		beta0(i) = beta0tmp(0,i);
 	}
 
-	
+	beta0tmp.block(1,0,k,Nelt).resize(k*Nelt);
+
+	printMatrix(beta0tmp);
 
 }
 
