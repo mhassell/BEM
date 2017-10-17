@@ -8,15 +8,16 @@
 #include "Operators.hpp"
 #include "OperatorsAndPotentials.hpp"
 #include "testsAndProjections.hpp"
+#include "testPotentials.hpp"
 
-double r1(double, double);
-double r2(double, double);
-double u(double, double);
-double v1(double, double);
-double v2(double, double);
+double r1(double,double);
+double r2(double,double);
+double u(double,double);
+double v1(double,double);
+double v2(double,double);
 double kerSL(double);
 double kerDL(double);
-double fone(double);
+double fone(double,double);
 
 int main(){
 
@@ -58,8 +59,8 @@ int main(){
 	Eigen::MatrixXd diagonal = quads.diagonal;
 	Eigen::MatrixXd pole = quads.pole;
 		
-	double (*kerSLref) = &kerSL;
-	double (*kerDLref) = &kerDL;
+	double (*kerSLref)(double) = &kerSL;
+	double (*kerDLref)(double) = &kerDL;
 	
 	Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
 	Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
@@ -68,13 +69,13 @@ int main(){
 	Eigen::MatrixXd M = massMatrixXhYh(g,k,q1d);
 	M.transposeInPlace();
 
-	double (*ur) = &u;
+	double (*ur)(double,double) = &u;
 
 	Eigen::MatrixXd beta0 = testXh(g, ur, k, q1d);
 	beta0.resize(q1d.rows()*g.nElts,1);
 	
-	double (*v1r) = &v1;
-	double (*v2r) = &v2;
+	double (*v1r)(double,double) = &v1;
+	double (*v2r)(double,double) = &v2;
 
 	Eigen::MatrixXd beta0tmp = testYh(g, v1r, v2r, k, q1d);
 	
@@ -84,9 +85,30 @@ int main(){
 		beta0(i) = beta0tmp(0,i);
 	}
 
-	beta0tmp.block(1,0,k,Nelt).resize(k*Nelt);
+	for(size_t i = 1; i < k; i++){
+		for(size_t j = 0; j < g.nElts; j++){
+			beta0(i*g.nElts + j) = beta0tmp(i,j);
+		}
+	}
 
-	printMatrix(beta0tmp);
+	Eigen::MatrixXd SL = testPotentialXh(g, kerSLref, z, k, q1d);
+	Eigen::MatrixXd DL = testPotentialYh(g, kerDLref, z, k, q1d);
+
+	double (*fonep)(double)
+	
+	Eigen::MatrixXd ints = testXd(g, fonep, k, q1d);
+	Eigen::MatrixXd C = testYh(g, fonep, fonep, k, q1d);
+
+	Eigen::MatrixXd Ct = C.transpose();
+
+	C = C*Ct;
+
+	Eigen::MatrixXd projU = projectYh(g, ur, k, q1d);
+	
+	Eigen::MatrixXd projV1 = projectXh(g, v1r, k, q1d);
+	Eigen::MatrixXd projV2 = projectXd(g, v2r, k, q1d);
+
+	 
 
 }
 
@@ -134,7 +156,7 @@ double kerDL(double x){
 
 }
 
-double fone(double x){
+double fone(double x1, double x2){
 	
 	return 1.0;	
 
