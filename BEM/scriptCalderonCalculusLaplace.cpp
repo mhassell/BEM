@@ -94,7 +94,7 @@ int main(){
 	Eigen::MatrixXd SL = testPotentialXh(g, kerSLref, z, k, q1d);
 	Eigen::MatrixXd DL = testPotentialYh(g, kerDLref, z, k, q1d);
 
-	double (*fonep)(double)
+	double (*fonep)(double,double) = &fone;
 	
 	Eigen::MatrixXd ints = testXd(g, fonep, k, q1d);
 	Eigen::MatrixXd C = testYh(g, fonep, fonep, k, q1d);
@@ -108,7 +108,17 @@ int main(){
 	Eigen::MatrixXd projV1 = projectXh(g, v1r, k, q1d);
 	Eigen::MatrixXd projV2 = projectXd(g, v2r, k, q1d);
 
-	 
+	Eigen::MatrixXd projUn = Eigen::MatrixXd::Zero(k+1,g.nElts);
+
+	for(size_t i = 0; i < k+1; i++){
+		for(size_t j = 0; j < g.nElts; j++){
+			projUn(i,j) = projV1(i,j)*g.normals(j,0) + projV2(i,j)*g.normals(j,1);
+		}
+	} 
+
+	// First kind indirect Dirichlet
+	Eigen::MatrixXd lambda = solve(V,beta0);
+	Eigen::MatrixXd uh = SL*lambda;
 
 }
 
