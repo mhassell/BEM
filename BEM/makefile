@@ -80,6 +80,8 @@ scriptTestReshaping: matrixRoutines.o testsAndProjections.o geometry.o quadratur
 scriptCalderonCalculusLaplace: geometry.o quadrature.o Operators.o massMatrices.o testsAndProjections.o testPotentials.o matrixRoutines.o quadTables.o legendrebasis.o
 	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptCalderonCalculusLaplace.cpp -o scriptCalderonCalculusLaplace
 	
+scriptTestOpenMP: scriptTestOpenMP.cpp
+	g++ -o scriptTestOpenMP -fopenmp scriptTestOpenMP.cpp  
 
 clean:
 	rm *.o
