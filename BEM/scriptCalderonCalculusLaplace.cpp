@@ -1,7 +1,9 @@
 // a script to test solving the Laplace equation
 
 #include <Eigen/Dense>
-#include <math.h>
+#include <cmath>
+#include <iostream>
+#include <algorithm>
 
 #include "geometry.hpp"
 #include "quadrature.hpp"
@@ -39,9 +41,6 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-
-	// number of refinements
-	int Nlev = 7;
 	
 	// observation points 
 	Eigen::MatrixXd z(4,2);
@@ -62,63 +61,84 @@ int main(){
 	double (*kerSLref)(double) = &kerSL;
 	double (*kerDLref)(double) = &kerDL;
 	
-	Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
-	Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
-	Eigen::MatrixXd D = differentiationMatrix(g,k);
-	Eigen::MatrixXd W = D.transpose()*V*D;
-	Eigen::MatrixXd M = massMatrixXhYh(g,k,q1d);
-	M.transposeInPlace();
+	// number of refinements
+	int Nlev = 7;
 
-	double (*ur)(double,double) = &u;
+	for(size_t i = 0; i < Nlev; i++){
+		g.refine();
 
-	Eigen::MatrixXd beta0 = testXh(g, ur, k, q1d);
-	beta0.resize(q1d.rows()*g.nElts,1);
+		Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
+		Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
+		Eigen::MatrixXd D = differentiationMatrix(g,k);
+		Eigen::MatrixXd W = D.transpose()*V*D;
+		Eigen::MatrixXd M = massMatrixXhYh(g,k,q1d);
+		M.transposeInPlace();
+
+		double (*ur)(double,double) = &u;
+
+		Eigen::MatrixXd beta0 = testXh(g, ur, k, q1d);
+		beta0.resize((k+1)*g.nElts,1);
 	
-	double (*v1r)(double,double) = &v1;
-	double (*v2r)(double,double) = &v2;
+		double (*v1r)(double,double) = &v1;
+		double (*v2r)(double,double) = &v2;
 
-	Eigen::MatrixXd beta0tmp = testYh(g, v1r, v2r, k, q1d);
+		Eigen::MatrixXd beta1tmp = testYh(g, v1r, v2r, k, q1d);
 	
-	Eigen::MatrixXd beta0 = Eigen::MatrixXd::Zero((k+1)*g.nElts,1);
+		Eigen::MatrixXd beta1 = Eigen::MatrixXd::Zero((k+1)*g.nElts,1);
 
-	for(size_t i = 0; i < g.nElts; i++){
-		beta0(i) = beta0tmp(0,i);
-	}
-
-	for(size_t i = 1; i < k; i++){
-		for(size_t j = 0; j < g.nElts; j++){
-			beta0(i*g.nElts + j) = beta0tmp(i,j);
+		for(size_t i = 0; i < g.nElts; i++){
+			beta1(i) = beta1tmp(0,i);
 		}
-	}
 
-	Eigen::MatrixXd SL = testPotentialXh(g, kerSLref, z, k, q1d);
-	Eigen::MatrixXd DL = testPotentialYh(g, kerDLref, z, k, q1d);
-
-	double (*fonep)(double,double) = &fone;
-	
-	Eigen::MatrixXd ints = testXd(g, fonep, k, q1d);
-	Eigen::MatrixXd C = testYh(g, fonep, fonep, k, q1d);
-
-	Eigen::MatrixXd Ct = C.transpose();
-
-	C = C*Ct;
-
-	Eigen::MatrixXd projU = projectYh(g, ur, k, q1d);
-	
-	Eigen::MatrixXd projV1 = projectXh(g, v1r, k, q1d);
-	Eigen::MatrixXd projV2 = projectXd(g, v2r, k, q1d);
-
-	Eigen::MatrixXd projUn = Eigen::MatrixXd::Zero(k+1,g.nElts);
-
-	for(size_t i = 0; i < k+1; i++){
-		for(size_t j = 0; j < g.nElts; j++){
-			projUn(i,j) = projV1(i,j)*g.normals(j,0) + projV2(i,j)*g.normals(j,1);
+		for(size_t i = 1; i < k; i++){
+			for(size_t j = 0; j < g.nElts; j++){
+				beta1(i*g.nElts + j) = beta1tmp(i,j);
+			}
 		}
-	} 
 
-	// First kind indirect Dirichlet
-	Eigen::MatrixXd lambda = solve(V,beta0);
-	Eigen::MatrixXd uh = SL*lambda;
+		Eigen::MatrixXd SL = testPotentialXh(g, kerSLref, z, k, q1d);
+		Eigen::MatrixXd DL = testPotentialYh(g, kerDLref, z, k, q1d);
+
+		double (*fonep)(double,double) = &fone;
+	
+		Eigen::MatrixXd ints = testXh(g, fonep, k, q1d);
+		Eigen::MatrixXd C = testYh(g, fonep, fonep, k, q1d);
+
+		Eigen::MatrixXd Ct = C.transpose();
+
+		C = C*Ct;
+
+		Eigen::MatrixXd projU = projectYh(g, ur, k, q1d);
+	
+		Eigen::MatrixXd projV1 = projectXh(g, v1r, k, q1d);
+		Eigen::MatrixXd projV2 = projectXh(g, v2r, k, q1d);
+
+		Eigen::MatrixXd projUn = Eigen::MatrixXd::Zero(k+1,g.nElts);
+
+		for(size_t i = 0; i < k+1; i++){
+			for(size_t j = 0; j < g.nElts; j++){
+				projUn(i,j) = projV1(i,j)*g.normals(j,0) + projV2(i,j)*g.normals(j,1);
+			}
+		} 
+
+		// First kind indirect Dirichlet
+
+		Eigen::MatrixXd lambda = solve(V,beta0);
+		Eigen::MatrixXd uh = SL*lambda;
+
+		double error = 0.0;		
+		double diff = 0.0;
+
+		for(size_t i = 0; i < z.rows(); i++){
+
+			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
+			error = std::max(error, diff);
+
+		}
+
+		std::cout << error << std::endl;
+
+	}
 
 }
 
@@ -138,7 +158,7 @@ double r2(double x1,double x2){
 
 double u(double x1, double x2){
 
-	return log(r1(x1,x2)/r2(x1,x2));
+	return std::log(r1(x1,x2)/r2(x1,x2));
 
 }
 
@@ -156,7 +176,7 @@ double v2(double x1, double x2){
 
 double kerSL(double x){
 
-	return -log(x)/(2*M_PI);
+	return -std::log(x)/(2*M_PI);
 
 }
 

@@ -30,6 +30,9 @@ testPotentials.o: geometry.o legendrebasis.o quadTables.o matrixRoutines.o
 quadrature.o: matrixRoutines.o quadTables.o 
 	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp quadTables.cpp quadrature.cpp -c quadrature.cpp
 
+Operators.o: matrixRoutines.o geometry.o legendrebasis.o
+	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp geometry.cpp legendrebasis.cpp Operators.cpp -c Operators.cpp 
+
 # scripts down here
 
 testGeometry: geometry.o
@@ -74,7 +77,9 @@ scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o le
 scriptTestReshaping: matrixRoutines.o testsAndProjections.o geometry.o quadrature.o quadTables.o legendrebasis.o massMatrices.o scriptTestReshaping.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib matrixRoutines.cpp testsAndProjections.cpp geometry.cpp quadrature.cpp quadTables.cpp legendrebasis.cpp OperatorsAndPotentials.cpp scriptTestReshaping.cpp -o scriptTestReshaping
 
-
+scriptCalderonCalculusLaplace: geometry.o quadrature.o Operators.o massMatrices.o testsAndProjections.o testPotentials.o matrixRoutines.o quadTables.o legendrebasis.o
+	g++ -I /usr/local/include/eigen -L /usr/lib geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptCalderonCalculusLaplace.cpp -o scriptCalderonCalculusLaplace
+	
 
 clean:
 	rm *.o
