@@ -9,14 +9,16 @@
 // a place for routines not in boost/STL or to simplify other built-ins.
 
 // functions:
-//     kronecker product of two boost arrays
-//     LU solvers (just a wrapper around the boost methods)
+//     kronecker product of two eigen matrices
+//     LU solvers
 //     meshgrid for two Eigen::VectorXd vectors
 //     printMatrix (print a matrix nicely)
 
 #include <iostream>
 #include <iomanip>
 #include <stdio.h>
+#include <omp.h>
+
 #include "matrixRoutines.hpp"
 
 // kronecker product of two (double precision) Eigen dense matrices
@@ -32,6 +34,7 @@ Eigen::MatrixXd kron(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B)
     
     Eigen::MatrixXd C = Eigen::MatrixXd(M*P,N*Q);
     
+	#pragma omp parallel for
     for(i=0; i<M; i++){
         for(j=0; j<N; j++){
             for(k=0; k<P; k++){

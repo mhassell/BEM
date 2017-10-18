@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+#include <sys/time.h>
 
 #include "geometry.hpp"
 #include "quadrature.hpp"
@@ -20,6 +21,7 @@ double v2(double,double);
 double kerSL(double);
 double kerDL(double);
 double fone(double,double);
+double get_wall_time();
 
 int main(){
 
@@ -62,11 +64,14 @@ int main(){
 	double (*kerDLref)(double) = &kerDL;
 	
 	// number of refinements
-	int Nlev = 7;
+	int Nlev = 5;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
 	}
+
+		double start = get_wall_time();
+
 		Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
 		Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
 		Eigen::MatrixXd D = differentiationMatrix(g,k);
@@ -138,6 +143,12 @@ int main(){
 
 		std::cout << error << std::endl;
 
+		double end = get_wall_time();
+
+		double time_spent = (end-start);
+
+		std::cout << "Total time: " << time_spent << std::endl;
+
 }
 
 double r1(double x1,double x2){
@@ -188,4 +199,11 @@ double fone(double x1, double x2){
 	
 	return 1.0;	
 
+}
+
+double get_wall_time(){
+
+    struct timeval time;
+
+    return (double)time.tv_sec + (double)time.tv_usec * .000001;
 }
