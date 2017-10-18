@@ -66,7 +66,7 @@ int main(){
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
-
+	}
 		Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
 		Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
 		Eigen::MatrixXd D = differentiationMatrix(g,k);
@@ -137,8 +137,6 @@ int main(){
 		}
 
 		std::cout << error << std::endl;
-
-	}
 
 }
 
