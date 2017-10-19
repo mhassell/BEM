@@ -107,6 +107,7 @@ int main(){
 		double (*fonep)(double,double) = &fone;
 	
 		Eigen::MatrixXd ints = testXh(g, fonep, k, q1d);
+		ints.resize(ints.rows()*ints.cols(),1);
 		Eigen::MatrixXd C = testYh(g, fonep, fonep, k, q1d);
 
 		Eigen::MatrixXd Ct = C.transpose();
@@ -140,14 +141,57 @@ int main(){
 			error = std::max(error, diff);
 
 		}
-
+		
+		std::cout << "First kind indirect Dirichlet error: " << std::endl;
 		std::cout << error << std::endl;
 
+		/*
 		double end = get_wall_time();
-
 		double time_spent = (end-start);
-
 		std::cout << "Total time: " << time_spent << std::endl;
+		*/
+		
+		// First kind indirect with decaying SL		
+		Eigen::MatrixXd Vlam(V.rows()+1, V.cols()+1);
+		Vlam.block(0, 0, V.rows(), V.cols()) = V;
+
+		for(size_t i = 0; i < ints.rows(); i++){
+			Vlam(i,Vlam.cols()-1) = ints(i,0);
+			Vlam(Vlam.rows()-1,i) = ints(i,0);
+		}
+
+		Vlam(Vlam.rows()-1, Vlam.cols()-1) = 0;
+
+		Eigen::MatrixXd beta02(beta0.rows()+1,1);
+		beta02(beta02.rows()-1,0) = 0;
+		
+		Eigen::MatrixXd lambda2 = solve(Vlam,beta02);
+		
+		uh = SL*lambda2.block(0,0,beta02.rows()-1,1);
+
+		std::cout << " here" << std::endl;
+/*
+		for(size_t i = 0; i < uh.rows(); i++){
+			std::cout << i << std::endl;
+			uh(i,0) += lambda2(,0);
+			uh(i,1) += lambda2(,0);
+		}
+*/
+
+		std::cout << "here" << std::endl;
+
+		error = 0;
+
+		for(size_t i = 0; i < z.rows(); i++){
+
+			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
+			error = std::max(error, diff);
+
+		}
+
+		std::cout << "First kind indirect Dirichlet error (with decaying potential): " << std::endl;
+		std::cout << error << std::endl;
+
 
 }
 
