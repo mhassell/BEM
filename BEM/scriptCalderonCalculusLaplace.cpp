@@ -64,7 +64,7 @@ int main(){
 	double (*kerDLref)(double) = &kerDL;
 	
 	// number of refinements
-	int Nlev = 1;
+	int Nlev = 2;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
@@ -108,11 +108,12 @@ int main(){
 	
 		Eigen::MatrixXd ints = testXh(g, fonep, k, q1d);
 		ints.resize(ints.rows()*ints.cols(),1);
+		
 		Eigen::MatrixXd C = testYh(g, fonep, fonep, k, q1d);
 
 		Eigen::MatrixXd Ct = C.transpose();
 
-		C = C*Ct;
+		C = kron(C,Ct);
 
 		Eigen::MatrixXd projU = projectYh(g, ur, k, q1d);
 	
@@ -162,7 +163,11 @@ int main(){
 
 		Vlam(Vlam.rows()-1, Vlam.cols()-1) = 0;
 
+		// copy beta0 into beta02
 		Eigen::MatrixXd beta02(beta0.rows()+1,1);
+		for(size_t i = 0; i < beta0.rows(); i++){
+			beta02(i) = beta0(i);
+		}
 		beta02(beta02.rows()-1,0) = 0;
 		
 		Eigen::MatrixXd lambda2 = solve(Vlam,beta02);
@@ -174,9 +179,6 @@ int main(){
 		diff = 0;
 		error = 0;
 
-		printMatrix(uh);
-		std::cout << cInf << std::endl;
-
 		for(size_t i = 0; i < uh.rows(); i++){
 			uh(i) += cInf;
 			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
@@ -187,6 +189,48 @@ int main(){
 		std::cout << "First kind indirect Dirichlet error (with decaying potential): " << std::endl;
 		std::cout << error << std::endl;
 
+
+		// indirect DL Neumann
+
+		std::cout << W.rows() << " " << W.cols() << " " << C.rows() << " " << C.cols() <<  std::endl;		
+	
+		Eigen::MatrixXd Wprime = W+C;
+		std::cout << Wprime.rows() << Wprime.cols() << beta1.rows() << std::endl;
+		Eigen::MatrixXd phi = solve(-Wprime,beta1);
+
+		std::cout << "here" << std::endl;
+				
+		uh = DL*phi;
+
+		diff = 0;
+		error = 0;
+
+		for(size_t i = 0; i < uh.rows(); i++){
+			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
+			error = std::max(error, diff);
+		}
+
+		std::cout << "Indirect DL Neumann error: " << std::endl;
+		std::cout << error << std::endl;
+
+		// Second kind direct Neumann
+		phi.setZero();
+		Eigen::MatrixXd RHS = 0.5*M*projUn + K.transpose()*projUn;
+		phi = -solve(W+C,RHS);
+
+		uh = DL*phi - SL*projUn;
+
+		diff = 0;
+		error = 0;
+
+		for(size_t i = 0; i < uh.rows(); i++){
+			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
+			error = std::max(error, diff);
+		}
+
+		std::cout << "Direct Neumann error: " << std::endl;
+		std::cout << error << std::endl;
+		
 
 }
 
