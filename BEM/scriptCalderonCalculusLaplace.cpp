@@ -64,7 +64,7 @@ int main(){
 	double (*kerDLref)(double) = &kerDL;
 	
 	// number of refinements
-	int Nlev = 5;
+	int Nlev = 1;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
@@ -169,21 +169,16 @@ int main(){
 		
 		uh = SL*lambda2.block(0,0,beta02.rows()-1,1);
 
-		std::cout << " here" << std::endl;
-/*
-		for(size_t i = 0; i < uh.rows(); i++){
-			std::cout << i << std::endl;
-			uh(i,0) += lambda2(,0);
-			uh(i,1) += lambda2(,0);
-		}
-*/
+		double cInf = lambda2(lambda2.rows()-1,0);
 
-		std::cout << "here" << std::endl;
-
+		diff = 0;
 		error = 0;
 
-		for(size_t i = 0; i < z.rows(); i++){
+		printMatrix(uh);
+		std::cout << cInf << std::endl;
 
+		for(size_t i = 0; i < uh.rows(); i++){
+			uh(i) += cInf;
 			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
 			error = std::max(error, diff);
 
