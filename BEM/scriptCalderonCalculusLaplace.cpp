@@ -64,7 +64,7 @@ int main(){
 	double (*kerDLref)(double) = &kerDL;
 	
 	// number of refinements
-	int Nlev = 2;
+	int Nlev = 0;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
@@ -109,7 +109,18 @@ int main(){
 		Eigen::MatrixXd ints = testXh(g, fonep, k, q1d);
 		ints.resize(ints.rows()*ints.cols(),1);
 		
-		Eigen::MatrixXd C = testYh(g, fonep, fonep, k, q1d);
+		Eigen::MatrixXd Cprov = testYh(g, fonep, k, q1d);
+		Eigen::MatrixXd C((k+1)*g.nElts,1);
+
+		// put the first row of Cprov in the first chunk of C
+		for(size_t i = 0; i < g.nElts; i++){
+			C(i,0) = Cprov(0,i);
+		}
+
+		// now resize the rest of Cprov into C
+		for(size_t i = 1; i < k+1; i++){
+			C.block(i*g.nElts,0,g.nElts,1) = Cprov.block(i,0,1,g.nElts).transpose();
+		}
 
 		Eigen::MatrixXd Ct = C.transpose();
 
@@ -127,6 +138,8 @@ int main(){
 				projUn(i,j) = projV1(i,j)*g.normals(j,0) + projV2(i,j)*g.normals(j,1);
 			}
 		} 
+
+		projUn.resize(projUn.rows()*projUn.cols(),1);
 
 		// First kind indirect Dirichlet
 
@@ -183,22 +196,19 @@ int main(){
 			uh(i) += cInf;
 			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
 			error = std::max(error, diff);
-
 		}
 
 		std::cout << "First kind indirect Dirichlet error (with decaying potential): " << std::endl;
 		std::cout << error << std::endl;
 
-
 		// indirect DL Neumann
 
-		std::cout << W.rows() << " " << W.cols() << " " << C.rows() << " " << C.cols() <<  std::endl;		
-	
-		Eigen::MatrixXd Wprime = W+C;
-		std::cout << Wprime.rows() << Wprime.cols() << beta1.rows() << std::endl;
-		Eigen::MatrixXd phi = solve(-Wprime,beta1);
+		printMatrix(W);
+		printMatrix(C);	
 
-		std::cout << "here" << std::endl;
+		Eigen::MatrixXd Wprime = W+C;
+
+		Eigen::MatrixXd phi = solve(-Wprime,beta1);
 				
 		uh = DL*phi;
 
@@ -215,7 +225,7 @@ int main(){
 
 		// Second kind direct Neumann
 		phi.setZero();
-		Eigen::MatrixXd RHS = 0.5*M*projUn + K.transpose()*projUn;
+		Eigen::MatrixXd RHS = 0.5*M*projUn + K.transpose()*projUn;		
 		phi = -solve(W+C,RHS);
 
 		uh = DL*phi - SL*projUn;
