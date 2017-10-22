@@ -64,13 +64,12 @@ int main(){
 	double (*kerDLref)(double) = &kerDL;
 	
 	// number of refinements
-	int Nlev = 0;
+	int Nlev = 4;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
-	}
 
-		double start = get_wall_time();
+		// double start = get_wall_time();
 
 		Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
 		Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
@@ -88,10 +87,7 @@ int main(){
 		double (*v2r)(double,double) = &v2;
 
 		Eigen::MatrixXd beta1tmp = testYh(g, v1r, v2r, k, q1d);
-		printMatrix(beta1tmp);
-
-		return 0;
-	
+		
 		Eigen::MatrixXd beta1 = Eigen::MatrixXd::Zero((k+1)*g.nElts,1);
 
 		for(size_t i = 0; i < g.nElts; i++){
@@ -207,8 +203,7 @@ int main(){
 		// indirect DL Neumann
 
 		Eigen::MatrixXd Wprime = W+C;
-		printMatrix(beta1);
-
+		
 		Eigen::MatrixXd phi = solve(-Wprime,beta1);
 				
 		uh = DL*phi;
@@ -227,7 +222,7 @@ int main(){
 		// Second kind direct Neumann
 		phi.setZero();
 		Eigen::MatrixXd RHS = 0.5*M*projUn + K.transpose()*projUn;		
-		phi = -solve(W+C,RHS);
+		phi = -solve(Wprime,RHS);
 
 		uh = DL*phi - SL*projUn;
 
@@ -241,7 +236,8 @@ int main(){
 
 		std::cout << "Direct Neumann error: " << std::endl;
 		std::cout << error << std::endl;
-		
+
+	}
 
 }
 
@@ -269,7 +265,7 @@ double v1(double x1, double x2){
 
 	double r1 = pow(x1-0.3,2) + pow(x2-0.2,2);
 	double r2 = pow(x1-0.4,2) + pow(x2-0.3,2);
-	double tmp = (x1-0.3)/r1 - (x2-0.4)/r2;
+	double tmp = (x1-0.3)/r1 - (x1-0.4)/r2;
 	return tmp;	
 
 }
@@ -277,7 +273,7 @@ double v1(double x1, double x2){
 double v2(double x1, double x2){
 	double r1 = pow(x1-0.3,2) + pow(x2-0.2,2);
 	double r2 = pow(x1-0.4,2) + pow(x2-0.3,2);
-	double tmp = (x1-0.2)/r1 - (x2-0.3)/r2;
+	double tmp = (x2-0.2)/r1 - (x2-0.3)/r2;
 	return tmp;	
 
 }

@@ -261,7 +261,7 @@ Eigen::MatrixXd differentiationMatrix(const geometry &g, int k){
 	size_t Nelt = g.nElts;
 	size_t Nnd = g.coordinates.rows();
 
-	Eigen::MatrixXd D1(k+1,k+2);
+	Eigen::MatrixXd D1 = Eigen::MatrixXd::Zero(k+1,k+2);
 	D1(0,0) = -0.5;
 	D1(0,1) = 0.5;
 	
@@ -275,7 +275,7 @@ Eigen::MatrixXd differentiationMatrix(const geometry &g, int k){
 		}
 	}
 
-	Eigen::MatrixXd lengths(Nelt,Nelt);
+	Eigen::MatrixXd lengths = Eigen::MatrixXd::Zero(Nelt,Nelt);
 	for(size_t i = 0; i < Nelt; i++){
 		lengths(i,i) = 2/g.lengths(i);
 	}

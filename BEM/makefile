@@ -71,8 +71,8 @@ scriptReshape: scriptReshape.cpp
 scriptTestQuadrature: scriptTestQuadrature.cpp quadrature.cpp matrixRoutines.o quadTables.o
 	g++ -I /usr/local/include/eigen -L /usr/lib -fopenmp -march=native -O3 quadrature.cpp matrixRoutines.cpp quadTables.cpp scriptTestQuadrature.cpp -o scriptTestQuadrature
 
-scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o legendrebasis.o geometry.o scriptTestOperators.cpp
-	g++ -I /usr/local/include/eigen -L /usr/lib -fopenmp -march=native -O3 Operators.cpp matrixRoutines.cpp quadTables.cpp quadrature.cpp legendrebasis.cpp geometry.cpp scriptTestOperators.cpp -o scriptTestOperators
+scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o legendrebasis.o geometry.o OperatorsAndPotentials.cpp scriptTestOperators.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib -fopenmp -march=native -O3 Operators.cpp matrixRoutines.cpp quadTables.cpp quadrature.cpp legendrebasis.cpp geometry.cpp OperatorsAndPotentials.cpp scriptTestOperators.cpp -o scriptTestOperators
 
 scriptTestReshaping: matrixRoutines.o testsAndProjections.o geometry.o quadrature.o quadTables.o legendrebasis.o massMatrices.o scriptTestReshaping.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib -fopenmp -march=native -O3 matrixRoutines.cpp testsAndProjections.cpp geometry.cpp quadrature.cpp quadTables.cpp legendrebasis.cpp OperatorsAndPotentials.cpp scriptTestReshaping.cpp -o scriptTestReshaping

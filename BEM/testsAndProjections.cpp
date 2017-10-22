@@ -174,8 +174,12 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
 		}
 	}
 	
-	printMatrix(F1);
-	printMatrix(F2);
+
+	for(size_t i = 0; i < Nqd; i++){
+		for(size_t j = 0; j < Nelts; j++){
+			F(i,j) = F1(i,j)*g.normals(j,0) + F2(i,j)*g.normals(j,1);
+		}
+	}
 
     // polynomial bits
     
