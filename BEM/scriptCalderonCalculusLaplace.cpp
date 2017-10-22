@@ -25,6 +25,8 @@ double get_wall_time();
 
 int main(){
 
+	double start = get_wall_time();
+
 	// polynomial degree
 	int k = 0;
 
@@ -64,12 +66,11 @@ int main(){
 	double (*kerDLref)(double) = &kerDL;
 	
 	// number of refinements
-	int Nlev = 4;
+	int Nlev = 7;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
-
-		// double start = get_wall_time();
+	}
 
 		Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
 		Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
@@ -155,14 +156,8 @@ int main(){
 
 		}
 		
-		std::cout << "First kind indirect Dirichlet error: " << std::endl;
-		std::cout << error << std::endl;
-
-		/*
-		double end = get_wall_time();
-		double time_spent = (end-start);
-		std::cout << "Total time: " << time_spent << std::endl;
-		*/
+		// std::cout << "First kind indirect Dirichlet error: " << std::endl;
+		// std::cout << error << std::endl;
 		
 		// First kind indirect with decaying SL		
 		Eigen::MatrixXd Vlam(V.rows()+1, V.cols()+1);
@@ -197,8 +192,8 @@ int main(){
 			error = std::max(error, diff);
 		}
 
-		std::cout << "First kind indirect Dirichlet error (with decaying potential): " << std::endl;
-		std::cout << error << std::endl;
+		// std::cout << "First kind indirect Dirichlet error (with decaying potential): " << std::endl;
+		// std::cout << error << std::endl;
 
 		// indirect DL Neumann
 
@@ -216,14 +211,14 @@ int main(){
 			error = std::max(error, diff);
 		}
 
-		std::cout << "Indirect DL Neumann error: " << std::endl;
-		std::cout << error << std::endl;
+		// std::cout << "Indirect DL Neumann error: " << std::endl;
+ 		// std::cout << error << std::endl;
 
 		// Second kind direct Neumann
 		phi.setZero();
-		Eigen::MatrixXd RHS = 0.5*M*projUn + K.transpose()*projUn;		
-		phi = -solve(Wprime,RHS);
-
+		Eigen::MatrixXd RHS = 0.5*(M.transpose()*projUn) + K.transpose()*projUn;		
+		phi = solve(-Wprime,RHS);
+	
 		uh = DL*phi - SL*projUn;
 
 		diff = 0;
@@ -234,10 +229,41 @@ int main(){
 			error = std::max(error, diff);
 		}
 
-		std::cout << "Direct Neumann error: " << std::endl;
-		std::cout << error << std::endl;
+		// std::cout << "Direct Neumann error: " << std::endl;
+		// std::cout << error << std::endl;
 
-	}
+		// Direct Dirichlet problem
+		for(size_t i = 0; i < ints.rows(); i++){
+			Vlam(i,Vlam.cols()-1) = -ints(i,0);
+			Vlam(Vlam.rows()-1,i) = ints(i,0);
+		}
+	
+		RHS.resize(Vlam.rows(),1);
+		RHS.setZero();
+		RHS.block(0,0,Vlam.rows()-1,1) = -0.5*M*projU + K*projU;
+		RHS(RHS.rows()-1,RHS.cols()-1) = 0;	
+
+		Eigen::MatrixXd solution = solve(Vlam,RHS);		
+		cInf = solution(solution.rows()-1,0);
+		lambda = solution.block(0,0,solution.rows()-1,1);
+
+		uh = DL*phi - SL*lambda;
+
+		diff = 0;
+		error = 0;
+
+		for(size_t i = 0; i < uh.rows(); i++){
+			uh(i) += cInf;
+			diff = std::abs(u(z(i,0),z(i,1))-uh(i));
+			error = std::max(error, diff);
+		}
+
+		// std::cout << "Direct Dirichlet error (with decaying potential): " << std::endl;
+		// std::cout << error << std::endl;
+
+	double end = get_wall_time();
+	double time_spent = (end-start);
+	std::cout << "Total time: " << time_spent << std::endl;
 
 }
 
