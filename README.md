@@ -34,3 +34,8 @@ Goals:
 (NOT ANYMORE) Some conventions I'm following are the use of std::vectors/std::arrays for pieces that need user initialization (and where it was easier to copy from Matlab, like with quadrature rules).   Anything that needs linear algebra operations done on it or is part of another calculuation with matrices and vectors is done with the boost::numeric::ublas classes since they come with built in matrix operations. This choice is because the boost classes don't have nice initializers like the STL does.  I'd like to improve this in the future.  I also don't like the difference in access operators between boost and STL.  It's just one more layer of syntax complexity between the user and program.
 
 8/24/17 Update: I think I'm going to port a lot of the library to use eigen libraries.  These have nice constructors and tie in well with linear algebra routines.  Also, note to self: I'm putting the eigen header files in /usr/local/include
+
+10/22/17 Update: Finally have Laplace code fully running.  I don't know if I'm ever going to do time domain code, since I made some decisions that would require reversing to implement that.
+		 In lieu of function handles, it would be nice to use lambdas in the newer c++ standards, but I didn't need that for steady state code.
+		 This, at the moment, is much slower than the equivalent Matlab code.  I'm not completely comparing apples to apples with some of my timing choices, but it is not competitive.  I'd like to work on this.
+
