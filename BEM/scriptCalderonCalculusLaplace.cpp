@@ -66,7 +66,7 @@ int main(){
 	double (*kerDLref)(double) = &kerDL;
 	
 	// number of refinements
-	int Nlev = 7;
+	int Nlev = 5;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
@@ -156,8 +156,8 @@ int main(){
 
 		}
 		
-		// std::cout << "First kind indirect Dirichlet error: " << std::endl;
-		// std::cout << error << std::endl;
+		//std::cout << "First kind indirect Dirichlet error: " << std::endl;
+		//std::cout << error << std::endl;
 		
 		// First kind indirect with decaying SL		
 		Eigen::MatrixXd Vlam(V.rows()+1, V.cols()+1);
