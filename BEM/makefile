@@ -77,9 +77,9 @@ scriptTestOperators: Operators.cpp matrixRoutines.o quadTables.o quadrature.o le
 scriptTestReshaping: matrixRoutines.o testsAndProjections.o geometry.o quadrature.o quadTables.o legendrebasis.o massMatrices.o scriptTestReshaping.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib -fopenmp -march=native -DNDEBUG -O3 matrixRoutines.cpp testsAndProjections.cpp geometry.cpp quadrature.cpp quadTables.cpp legendrebasis.cpp OperatorsAndPotentials.cpp scriptTestReshaping.cpp -o scriptTestReshaping
 
-# remove -pg flag for speed!
+# remove -pg flag for speed! or include it for profiling
 scriptCalderonCalculusLaplace: geometry.o quadrature.o Operators.o massMatrices.o testsAndProjections.o testPotentials.o matrixRoutines.o quadTables.o legendrebasis.o
-	g++ -I /usr/local/include/eigen -L /usr/lib -fopenmp -march=native -DNDEBUG -O3 -pg geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptCalderonCalculusLaplace.cpp -o scriptCalderonCalculusLaplace
+	g++ -I /usr/local/include/eigen -L /usr/lib -pg -fopenmp -march=native -DNDEBUG -O3 geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptCalderonCalculusLaplace.cpp -o scriptCalderonCalculusLaplace
 	
 scriptTestOpenMP: scriptTestOpenMP.cpp
 	g++ -o scriptTestOpenMP -fopenmp -march=native -DNDEBUG -O3 scriptTestOpenMP.cpp  

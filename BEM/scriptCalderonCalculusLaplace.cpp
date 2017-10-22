@@ -27,6 +27,9 @@ int main(){
 
 	double start = get_wall_time();
 
+	// number of refinements
+	int Nlev = 7;
+
 	// polynomial degree
 	int k = 0;
 
@@ -64,13 +67,9 @@ int main(){
 		
 	double (*kerSLref)(double) = &kerSL;
 	double (*kerDLref)(double) = &kerDL;
-	
-	// number of refinements
-	int Nlev = 5;
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
-	}
 
 		Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
 		Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
@@ -156,8 +155,8 @@ int main(){
 
 		}
 		
-		//std::cout << "First kind indirect Dirichlet error: " << std::endl;
-		//std::cout << error << std::endl;
+		std::cout << "First kind indirect Dirichlet error: " << std::endl;
+		std::cout << error << std::endl;
 		
 		// First kind indirect with decaying SL		
 		Eigen::MatrixXd Vlam(V.rows()+1, V.cols()+1);
@@ -192,8 +191,8 @@ int main(){
 			error = std::max(error, diff);
 		}
 
-		// std::cout << "First kind indirect Dirichlet error (with decaying potential): " << std::endl;
-		// std::cout << error << std::endl;
+		std::cout << "First kind indirect Dirichlet error (with decaying potential): " << std::endl;
+		std::cout << error << std::endl;
 
 		// indirect DL Neumann
 
@@ -211,8 +210,8 @@ int main(){
 			error = std::max(error, diff);
 		}
 
-		// std::cout << "Indirect DL Neumann error: " << std::endl;
- 		// std::cout << error << std::endl;
+		std::cout << "Indirect DL Neumann error: " << std::endl;
+ 		std::cout << error << std::endl;
 
 		// Second kind direct Neumann
 		phi.setZero();
@@ -229,8 +228,8 @@ int main(){
 			error = std::max(error, diff);
 		}
 
-		// std::cout << "Direct Neumann error: " << std::endl;
-		// std::cout << error << std::endl;
+		std::cout << "Direct Neumann error: " << std::endl;
+		std::cout << error << std::endl;
 
 		// Direct Dirichlet problem
 		for(size_t i = 0; i < ints.rows(); i++){
@@ -258,9 +257,11 @@ int main(){
 			error = std::max(error, diff);
 		}
 
-		// std::cout << "Direct Dirichlet error (with decaying potential): " << std::endl;
-		// std::cout << error << std::endl;
+		std::cout << "Direct Dirichlet error (with decaying potential): " << std::endl;
+		std::cout << error << std::endl;
 
+	}
+	
 	double end = get_wall_time();
 	double time_spent = (end-start);
 	std::cout << "Total time: " << time_spent << std::endl;
