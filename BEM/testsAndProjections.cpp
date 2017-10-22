@@ -157,15 +157,25 @@ Eigen::MatrixXd testYh(const geometry& g, double (*f1)(double,double), double(*f
     Eigen::MatrixXd P2t(Nqd,Nelts);
     // the function evaluated at the physical quadrature points
     Eigen::MatrixXd F = Eigen::MatrixXd(Nqd, Nelts);
+	Eigen::MatrixXd F1 = Eigen::MatrixXd(Nqd, Nelts);
+	Eigen::MatrixXd F2 = Eigen::MatrixXd(Nqd, Nelts);
 
     for(size_t i = 0; i < Nqd; i++){
         for(size_t j = 0; j < Nelts; j++){
             P1t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),0) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),0);
             P2t(i,j) = 0.5*(1 - q1d(i,0))*g.coordinates(g.elements(j,0),1) + 0.5*(1 + q1d(i,0))*g.coordinates(g.elements(j,1),1);
-            F(i,j) = f1(P1t(i,j),P2t(i,j))*g.normals(j,0) + f2(P1t(i,j),P2t(i,j))*g.normals(j,1);
         }
     }
 
+    for(size_t i = 0; i < Nqd; i++){
+        for(size_t j = 0; j < Nelts; j++){
+			F1(i,j) = f1(P1t(i,j),P2t(i,j));
+			F2(i,j) = f2(P1t(i,j),P2t(i,j));
+		}
+	}
+	
+	printMatrix(F1);
+	printMatrix(F2);
 
     // polynomial bits
     

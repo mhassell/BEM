@@ -88,6 +88,9 @@ int main(){
 		double (*v2r)(double,double) = &v2;
 
 		Eigen::MatrixXd beta1tmp = testYh(g, v1r, v2r, k, q1d);
+		printMatrix(beta1tmp);
+
+		return 0;
 	
 		Eigen::MatrixXd beta1 = Eigen::MatrixXd::Zero((k+1)*g.nElts,1);
 
@@ -203,10 +206,8 @@ int main(){
 
 		// indirect DL Neumann
 
-		printMatrix(W);
-		printMatrix(C);	
-
 		Eigen::MatrixXd Wprime = W+C;
+		printMatrix(beta1);
 
 		Eigen::MatrixXd phi = solve(-Wprime,beta1);
 				
@@ -266,13 +267,18 @@ double u(double x1, double x2){
 
 double v1(double x1, double x2){
 
-	return (x1-0.3)/pow(r1(x1,x2),2) - (x2-0.4)/pow(r2(x1,x2),2);	
+	double r1 = pow(x1-0.3,2) + pow(x2-0.2,2);
+	double r2 = pow(x1-0.4,2) + pow(x2-0.3,2);
+	double tmp = (x1-0.3)/r1 - (x2-0.4)/r2;
+	return tmp;	
 
 }
 
 double v2(double x1, double x2){
-
-	return (x1-0.2)/pow(r1(x1,x2),2) - (x2-0.3)/pow(r2(x1,x2),2);	
+	double r1 = pow(x1-0.3,2) + pow(x2-0.2,2);
+	double r2 = pow(x1-0.4,2) + pow(x2-0.3,2);
+	double tmp = (x1-0.2)/r1 - (x2-0.3)/r2;
+	return tmp;	
 
 }
 

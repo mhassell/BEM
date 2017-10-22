@@ -13,6 +13,8 @@
 double f(double, double);
 double f1(double, double);
 double f2(double, double);
+double v1(double, double);
+double v2(double, double);
 
 int main(){
 
@@ -43,6 +45,8 @@ int main(){
 	double (*fp)(double,double) = &f;
 	double (*fp1)(double,double) = &f1;
 	double (*fp2)(double,double) = &f2;
+	double (*v1r)(double,double) = &v1;
+	double (*v2r)(double,double) = &v2;
 
 	Eigen::MatrixXd fh;
 	fh = testXh(g,fp,k,q1d);
@@ -81,7 +85,7 @@ int main(){
 
 	// test vector functions against Yh	 	
 	fh.setZero();
-	fh = testYh(g,fp1,fp2,k,q1d);	
+	fh = testYh(g,v1r,v2r,k,q1d);	
 
 	std::cout << "Result for testYh (vector case): " << std::endl;
 	for(size_t i = 0; i < k+1; i++){
@@ -130,5 +134,35 @@ double f1(double x1, double x2){
 double f2(double x1, double x2){
 
 	return x1*x2;
+
+}
+
+double r1(double x1,double x2){
+
+	double tmp = pow(x1-0.3,2) + pow(x2-0.2,2);
+	return pow(tmp,0.5);
+
+}
+
+double r2(double x1,double x2){
+
+	double tmp = pow(x1-0.4,2) + pow(x2-0.3,2);
+	return pow(tmp,0.5);
+
+}
+
+double v1(double x1, double x2){
+
+	double tmp = (x1-0.3)/pow(r1(x1,x2),2);
+	tmp -= (x2-0.4)/pow(r2(x1,x2),2);
+	return tmp;	
+
+}
+
+double v2(double x1, double x2){
+
+	double tmp = (x1-0.2)/pow(r1(x1,x2),2);
+	tmp -= (x2-0.3)/pow(r2(x1,x2),2);
+	return tmp;	
 
 }

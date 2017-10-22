@@ -279,7 +279,6 @@ Eigen::MatrixXd differentiationMatrix(const geometry &g, int k){
 	for(size_t i = 0; i < Nelt; i++){
 		lengths(i,i) = 2/g.lengths(i);
 	}
-	
 
 	Eigen::MatrixXd D2 = kron(lengths,D1);
 
@@ -301,7 +300,7 @@ Eigen::MatrixXd differentiationMatrix(const geometry &g, int k){
 		}		
 	}
 
-	// assemble MM into M3 by columns
+	// assemble
 	Eigen::MatrixXd D((k+1)*Nelt, (k+1)*Nelt);
 	D.setZero();
 
