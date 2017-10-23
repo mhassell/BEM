@@ -28,10 +28,10 @@ Eigen::MatrixXd testPotentialXh(const geometry& g, double (*kernel)(double), con
 	// reshape P1t and P2t
 	Eigen::MatrixXd tmp(1,Nqd*Nelt);
 	
-	P1t.transposeInPlace();
+	P1t.transposeInPlace();   // these appear to be expensive calls
 	P1t.resize(1,Nqd*Nelt);
 	
-	P2t.transposeInPlace();
+	P2t.transposeInPlace();   // these appear to be expensive calls
 	P2t.resize(1,Nqd*Nelt);
 
 	Eigen::MatrixXd Z1minusY1(Nobs,Nqd*Nelt);
@@ -134,10 +134,10 @@ Eigen::MatrixXd testPotentialYh(const geometry& g, double (*kernel)(double), con
 	// reshape P1t and P2t
 	Eigen::MatrixXd tmp(1,Nqd*Nelt);
 	
-	P1t.transposeInPlace();
+	P1t.transposeInPlace();    // these appear to be expensive calls
 	P1t.resize(1,Nqd*Nelt);
 	
-	P2t.transposeInPlace();
+	P2t.transposeInPlace();    // these appear to be expensive calls
 	P2t.resize(1,Nqd*Nelt);
 
 	Eigen::MatrixXd Z1minusY1(Nobs,Nqd*Nelt);
@@ -186,8 +186,6 @@ Eigen::MatrixXd testPotentialYh(const geometry& g, double (*kernel)(double), con
 	}
 
 	Eigen::MatrixXd M(r.rows(), r.cols());
-
-	
 
 	for(size_t i = 0; i < r.rows(); i++){
 		for(size_t j = 0; j < r.cols(); j++){

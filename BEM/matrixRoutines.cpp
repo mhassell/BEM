@@ -60,7 +60,7 @@ Eigen::MatrixXd solve(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B){
     Eigen::MatrixXd C = Eigen::MatrixXd(N,P);
     
     C = A.partialPivLu().solve(B);
-    
+    // C = A.colPivHouseholderQr().solve(B);
     return C;
     
 }

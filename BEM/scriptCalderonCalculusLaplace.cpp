@@ -70,6 +70,7 @@ int main(){
 
 	for(size_t i = 0; i < Nlev; i++){
 		g.refine();
+	}
 
 		Eigen::MatrixXd V = WeaklySingularXh(g, kerSLref, k, regular, point, diagonal);
 		Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
@@ -259,8 +260,6 @@ int main(){
 
 		std::cout << "Direct Dirichlet error (with decaying potential): " << std::endl;
 		std::cout << error << std::endl;
-
-	}
 	
 	double end = get_wall_time();
 	double time_spent = (end-start);
