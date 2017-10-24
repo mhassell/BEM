@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include <sys/time.h>
+#include <bench/BenchTimer.h>
 
 #include "geometry.hpp"
 #include "quadrature.hpp"
@@ -25,7 +26,10 @@ double get_wall_time();
 
 int main(){
 
-	double start = get_wall_time();
+	Eigen::BenchTimer t;
+	t.start();	
+
+	// double start = get_wall_time();
 
 	// number of refinements
 	int Nlev = 7;
@@ -142,8 +146,11 @@ int main(){
 		projUn.resize(projUn.rows()*projUn.cols(),1);
 
 		// First kind indirect Dirichlet
-
+		// t.start();
 		Eigen::MatrixXd lambda = solve(V,beta0);
+		// t.stop();
+		// std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
+		
 		Eigen::MatrixXd uh = SL*lambda;
 
 		double error = 0.0;		
@@ -177,8 +184,12 @@ int main(){
 		}
 		beta02(beta02.rows()-1,0) = 0;
 		
+		//t.reset();
+		//t.start();
 		Eigen::MatrixXd lambda2 = solve(Vlam,beta02);
-		
+		//t.stop();
+		//std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
+
 		uh = SL*lambda2.block(0,0,beta02.rows()-1,1);
 
 		double cInf = lambda2(lambda2.rows()-1,0);
@@ -199,8 +210,12 @@ int main(){
 
 		Eigen::MatrixXd Wprime = W+C;
 		
+		//t.reset();
+		//t.start();
 		Eigen::MatrixXd phi = solve(-Wprime,beta1);
-				
+		//t.stop();
+		//std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
+
 		uh = DL*phi;
 
 		diff = 0;
@@ -217,8 +232,13 @@ int main(){
 		// Second kind direct Neumann
 		phi.setZero();
 		Eigen::MatrixXd RHS = 0.5*(M.transpose()*projUn) + K.transpose()*projUn;		
+		
+		//t.reset();
+		//t.start();
 		phi = solve(-Wprime,RHS);
-	
+		//t.stop();
+		//std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
+
 		uh = DL*phi - SL*projUn;
 
 		diff = 0;
@@ -243,7 +263,12 @@ int main(){
 		RHS.block(0,0,Vlam.rows()-1,1) = -0.5*M*projU + K*projU;
 		RHS(RHS.rows()-1,RHS.cols()-1) = 0;	
 
+		//t.reset();
+		//t.start();
 		Eigen::MatrixXd solution = solve(Vlam,RHS);		
+		//t.stop();
+		//std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
+		
 		cInf = solution(solution.rows()-1,0);
 		lambda = solution.block(0,0,solution.rows()-1,1);
 
@@ -261,9 +286,12 @@ int main(){
 		std::cout << "Direct Dirichlet error (with decaying potential): " << std::endl;
 		std::cout << error << std::endl;
 	
-	double end = get_wall_time();
-	double time_spent = (end-start);
-	std::cout << "Total time: " << time_spent << std::endl;
+	t.stop();
+	std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
+
+	//double end = get_wall_time();
+	//double time_spent = (end-start);
+	//std::cout << "Total time: " << time_spent << std::endl;
 
 }
 
