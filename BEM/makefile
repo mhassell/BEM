@@ -87,5 +87,9 @@ scriptTestOpenMP: scriptTestOpenMP.cpp
 scriptTestTimes: geometry.o quadrature.o Operators.o massMatrices.o testsAndProjections.o testPotentials.o matrixRoutines.o quadTables.o legendrebasis.o
 	g++ -I /usr/local/include/eigen -L /usr/lib -msse2 -fopenmp -march=native -DNDEBUG -O3 geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptTestTimes.cpp -o scriptTestTimes
 
+scriptTestCustomReduce: matrixRoutines.o scriptTestCustomReduce.cpp
+	g++ -I /usr/local/include/eigen -L /usr/lib -fopenmp -O3 matrixRoutines.cpp scriptTestCustomReduce.cpp -o scriptTestCustomReduce
+
+
 clean:
 	rm *.o
