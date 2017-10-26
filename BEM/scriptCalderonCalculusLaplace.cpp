@@ -145,6 +145,10 @@ int main(){
 
 		projUn.resize(projUn.rows()*projUn.cols(),1);
 
+		t.stop();
+		std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
+		t.start();
+
 		// First kind indirect Dirichlet
 		// t.start();
 		Eigen::MatrixXd lambda = solve(V,beta0);

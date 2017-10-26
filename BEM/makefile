@@ -79,10 +79,13 @@ scriptTestReshaping: matrixRoutines.o testsAndProjections.o geometry.o quadratur
 
 # remove -pg flag for speed! or include it for profiling
 scriptCalderonCalculusLaplace: geometry.o quadrature.o Operators.o massMatrices.o testsAndProjections.o testPotentials.o matrixRoutines.o quadTables.o legendrebasis.o
-	g++ -I /usr/local/include/eigen -L /usr/lib -pg  -msse2 -fopenmp -march=native -DNDEBUG -O3 geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptCalderonCalculusLaplace.cpp -o scriptCalderonCalculusLaplace
+	g++ -I /usr/local/include/eigen -L /usr/lib -msse2 -fopenmp -march=native -DNDEBUG -O3 geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptCalderonCalculusLaplace.cpp -o scriptCalderonCalculusLaplace
 	
 scriptTestOpenMP: scriptTestOpenMP.cpp
 	g++ -o scriptTestOpenMP  -msse2 -fopenmp -march=native -DNDEBUG -O3 scriptTestOpenMP.cpp  
+
+scriptTestTimes: geometry.o quadrature.o Operators.o massMatrices.o testsAndProjections.o testPotentials.o matrixRoutines.o quadTables.o legendrebasis.o
+	g++ -I /usr/local/include/eigen -L /usr/lib -msse2 -fopenmp -march=native -DNDEBUG -O3 geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp scriptTestTimes.cpp -o scriptTestTimes
 
 clean:
 	rm *.o

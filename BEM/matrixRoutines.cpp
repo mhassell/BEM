@@ -17,7 +17,6 @@
 #include <iostream>
 #include <iomanip>
 #include <stdio.h>
-#include <omp.h>
 
 #include "matrixRoutines.hpp"
 
@@ -34,7 +33,6 @@ Eigen::MatrixXd kron(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B)
     
     Eigen::MatrixXd C = Eigen::MatrixXd(M*P,N*Q);
     
-	#pragma omp parallel for
     for(i=0; i<M; i++){
         for(j=0; j<N; j++){
             for(k=0; k<P; k++){
