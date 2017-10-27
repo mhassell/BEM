@@ -3,9 +3,11 @@
 
 #include "matrixRoutines.hpp"
 
-#pragma omp declare reduction( + : Eigen::MatrixXd : omp_out = omp_out + omp_in) initializer(omp_priv = Eigen::MatrixXd::Zero(5,5))
-
 int main(){
+
+	int N = 10;
+
+	#pragma omp declare reduction( + : Eigen::MatrixXd : omp_out = omp_out + omp_in) initializer(omp_priv = Eigen::MatrixXd::Zero(N,N))
 
 	Eigen::MatrixXd result = Eigen::MatrixXd::Zero(5,5);
 
