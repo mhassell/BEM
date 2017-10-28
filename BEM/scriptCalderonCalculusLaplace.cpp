@@ -35,7 +35,7 @@ int main(){
 	int Nlev = 7;
 
 	// polynomial degree
-	int k = 0;
+	int k = 3;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);
@@ -144,10 +144,6 @@ int main(){
 		} 
 
 		projUn.resize(projUn.rows()*projUn.cols(),1);
-
-		t.stop();
-		std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
-		t.start();
 
 		// First kind indirect Dirichlet
 		// t.start();
@@ -292,10 +288,6 @@ int main(){
 	
 	t.stop();
 	std::cout << t.value(Eigen::REAL_TIMER) << std::endl;
-
-	//double end = get_wall_time();
-	//double time_spent = (end-start);
-	//std::cout << "Total time: " << time_spent << std::endl;
 
 }
 

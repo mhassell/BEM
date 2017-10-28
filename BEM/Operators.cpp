@@ -53,8 +53,6 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		lengthlength(i,g.next(i)) = 0;
 		lengthlength(i,g.prev(i)) = 0;
 	}
-
-	//printMatrix(lengthlength);
 	
 	Eigen::MatrixXd X1minusY1(Nelt,Nelt);
 	Eigen::MatrixXd X2minusY2(Nelt,Nelt);
@@ -63,10 +61,9 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 	Eigen::MatrixXd ker(Nelt,Nelt); 
 
 	Eigen::MatrixXd K = Eigen::MatrixXd::Zero((k+1)*Nelt,(k+1)*Nelt);
-
-	size_t q;	
-	#pragma omp parallel for
-	for(q = 0; q < Nqd; q++){		
+	
+	// #pragma omp parallel for
+	for(size_t q = 0; q < Nqd; q++){		
 		PolPol = quadf(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+1);
 		// compute pairwise diffs (not vectorized in eigen)
 		for(size_t i = 0; i < Nelt; i++){
@@ -78,7 +75,7 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 				ker(i,j) = kernel(R(i,j))*lengthlength(i,j);					
 			}
 		}
-		#pragma omp critical
+		// #pragma omp critical
 		K += kron(ker, PolPol);
 	}
 
@@ -149,12 +146,14 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 
 	Eigen::MatrixXd Kdq = Eigen::MatrixXd::Zero(Nelt,Nelt);
 
+	// #pragma omp parallel for
 	for(size_t q = 0; q < Nqd; q++){
 		PolPol.setZero();		
 		PolPol = quadss(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+1);		
 		for(size_t i = 0; i < Nelt; i++){
 				Kdq(i,i) = Kdiag(q,i);
 		}		
+		// #pragma omp critical
 		K += kron(Kdq,PolPol);
 	}
 
@@ -223,8 +222,8 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 		}
 	}
 	
-	#pragma omp parallel for
-	for(q = 0; q < Nqd; q++){
+	// #pragma omp parallel for
+	for(size_t q = 0; q < Nqd; q++){
 
 		PolPol.setZero();
 		PolPol = quads(q,2)*Polt.block(q,0,1,k+1).transpose()*Poltau.block(q,0,1,k+1);	
@@ -234,6 +233,7 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 			Kdq(i,g.next(i)) = Knext(q,i);	
 		}
 
+		// #pragma omp critical
 		K += kron(Kdq,PolPol);
 		Kdq.setZero();
 
@@ -241,7 +241,7 @@ Eigen::MatrixXd WeaklySingularXh(const geometry& g, double (*kernel)(double), in
 			Kdq(i,g.prev(i)) = Kprev(q,i);	
 		}
 		
-		#pragma omp critical
+		// #pragma omp critical
 		K += kron(Kdq,PolPol.transpose());		
 	
 	}

@@ -80,11 +80,13 @@ int main(){
 
 	return 0;
 
+/*
 	Eigen::MatrixXd K = DipoleXhYh(g, kerDLref, k, regular, pole);
 	Eigen::MatrixXd D = differentiationMatrix(g,k);
 	Eigen::MatrixXd W = D.transpose()*V*D;
 	Eigen::MatrixXd M = massMatrixXhYh(g,k,q1d);
 	M.transposeInPlace();
+*/
 
 }
 

@@ -89,7 +89,7 @@ allQuads allQuadrature(int k, bool overkill){
 	Eigen::MatrixXd qsing;
 
 	if(overkill){
-		q1d = tableGauss(63);
+		q1d = tableGauss(2*k+3);
 		qsing = tableLogGauss(39);
 	}
 	else{
@@ -117,20 +117,3 @@ allQuads allQuadrature(int k, bool overkill){
 	return preparedQds;
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
