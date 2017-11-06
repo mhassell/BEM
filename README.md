@@ -39,3 +39,5 @@ Goals:
 		 In lieu of function handles, it would be nice to use lambdas in the newer c++ standards, but I didn't need that for steady state code.
 		 This, at the moment, is much slower than the equivalent Matlab code.  I'm not completely comparing apples to apples with some of my timing choices, but it is not competitive.  I'd like to work on this.
 
+10/28/17 Update: I spent a few days looking for speed improvements using different profilers and was able to find some places to speed up the code.
+		 Now the code is about 10x faster than Matlab!
