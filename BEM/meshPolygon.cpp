@@ -3,6 +3,7 @@
 #include "meshPolygon.hpp"
 #include <Eigen/Dense>
 #include <cassert>
+#include "omp.h"
 
 // constructor: just copy the essential fields from geometry & expand
 mesh::mesh(const geometry& g){
@@ -28,7 +29,6 @@ input: 	geometry g
 output: double** mesh of points (x,y)
 
 */
-
 mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	// check that mesh params and the box are reasonable
@@ -80,12 +80,10 @@ mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	// move the coordinates in the normal direction by h
 	for(int i = 0; i < elements.rows(); i++){
-		for(int j = 0; j < elements.cols(); j++){
-			coordinates(elements(i,0),0) *= (1+h)*g.normals(elements(i,0),0);
-			coordinates(elements(i,1),0) *= (1+h)*g.normals(elements(i,1),0);
-			coordinates(elements(i,0),1) *= (1+h)*g.normals(elements(i,0),1);
-			coordinates(elements(i,1),1) *= (1+h)*g.normals(elements(i,1),1);
-		}
+		coordinates(elements(i,0),0) *= (1+h)*g.normals(elements(i,0),0);
+		coordinates(elements(i,1),0) *= (1+h)*g.normals(elements(i,1),0);
+		coordinates(elements(i,0),1) *= (1+h)*g.normals(elements(i,0),1);
+		coordinates(elements(i,1),1) *= (1+h)*g.normals(elements(i,1),1);
 	}
 
 	
@@ -94,5 +92,23 @@ mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 // use this to check if a point is in a polygon.  Use openMP to multithread
 void mesh::rayCasting(){
+	
+	// x and y vals of the current point
+	double px = 0;
+	double py = 0;
+	
+	for(int i = 0; i < nx + 1; i++){
+		for(int j = 0; j < ny + 1; j++){
+			// cast in x direction first
+			
+		}
+	}
+	
+}
+
+// count the number of times the segment (rx, ry) crosses the geometry
+int mesh::countCrossings(double rx, double ry){
+
+	
 	
 }
