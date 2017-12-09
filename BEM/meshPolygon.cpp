@@ -4,6 +4,20 @@
 #include <Eigen/Dense>
 #include <cassert>
 
+// constructor: just copy the essential fields from geometry & expand
+mesh::mesh(const geometry& g){
+
+	Eigen::MatrixXi elements;
+    Eigen::MatrixXd coordinates;
+    Eigen::MatrixXd normals;
+
+	elements = g.elements;
+	coordinates = g.coordinates;
+	normals = g.normals;
+
+}
+
+
 /*
 
 input: 	geometry g
@@ -15,14 +29,7 @@ output: double** mesh of points (x,y)
 
 */
 
-// constructor: just copy the essential fields from geometry & expand
-mesh::mesh(const geometry& g){
-
-	
-
-}
-
-mesh::meshPolygon(const geometry& g, double* box, double h, int nx, int ny){
+mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	// check that mesh params and the box are reasonable
 	assert(h!=0);
@@ -39,6 +46,7 @@ mesh::meshPolygon(const geometry& g, double* box, double h, int nx, int ny){
 	double xstep = xmax - xmin;
 	double ystep = ymax - ymin;
 
+	// linspace the box
 	for(int i = 0; i < nx + 1; i++){
 		xpts[i] = xmin + i*xstep;
 	}
@@ -47,12 +55,44 @@ mesh::meshPolygon(const geometry& g, double* box, double h, int nx, int ny){
 		ypts[i] = ymin + i*ystep;
 	}
 
-	for(int i = 0; i < nElts; i++){
-		
+	// now tensorize the box
+	double **Xgrid = new double*[nx+1];
+	for(int i = 0; i < nx + 1; i++){
+		Xgrid[i] = new double[ny+1];
 	}
+
+	double **Ygrid = new double*[ny+1];
+	for(int i = 0; i < ny + 1; i++){
+		Ygrid[i] = new double[nx+1];
+	}
+
+	for(int i = 0; i < nx+1; i++){
+		for(int j = 0; j < ny+1; j++){
+			Xgrid[i][j] = xpts[i];
+		}
+	}
+
+	for(int i = 0; i < ny+1; i++){
+		for(int j = 0; j < nx+1; j++){
+			Ygrid[i][j] = ypts[i];
+		}
+	}
+
+	// move the coordinates in the normal direction by h
+	for(int i = 0; i < elements.rows(); i++){
+		for(int j = 0; j < elements.cols(); j++){
+			coordinates(elements(i,0),0) *= (1+h)*g.normals(elements(i,0),0);
+			coordinates(elements(i,1),0) *= (1+h)*g.normals(elements(i,1),0);
+			coordinates(elements(i,0),1) *= (1+h)*g.normals(elements(i,0),1);
+			coordinates(elements(i,1),1) *= (1+h)*g.normals(elements(i,1),1);
+		}
+	}
+
+	
 
 }
 
+// use this to check if a point is in a polygon.  Use openMP to multithread
 void mesh::rayCasting(){
-
+	
 }
