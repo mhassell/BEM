@@ -10,10 +10,13 @@ public:
 
 private:
 
-	void rayCasting();
 	Eigen::MatrixXi elements;
     Eigen::MatrixXd coordinates;
     Eigen::MatrixXd normals;
+
+	// 2d arrays of observation points
+	double **X;
+	double **Y;
 
 };
 

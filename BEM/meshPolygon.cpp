@@ -1,6 +1,7 @@
 // generate a mesh for observing potentials
 
 #include "meshPolygon.hpp"
+#include "inPolygon.hpp"
 #include <Eigen/Dense>
 #include <cassert>
 #include "omp.h"
@@ -18,18 +19,16 @@ mesh::mesh(const geometry& g){
 
 }
 
-
 /*
-
 input: 	geometry g
 		double* box: [xmin xmax ymin ymax]
 		double h: spacing from the boundary
 		int nx, ny : number of points in each direction
 
-output: double** mesh of points (x,y)
-
+output: double** mesh of points (x,y) in the mesh class
 */
-mesh::meshPolygon(double* box, double h, int nx, int ny){
+
+void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	// check that mesh params and the box are reasonable
 	assert(h!=0);
@@ -86,29 +85,22 @@ mesh::meshPolygon(double* box, double h, int nx, int ny){
 		coordinates(elements(i,1),1) *= (1+h)*g.normals(elements(i,1),1);
 	}
 
-	
+	// make a polygon as an array of points
+	Point* polygon = new Point[elements.rows()];
+	int nElts = elements.rows();	
+	int count = 0;
+	int next = 0;
 
-}
-
-// use this to check if a point is in a polygon.  Use openMP to multithread
-void mesh::rayCasting(){
-	
-	// x and y vals of the current point
-	double px = 0;
-	double py = 0;
-	
-	for(int i = 0; i < nx + 1; i++){
-		for(int j = 0; j < ny + 1; j++){
-			// cast in x direction first
-			
-		}
+	while(count != nElts){
+		polygon[next].x = coordinates(elements(next,0),0);
+		polygon[next].y = coordinates(elements(next,0),1);
+		next = elements(next,1);
+		count++;
 	}
-	
+
+
 }
 
-// count the number of times the segment (rx, ry) crosses the geometry
-int mesh::countCrossings(double rx, double ry){
 
-	
-	
-}
+
+
