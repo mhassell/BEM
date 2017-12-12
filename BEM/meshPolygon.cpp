@@ -2,6 +2,7 @@
 
 #include "meshPolygon.hpp"
 #include "inPolygon.hpp"
+#include "matrixRoutines.hpp"
 
 #include <iostream>
 #include <Eigen/Dense>
@@ -40,8 +41,10 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 	double* xpts = new double[nx+1];
 	double* ypts = new double[ny+1];
 
-	double xstep = xmax - xmin;
-	double ystep = ymax - ymin;
+	double xstep = (xmax - xmin)/(double)nx;
+	double ystep = (ymax - ymin)/(double)ny;
+
+	std::cout << xstep << std::endl;
 
 	// linspace the box
 	for(int i = 0; i < nx + 1; i++){
@@ -69,6 +72,12 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 		}
 	}
 
+	for(int i = 0; i < nx+1; i++){
+		for(int j = 0; j < ny+1; j++){
+			std::cout << Xgrid[i][j] << std::endl;
+		}
+	}
+
 	for(int i = 0; i < ny+1; i++){
 		for(int j = 0; j < nx+1; j++){
 			Ygrid[i][j] = ypts[i];
@@ -85,17 +94,50 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	// make a polygon as an array of points
 	Point* polygon = new Point[elements.rows()];
-	int nElts = elements.rows();	
+	int nElts = elements.rows();	// nElts = nNode, but be careful!
 	int count = 0;
 	int next = 0;
 
 	while(count != nElts){
 		polygon[next].x = coordinates(elements(next,0),0);
 		polygon[next].y = coordinates(elements(next,0),1);
-		next = elements(next,1);
-		std::cout << next << std::endl;		
+		
+		// find where my next node is
+		for(int i = 0; i < nElts; i++){
+			if(elements(next,1)==elements(i,0)){
+				next = i;
+				break;
+			}
+		}
 		count++;
 	}
+
+	// now check for points in the polygon
+	Point p;
+	 
+	for(int i = 0; i < nx+1; i++){
+		for(int j = 0; j < ny+1; j++){
+			p.x = Xgrid[i][j];
+			p.y = Ygrid[i][j];
+			// std::cout << p.x << " " << p.y << std::endl;
+			if(isInside(polygon, nElts, p)){
+				// std::cout << "inside" << std::endl;	
+			}
+		}
+	}
+
+	delete[] xpts;
+	delete[] ypts;
+
+	for(int i = 0; i < nx+1; i++){
+		delete[] Xgrid[i];
+	}
+	delete[] Xgrid;
+
+	for(int i = 0; i < ny+1; i++){
+		delete[] Ygrid[i];
+	}
+	delete[] Ygrid;
 
 }
 

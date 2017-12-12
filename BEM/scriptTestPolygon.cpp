@@ -26,7 +26,7 @@ int main(){
 
 	mesh myMesh(g);
 
-	double box[4] = {-1, 1, -1, 1};
+	double box[4] = {-2, 2, -2, 2};
 	double h = 0.01;
 	int nx = 100;
 	int ny = 100;
