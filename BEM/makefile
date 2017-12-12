@@ -91,7 +91,7 @@ scriptTestCustomReduce: matrixRoutines.o scriptTestCustomReduce.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib -pg -fopenmp -O3 matrixRoutines.cpp scriptTestCustomReduce.cpp -o scriptTestCustomReduce
 
 scriptTestPolygon: meshPolygon.hpp meshPolygon.cpp scriptTestPolygon.cpp
-	g++ -I /usr/local/include/eigen -L /usr/lib meshPolygon.cpp scriptTestPolygon.cpp -o scriptTestPolygon
+	g++ -I /usr/local/include/eigen -L /usr/lib meshPolygon.cpp geometry.cpp scriptTestPolygon.cpp -o scriptTestPolygon
 
 clean:
 	rm *.o
