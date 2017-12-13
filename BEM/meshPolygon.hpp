@@ -18,10 +18,6 @@ private:
     Eigen::MatrixXd coordinates;
     Eigen::MatrixXd normals;
 
-	// 2d arrays of observation points
-	double **X;
-	double **Y;
-
 };
 
 #endif

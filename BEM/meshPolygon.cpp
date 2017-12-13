@@ -26,7 +26,6 @@ input: 	geometry g
 
 output: double** mesh of points (x,y) in the mesh class
 */
-
 void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	double xmin = box[0];
@@ -53,35 +52,6 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	for(int i = 0; i < ny + 1; i++){
 		ypts[i] = ymin + i*ystep;
-	}
-
-	// now tensorize the box
-	double **Xgrid = new double*[nx+1];
-	for(int i = 0; i < nx + 1; i++){
-		Xgrid[i] = new double[ny+1];
-	}
-
-	double **Ygrid = new double*[ny+1];
-	for(int i = 0; i < ny + 1; i++){
-		Ygrid[i] = new double[nx+1];
-	}
-
-	for(int i = 0; i < nx+1; i++){
-		for(int j = 0; j < ny+1; j++){
-			Xgrid[i][j] = xpts[i];
-		}
-	}
-
-	for(int i = 0; i < nx+1; i++){
-		for(int j = 0; j < ny+1; j++){
-			std::cout << Xgrid[i][j] << std::endl;
-		}
-	}
-
-	for(int i = 0; i < ny+1; i++){
-		for(int j = 0; j < nx+1; j++){
-			Ygrid[i][j] = ypts[i];
-		}
 	}
 
 	// move the coordinates in the normal direction by h
@@ -116,9 +86,9 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 	Point p;
 	 
 	for(int i = 0; i < nx+1; i++){
+		p.x = xpts[i];
 		for(int j = 0; j < ny+1; j++){
-			p.x = Xgrid[i][j];
-			p.y = Ygrid[i][j];
+			p.y = ypts[j];
 			// std::cout << p.x << " " << p.y << std::endl;
 			if(isInside(polygon, nElts, p)){
 				// std::cout << "inside" << std::endl;	
@@ -128,16 +98,7 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	delete[] xpts;
 	delete[] ypts;
-
-	for(int i = 0; i < nx+1; i++){
-		delete[] Xgrid[i];
-	}
-	delete[] Xgrid;
-
-	for(int i = 0; i < ny+1; i++){
-		delete[] Ygrid[i];
-	}
-	delete[] Ygrid;
+	delete[] polygon;
 
 }
 
