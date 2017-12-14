@@ -7,7 +7,8 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <cassert>
-#include "omp.h"
+#include <vector>
+#include <fstream>
 
 // constructor: just copy the essential fields from geometry & expand
 mesh::mesh(const geometry& g){
@@ -42,8 +43,6 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	double xstep = (xmax - xmin)/(double)nx;
 	double ystep = (ymax - ymin)/(double)ny;
-
-	std::cout << xstep << std::endl;
 
 	// linspace the box
 	for(int i = 0; i < nx + 1; i++){
@@ -84,14 +83,13 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	// now check for points in the polygon
 	Point p;
-	 
 	for(int i = 0; i < nx+1; i++){
 		p.x = xpts[i];
 		for(int j = 0; j < ny+1; j++){
 			p.y = ypts[j];
-			// std::cout << p.x << " " << p.y << std::endl;
-			if(isInside(polygon, nElts, p)){
-				// std::cout << "inside" << std::endl;	
+			if(!isInside(polygon, nElts, p)){
+				Xpts.push_back(p.x);
+				Ypts.push_back(p.y);
 			}
 		}
 	}
@@ -102,6 +100,18 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 }
 
+// eventually put a string argument for the filename
+void mesh::saveMesh(){
 
+	// make sure we don't error and fail to close the file
+	assert(Xpts.size()==Ypts.size());
 
+	std::ofstream file("mesh.csv");
+	for(int i = 0; i < Xpts.size(); i++){
+		file << Xpts[i] << "," << Ypts[i] << std::endl;
+	}
+
+	file.close();
+
+}
 

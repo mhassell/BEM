@@ -90,8 +90,8 @@ scriptTestTimes: geometry.o quadrature.o Operators.o massMatrices.o testsAndProj
 scriptTestCustomReduce: matrixRoutines.o scriptTestCustomReduce.cpp
 	g++ -I /usr/local/include/eigen -L /usr/lib -pg -fopenmp -O3 matrixRoutines.cpp scriptTestCustomReduce.cpp -o scriptTestCustomReduce
 
-scriptTestPolygon: meshPolygon.hpp meshPolygon.cpp scriptTestPolygon.cpp inPolygon.hpp
-	g++ -I /usr/local/include/eigen -L /usr/lib meshPolygon.cpp geometry.cpp scriptTestPolygon.cpp -o scriptTestPolygon
+scriptTestMesh: meshPolygon.hpp meshPolygon.cpp scriptTestMesh.cpp inPolygon.hpp
+	g++ -I /usr/local/include/eigen -L /usr/lib meshPolygon.cpp geometry.cpp scriptTestMesh.cpp -o scriptTestMesh
 
 clean:
 	rm *.o

@@ -33,4 +33,6 @@ int main(){
 
 	myMesh.meshPolygon(box,h,nx,ny);
 
+	myMesh.saveMesh();
+
 }
