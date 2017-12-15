@@ -13,14 +13,14 @@ public:
 	mesh(const geometry& g);
 	void meshPolygon(double* box, double h, int nx, int ny);
 	void saveMesh();
+	std::vector<double> Xpts;
+	std::vector<double> Ypts;
 
 private:
 
 	Eigen::MatrixXi elements;
     Eigen::MatrixXd coordinates;
     Eigen::MatrixXd normals;
-	std::vector<double> Xpts;
-	std::vector<double> Ypts;
 
 };
 

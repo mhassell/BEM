@@ -38,18 +38,18 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 	assert(h!=0);
 	assert(xmax>xmin && ymax>ymin);
 
-	double* xpts = new double[nx+1];
-	double* ypts = new double[ny+1];
+	double* xpts = new double[nx];
+	double* ypts = new double[ny];
 
 	double xstep = (xmax - xmin)/(double)nx;
 	double ystep = (ymax - ymin)/(double)ny;
 
 	// linspace the box
-	for(int i = 0; i < nx + 1; i++){
+	for(int i = 0; i < nx; i++){
 		xpts[i] = xmin + i*xstep;
 	}
 
-	for(int i = 0; i < ny + 1; i++){
+	for(int i = 0; i < ny; i++){
 		ypts[i] = ymin + i*ystep;
 	}
 
@@ -83,9 +83,9 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 
 	// now check for points in the polygon
 	Point p;
-	for(int i = 0; i < nx+1; i++){
+	for(int i = 0; i < nx; i++){
 		p.x = xpts[i];
-		for(int j = 0; j < ny+1; j++){
+		for(int j = 0; j < ny; j++){
 			p.y = ypts[j];
 			if(!isInside(polygon, nElts, p)){
 				Xpts.push_back(p.x);

@@ -93,5 +93,8 @@ scriptTestCustomReduce: matrixRoutines.o scriptTestCustomReduce.cpp
 scriptTestMesh: meshPolygon.hpp meshPolygon.cpp scriptTestMesh.cpp inPolygon.hpp
 	g++ -I /usr/local/include/eigen -L /usr/lib meshPolygon.cpp geometry.cpp scriptTestMesh.cpp -o scriptTestMesh
 
+scriptPlotLaplace: meshPolygon.cpp meshPolygon.hpp scriptPlotLaplace.cpp geometry.o quadrature.o Operators.o massMatrices.o testsAndProjections.o testPotentials.o matrixRoutines.o quadTables.o legendrebasis.o
+	g++ -I /usr/local/include/eigen -L /usr/lib -msse2 -fopenmp -march=native -DNDEBUG -O3 geometry.cpp quadrature.cpp Operators.cpp OperatorsAndPotentials.cpp testsAndProjections.cpp testPotentials.cpp matrixRoutines.cpp quadTables.cpp legendrebasis.cpp meshPolygon.cpp scriptPlotLaplace.cpp -o scriptPlotLaplace
+
 clean:
 	rm *.o
