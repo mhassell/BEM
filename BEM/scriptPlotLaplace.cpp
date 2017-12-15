@@ -22,13 +22,18 @@ double kerSL(double);
 double kerDL(double);
 double fone(double,double);
 
+// source for the exact solution
+double a = 0.3;
+double b = 0.4;
+double c = 0.2;
+
 int main(){
 
 	// number of refinements
-	int Nlev = 3;
+	int Nlev = 5;
 
 	// polynomial degree
-	int k = 1;
+	int k = 0;
 
 	// make the geometry
 	Eigen::MatrixXd coords(4,2);
@@ -146,9 +151,11 @@ int main(){
 	} 
 
 	// flip the sign on beta0 for an exterior problem
+	/*	
 	for(int i = 0; i < beta0.size(); i++){
 		beta0(i) *= -1;
 	}
+	*/
 
 	projUn.resize(projUn.rows()*projUn.cols(),1);
 	Eigen::MatrixXd lambda = solve(V,beta0);
@@ -166,14 +173,14 @@ int main(){
 
 double r1(double x1,double x2){
 
-	double tmp = pow(x1-0.3,2) + pow(x2-0.2,2);
+	double tmp = pow(x1-a,2) + pow(x2-c,2);
 	return pow(tmp,0.5);
 
 }
 
 double r2(double x1,double x2){
 
-	double tmp = pow(x1-0.4,2) + pow(x2-0.3,2);
+	double tmp = pow(x1-b,2) + pow(x2-c,2);
 	return pow(tmp,0.5);
 
 }
@@ -186,9 +193,9 @@ double u(double x1, double x2){
 
 double v1(double x1, double x2){
 
-	double r1 = pow(x1-0.3,2) + pow(x2-0.2,2);
-	double r2 = pow(x1-0.4,2) + pow(x2-0.3,2);
-	double tmp = (x1-0.3)/r1 - (x1-0.4)/r2;
+	double r1 = pow(x1-a,2) + pow(x2-c,2);
+	double r2 = pow(x1-b,2) + pow(x2-a,2);
+	double tmp = (x1-a)/r1 - (x1-b)/r2;
 	return tmp;	
 
 }

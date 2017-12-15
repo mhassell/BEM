@@ -89,7 +89,7 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 			p.y = ypts[j];
 			Xpts.push_back(p.x);
 			Ypts.push_back(p.y);
-			if(!isInside(polygon, nElts, p)){
+			if(isInside(polygon, nElts, p)){
 				Inside.push_back(true);
 			}
 			else{
