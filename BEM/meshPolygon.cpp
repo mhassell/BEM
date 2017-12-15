@@ -87,9 +87,13 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 		p.x = xpts[i];
 		for(int j = 0; j < ny; j++){
 			p.y = ypts[j];
+			Xpts.push_back(p.x);
+			Ypts.push_back(p.y);
 			if(!isInside(polygon, nElts, p)){
-				Xpts.push_back(p.x);
-				Ypts.push_back(p.y);
+				Inside.push_back(true);
+			}
+			else{
+				Inside.push_back(false);
 			}
 		}
 	}
@@ -108,7 +112,7 @@ void mesh::saveMesh(){
 
 	std::ofstream file("mesh.csv");
 	for(int i = 0; i < Xpts.size(); i++){
-		file << Xpts[i] << "," << Ypts[i] << std::endl;
+		file << Xpts[i] << "," << Ypts[i] << "," << Inside[i] << std::endl;
 	}
 
 	file.close();

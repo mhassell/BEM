@@ -48,7 +48,7 @@ int main(){
 	
 	// observation points 
 	mesh myMesh(g);
-	double box[4] = {-2, 2, -2, 2};
+	double box[4] = {-1, 1, -1, 1};
 	double h = 0.1;
 	int nx = 500;
 	int ny = 500;	
@@ -157,7 +157,8 @@ int main(){
 	// write the solution to a CSV
 	std::ofstream file("solution.csv");
 	for(int i = 0; i < meshSize; i++){
-		file << myMesh.Xpts[i] << "," << myMesh.Ypts[i] << "," << uh(i) << std::endl;
+		file << myMesh.Xpts[i] << "," << myMesh.Ypts[i] << "," << myMesh.Inside[i]  
+				<< "," << uh(i) << std::endl;
 	}	
 	file.close();	
 		

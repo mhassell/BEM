@@ -15,6 +15,7 @@ public:
 	void saveMesh();
 	std::vector<double> Xpts;
 	std::vector<double> Ypts;
+	std::vector<bool> Inside;
 
 private:
 
