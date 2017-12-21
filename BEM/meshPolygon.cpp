@@ -54,12 +54,14 @@ void mesh::meshPolygon(double* box, double h, int nx, int ny){
 	}
 
 	// move the coordinates in the normal direction by h
+	/*
 	for(int i = 0; i < elements.rows(); i++){
-		coordinates(elements(i,0),0) *= (1+h)*normals(elements(i,0),0);
-		coordinates(elements(i,1),0) *= (1+h)*normals(elements(i,1),0);
-		coordinates(elements(i,0),1) *= (1+h)*normals(elements(i,0),1);
-		coordinates(elements(i,1),1) *= (1+h)*normals(elements(i,1),1);
+		coordinates(elements(i,0),0) += h*normals(elements(i,0),0);
+		coordinates(elements(i,1),0) += h*normals(elements(i,1),0);
+		coordinates(elements(i,0),1) += h*normals(elements(i,0),1);
+		coordinates(elements(i,1),1) += h*normals(elements(i,1),1);	
 	}
+	*/
 
 	// make a polygon as an array of points
 	Point* polygon = new Point[elements.rows()];

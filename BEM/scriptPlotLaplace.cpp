@@ -50,6 +50,8 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
+
+	
 	
 	// observation points 
 	mesh myMesh(g);
