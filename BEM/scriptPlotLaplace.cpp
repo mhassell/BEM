@@ -50,15 +50,13 @@ int main(){
 				3, 	0;
 	
 	geometry g(coords, elts);
-
-	
 	
 	// observation points 
 	mesh myMesh(g);
-	double box[4] = {-1, 1, -1, 1};
+	double box[4] = {0, 1, 0, 1};
 	double h = 0.1;
-	int nx = 500;
-	int ny = 500;	
+	int nx = 100;
+	int ny = 100;	
 
 	myMesh.meshPolygon(box, h, nx, ny);
 	int meshSize = myMesh.Xpts.size();
